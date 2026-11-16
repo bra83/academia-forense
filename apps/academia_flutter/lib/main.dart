@@ -560,7 +560,7 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (_catalogLoading)
-                const LinearProgressIndicator()
+                const Text('Carregando o catálogo local...', style: ForensicTypography.caption)
               else if (_catalogError.isNotEmpty)
                 Text(_catalogError, style: ForensicTypography.caption)
               else
@@ -805,7 +805,7 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
         ),
         const SizedBox(height: 16),
         if (_catalogLoading)
-          const Center(child: CircularProgressIndicator())
+          const Text('Carregando capítulos locais...', style: ForensicTypography.caption)
         else if (_catalogError.isNotEmpty)
           Column(children: [
             Text(_catalogError, style: ForensicTypography.body),
