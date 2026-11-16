@@ -30,7 +30,7 @@ jobs:
       - name: Install Linux build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libsqlite3-dev
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libsqlite3-dev libsecret-1-dev
 
       - name: Install dependencies in packages
         run: |
@@ -50,6 +50,18 @@ jobs:
           cd ../persistence_core && flutter test
           cd ../../apps/academia_flutter && flutter test
 
+      - name: Build Android APK (release)
+        run: |
+          cd apps/academia_flutter
+          flutter build apk --release --split-per-abi
+
+      - name: Publish Android APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: academia-forense-android-apks
+          path: apps/academia_flutter/build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: error
+
       - name: Build Linux Desktop (release)
         run: |
           cd apps/academia_flutter
@@ -63,17 +75,6 @@ jobs:
           path: apps/academia_flutter/build/linux/x64/release/bundle/
           if-no-files-found: error
 
-      - name: Build Android APK (release)
-        run: |
-          cd apps/academia_flutter
-          flutter build apk --release --split-per-abi
-
-      - name: Publish Android APK artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: academia-forense-android-apks
-          path: apps/academia_flutter/build/app/outputs/flutter-apk/*.apk
-          if-no-files-found: error
 
   windows-ci:
     name: Test & Build (Windows Desktop)
