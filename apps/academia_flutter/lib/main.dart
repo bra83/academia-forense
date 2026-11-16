@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -84,7 +85,12 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
 
   // Voice & TTS state (§11, §12, §13)
   AudioEngine _selectedAudioEngine = AudioEngine.kokoroLocal;
-  String _selectedVoice = 'pt-BR-Kokoro-Braseiro';
+  String _selectedVoice = 'Voz não identificada';
+  final MotorAKokoroController _kokoro = MotorAKokoroController();
+  StreamSubscription<MotorProgressEvent>? _kokoroProgress;
+  StreamSubscription<String>? _kokoroErrors;
+  bool _kokoroReady = false;
+  List<String> _installedKokoroVoices = <String>[];
   double _speechSpeed = 1.00;
   final int _activeParagraphIndex = 0;
   bool _isSpeaking = false;
@@ -125,6 +131,14 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
   @override
   void initState() {
     super.initState();
+    _kokoroProgress = _kokoro.progressStream.listen((event) {
+      if (mounted && (event.state == MotorPlaybackState.stopped || event.state == MotorPlaybackState.error)) {
+        setState(() { _isSpeaking = false; _ttsStatusMessage = 'Leitura encerrada.'; });
+      }
+    });
+    _kokoroErrors = _kokoro.errorStream.listen((error) {
+      if (mounted) setState(() { _isSpeaking = false; _ttsStatusMessage = 'Motor de voz: ' + error; });
+    });
     _loadGeminiSettings();
     _loadRealMetrics();
     _loadLocalCatalog();
@@ -135,6 +149,9 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
     _geminiKeyController.dispose();
     _tutorQuestionController.dispose();
     _telephonyCsvController.dispose();
+    if (_kokoroProgress != null) unawaited(_kokoroProgress!.cancel());
+    if (_kokoroErrors != null) unawaited(_kokoroErrors!.cancel());
+    unawaited(_kokoro.dispose());
     super.dispose();
   }
 
@@ -334,6 +351,55 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
     _loadRealMetrics();
   }
 
+
+  Future<void> _toggleSpeech(String text) async {
+    if (_selectedAudioEngine != AudioEngine.kokoroLocal) {
+      setState(() => _ttsStatusMessage =
+          'Gemini Charon ainda não tem reprodução integrada. Nenhum áudio foi gerado.');
+      return;
+    }
+    if (_isSpeaking) {
+      await _kokoro.stop();
+      if (mounted) setState(() { _isSpeaking = false; _ttsStatusMessage = 'Leitura interrompida.'; });
+      return;
+    }
+    if (text.trim().isEmpty) {
+      setState(() => _ttsStatusMessage = 'Não há trecho para ler.');
+      return;
+    }
+    setState(() => _ttsStatusMessage = 'Inicializando motor Braseiro Kokoro...');
+    try {
+      if (!_kokoroReady) _kokoroReady = await _kokoro.initialize();
+      if (!_kokoroReady) throw StateError('Motor Kokoro não está instalado ou inicializado.');
+      final voices = await _kokoro.getAvailableVoices();
+      final names = voices.map((v) => v.name).where((v) => v.isNotEmpty).toList();
+      if (names.isEmpty) throw StateError('Nenhuma voz Kokoro instalada.');
+      final voice = names.contains(_selectedVoice) ? _selectedVoice : names.first;
+      if (!await _kokoro.setVoice(voice)) {
+        throw StateError('Voz recusada pelo Kokoro.');
+      }
+      await _kokoro.setSpeed(_speechSpeed);
+      final chunks = SentenceSegmenter.segment(text).chunks;
+      await _kokoro.playChunks(chunks);
+      if (_kokoro.state == MotorPlaybackState.error) {
+        throw StateError('Motor falhou ao sintetizar.');
+      }
+      if (mounted) setState(() {
+        _selectedVoice = voice;
+        _installedKokoroVoices = names;
+        _isSpeaking = true;
+        _ttsStatusMessage = 'Solicitado Kokoro: ' + chunks.length.toString() +
+            ' blocos, voz ' + voice;
+      });
+    } catch (e) {
+      if (mounted) setState(() {
+        _isSpeaking = false;
+        _ttsStatusMessage = 'Leitura falhou (' + e.runtimeType.toString() +
+            '). Verifique o aplicativo de voz Kokoro.';
+      });
+    }
+  }
+
   Widget _buildTabContent(int index) {
     switch (index) {
       case 0:
@@ -447,10 +513,8 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
   }
 
   Widget _buildEstudarTab() {
-    final sampleParagraphs = [
-      '1.1 Dos dados às evidências: Na ciência forense, observação não é automaticamente inferência. Todo vestígio digital exige preservação da cadeia de custódia documentada conforme arts. 158-A a 158-F do CPP e diretrizes SWGDE 18-F-002-2.0 (20/11/2025).',
-      '1.2 Verificação de integridade: A função criptográfica SHA-256 produz um resumo de 64 dígitos hexadecimais determinístico. Qualquer modificação de 1 bit altera radicalmente o hash calculado.',
-    ];
+    final sampleParagraphs = _chapters.isEmpty ? <String>[] :
+        _chapters.first.sections.map((section) => section.text).toList();
 
     return ListView(
       padding: const EdgeInsets.all(20.0),
@@ -515,7 +579,7 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
                     onSelected: (_) {
                       setState(() {
                         _selectedAudioEngine = AudioEngine.kokoroLocal;
-                        _selectedVoice = 'pt-BR-Kokoro-Braseiro';
+                        _selectedVoice = _installedKokoroVoices.isEmpty ? 'Voz não identificada' : _installedKokoroVoices.first;
                       });
                     },
                   ),
@@ -532,6 +596,18 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
                 ],
               ),
               const SizedBox(height: 12),
+              if (_installedKokoroVoices.isNotEmpty && _selectedAudioEngine == AudioEngine.kokoroLocal)
+                DropdownButtonFormField<String>(
+                  value: _installedKokoroVoices.contains(_selectedVoice) ? _selectedVoice : _installedKokoroVoices.first,
+                  decoration: const InputDecoration(labelText: 'Voz instalada'),
+                  items: _installedKokoroVoices.map((voice) => DropdownMenuItem(value: voice, child: Text(voice))).toList(),
+                  onChanged: (voice) { if (voice != null) setState(() => _selectedVoice = voice); },
+                ),
+              Slider(
+                value: _speechSpeed, min: 0.65, max: 1.50, divisions: 17,
+                label: _speechSpeed.toStringAsFixed(2) + '×',
+                onChanged: (value) => setState(() => _speechSpeed = value),
+              ),
               for (int i = 0; i < sampleParagraphs.length; i++)
                 Container(
                   margin: const EdgeInsets.only(bottom: 8),
@@ -550,25 +626,13 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
                 runSpacing: 8,
                 children: [
                   ForensicPrimaryButton(
-                    onPressed: () {
-                      final chunks = SentenceSegmenter.segmentText(sampleParagraphs[_activeParagraphIndex]);
-                      setState(() {
-                        _isSpeaking = true;
-                        _ttsStatusMessage =
-                            'Reproduzindo parágrafo ${_activeParagraphIndex + 1} (${chunks.length} bloco(s), motor ${_selectedAudioEngine.value}, voz $_selectedVoice, ${_speechSpeed.toStringAsFixed(2)}×)';
-                      });
-                    },
-                    label: _isSpeaking ? 'Pausar Voz' : 'Ler Parágrafo',
+                    onPressed: sampleParagraphs.isEmpty ? null :
+                        () => _toggleSpeech(sampleParagraphs[_activeParagraphIndex]),
+                    label: _isSpeaking ? 'Parar voz' : 'Ler trecho',
                   ),
                   ForensicSecondaryButton(
-                    onPressed: () {
-                      setState(() {
-                        _speechSpeed = 1.00;
-                        _isSpeaking = false;
-                        _ttsStatusMessage = 'Leitura parada. Velocidade restaurada para 1.00×.';
-                      });
-                    },
-                    label: 'Restaurar 1.00×',
+                    onPressed: () => setState(() => _speechSpeed = 1.0),
+                    label: 'Velocidade 1.00×',
                   ),
                 ],
               ),
