@@ -164,6 +164,9 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
             ? 'Nenhuma chave configurada'
             : SecureVaultContract.maskKey(key);
         _selectedTutorModel = model;
+        _aiConnectivityStatus = key == null || key.isEmpty
+            ? 'Nenhuma chave salva neste aparelho.'
+            : 'Chave recuperada do cofre seguro. Teste a API para atualizar os modelos.';
       });
     } catch (_) {
       if (mounted) {
@@ -197,6 +200,24 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
         setState(() => _aiConnectivityStatus =
             'Não foi possível salvar a chave no armazenamento seguro.');
       }
+    }
+  }
+
+  Future<void> _verifySavedGeminiKey() async {
+    try {
+      final key = await _geminiStorage.read(key: 'gemini_api_key');
+      if (!mounted) return;
+      setState(() {
+        _maskedApiKey = key == null || key.isEmpty
+            ? 'Nenhuma chave configurada'
+            : SecureVaultContract.maskKey(key);
+        _aiConnectivityStatus = key == null || key.isEmpty
+            ? 'Nenhuma chave armazenada.'
+            : 'Chave recuperada do armazenamento persistente.';
+      });
+    } catch (_) {
+      if (mounted) setState(() =>
+          _aiConnectivityStatus = 'Falha ao reler o armazenamento seguro.');
     }
   }
 
@@ -1205,6 +1226,10 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
                     label: 'Salvar chave',
                   ),
                   ForensicSecondaryButton(
+                    onPressed: _verifySavedGeminiKey,
+                    label: 'Conferir chave salva',
+                  ),
+                  ForensicSecondaryButton(
                     onPressed: _geminiBusy ? null : _testGeminiKey,
                     isLoading: _geminiBusy,
                     label: 'Testar API e modelos',
@@ -1215,6 +1240,10 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
                   ),
                 ],
               ),
+              if (_selectedTutorModel != null && _tutorModels.isEmpty)
+                Text('Modelo salvo: ' + _selectedTutorModel! +
+                    ' (teste a API para atualizar o catálogo).',
+                    style: ForensicTypography.caption),
               if (_tutorModels.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
