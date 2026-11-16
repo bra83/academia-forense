@@ -1,0 +1,13 @@
+name: content_validation_cli
+description: CLI tool for validating packages against Section 19 Draft 2020-12 schema
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  content_core:
+    path: ../../packages/content_core
+  args: ^2.5.0
+  path: ^1.9.0

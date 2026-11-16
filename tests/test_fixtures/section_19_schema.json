@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AcademiaForenseEducationalPackage",
+  "description": "Zero-recompilation educational package schema for Academia Forense curriculum",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "contentId",
+    "type",
+    "volume",
+    "chapter",
+    "title",
+    "language",
+    "edition",
+    "editorialStatus",
+    "source",
+    "sections",
+    "learningObjectives",
+    "prerequisites",
+    "glossary",
+    "figures",
+    "tables",
+    "references",
+    "exercises",
+    "laboratories",
+    "assessment",
+    "audio"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "contentId": {
+      "type": "string",
+      "pattern": "^forense\\.vol[0-9]{2}\\.ch[0-9]{2}$"
+    },
+    "type": { "type": "string", "enum": ["chapter", "appendix", "case_study"] },
+    "volume": { "type": "integer", "minimum": 1, "maximum": 9 },
+    "chapter": { "type": "integer", "minimum": 1, "maximum": 113 },
+    "title": { "type": "string", "minLength": 3 },
+    "language": { "type": "string", "enum": ["pt-BR", "en-US"] },
+    "edition": { "type": "string", "pattern": "^REV[0-9]+$" },
+    "editorialStatus": {
+      "type": "string",
+      "enum": [
+        "Planejado", "Importado", "Em revisão", "Aprovado", "Publicado", "Substituído", "Arquivado",
+        "planned", "imported", "under_review", "approved", "published", "superseded", "archived"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": ["provider"],
+      "properties": {
+        "provider": { "type": "string", "enum": ["google_drive", "local_file", "fixture"] },
+        "fileId": { "type": ["string", "null"] },
+        "revision": { "type": ["string", "null"] },
+        "sha256": { "type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$" }
+      },
+      "additionalProperties": false
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sectionId", "title", "orderIndex", "markdownContent"],
+        "properties": {
+          "sectionId": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "orderIndex": { "type": "integer", "minimum": 0 },
+          "markdownContent": { "type": "string" },
+          "anchorKey": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "learningObjectives": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 5 }
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "glossary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["term", "definition"],
+        "properties": {
+          "term": { "type": "string", "minLength": 1 },
+          "definition": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "figures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["figureId", "caption", "assetPath"],
+        "properties": {
+          "figureId": { "type": "string" },
+          "caption": { "type": "string" },
+          "assetPath": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "tables": { "type": "array", "items": { "type": "object" } },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["citationKey", "formattedText"],
+        "properties": {
+          "citationKey": { "type": "string" },
+          "formattedText": { "type": "string" },
+          "year": { "type": "integer" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "exercises": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["exerciseId", "prompt", "exerciseType"],
+        "properties": {
+          "exerciseId": { "type": "string" },
+          "prompt": { "type": "string" },
+          "exerciseType": { "type": "string", "enum": ["objective", "discursive", "code"] },
+          "solution": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "laboratories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["labId", "domain", "title", "instructions"],
+        "properties": {
+          "labId": { "type": "string" },
+          "domain": {
+            "type": "string",
+            "enum": [
+              "informatics", "math", "programming", "digital_forensics", "telephony", "linguistics", "multimedia"
+            ]
+          },
+          "title": { "type": "string" },
+          "instructions": { "type": "string" },
+          "expectedResult": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "assessment": {
+      "type": ["object", "null"],
+      "properties": {
+        "assessmentId": { "type": "string" },
+        "passingScorePercent": { "type": "number", "minimum": 0, "maximum": 100 },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["questionId", "prompt", "type", "points"],
+            "properties": {
+              "questionId": { "type": "string" },
+              "prompt": { "type": "string" },
+              "type": { "type": "string", "enum": ["multiple_choice", "discursive", "code_check"] },
+              "points": { "type": "number", "minimum": 0 },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["optionId", "text", "isCorrect"],
+                  "properties": {
+                    "optionId": { "type": "string" },
+                    "text": { "type": "string" },
+                    "isCorrect": { "type": "boolean" }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "rubric": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": ["assessmentId", "passingScorePercent", "questions"]
+    },
+    "audio": {
+      "type": "object",
+      "required": ["enabled", "language"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "language": { "type": "string" },
+        "voicePreferred": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

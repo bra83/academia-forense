@@ -1,0 +1,22 @@
+name: laboratory_core
+description: Academia Forense Multi-Discipline Lab Engine, Platform Budget Guard & Execution Engine (§14.1, §14.2)
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  persistence_core:
+    path: ../persistence_core
+  crypto: ^3.0.3
+  meta: ^1.15.0
+  sqlite3: ^2.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0

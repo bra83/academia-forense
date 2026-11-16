@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AcademiaForenseCurriculumManifest",
+  "description": "Draft 2020-12 JSON Schema for Academia Forense curriculum manifest",
+  "type": "object",
+  "required": [
+    "curriculumId",
+    "title",
+    "version",
+    "language",
+    "totalVolumes",
+    "totalChapters",
+    "editorialStatusDistribution",
+    "volume1PrintPreservation",
+    "volumes",
+    "chapters"
+  ],
+  "properties": {
+    "curriculumId": { "type": "string", "minLength": 3 },
+    "title": { "type": "string", "minLength": 3 },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "language": { "type": "string", "enum": ["pt-BR", "en-US"] },
+    "totalVolumes": { "type": "integer", "const": 9 },
+    "totalChapters": { "type": "integer", "const": 113 },
+    "editorialStatusDistribution": {
+      "type": "object",
+      "required": [
+        "Planejado",
+        "Importado",
+        "Em revisão",
+        "Aprovado",
+        "Publicado",
+        "Substituído",
+        "Arquivado"
+      ],
+      "properties": {
+        "Planejado": { "type": "integer", "minimum": 0 },
+        "Importado": { "type": "integer", "minimum": 0 },
+        "Em revisão": { "type": "integer", "minimum": 0 },
+        "Aprovado": { "type": "integer", "minimum": 0 },
+        "Publicado": { "type": "integer", "minimum": 0 },
+        "Substituído": { "type": "integer", "minimum": 0 },
+        "Arquivado": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "volume1PrintPreservation": {
+      "type": "object",
+      "required": [
+        "volumeId",
+        "exactPrintedPages",
+        "canonicalRevisions",
+        "errataTable"
+      ],
+      "properties": {
+        "volumeId": { "type": "integer", "const": 1 },
+        "exactPrintedPages": { "type": "integer", "const": 133 },
+        "canonicalRevisions": {
+          "type": "object",
+          "required": ["chapters1to4", "chapters5to10"],
+          "properties": {
+            "chapters1to4": { "type": "string", "const": "REV2" },
+            "chapters5to10": { "type": "string", "const": "REV1" }
+          },
+          "additionalProperties": false
+        },
+        "errataTable": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "volumes": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "required": [
+          "volume_id",
+          "roman",
+          "title",
+          "chapter_start",
+          "chapter_end",
+          "chapter_count",
+          "area"
+        ],
+        "properties": {
+          "volume_id": { "type": "integer", "minimum": 1, "maximum": 9 },
+          "roman": { "type": "string" },
+          "title": { "type": "string" },
+          "chapter_start": { "type": "integer", "minimum": 1, "maximum": 113 },
+          "chapter_end": { "type": "integer", "minimum": 1, "maximum": 113 },
+          "chapter_count": { "type": "integer", "minimum": 1 },
+          "printed_pages": { "type": "integer", "minimum": 0 },
+          "printed_status": { "type": "string" },
+          "area": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "chapters": {
+      "type": "array",
+      "minItems": 113,
+      "maxItems": 113,
+      "items": {
+        "type": "object",
+        "required": [
+          "volume_id",
+          "volume_title",
+          "chapter_id",
+          "content_id",
+          "title",
+          "slug",
+          "expected_revision",
+          "editorial_status",
+          "language"
+        ],
+        "properties": {
+          "volume_id": { "type": "integer", "minimum": 1, "maximum": 9 },
+          "volume_title": { "type": "string" },
+          "chapter_id": { "type": "integer", "minimum": 1, "maximum": 113 },
+          "content_id": {
+            "type": "string",
+            "pattern": "^forense\\.vol[0-9]{2}\\.ch[0-9]{2,3}$"
+          },
+          "title": { "type": "string" },
+          "slug": { "type": "string" },
+          "expected_revision": { "type": "string", "pattern": "^REV[0-9]+$" },
+          "editorial_status": {
+            "type": "string",
+            "enum": [
+              "Planejado",
+              "Importado",
+              "Em revisão",
+              "Aprovado",
+              "Publicado",
+              "Substituído",
+              "Arquivado"
+            ]
+          },
+          "language": { "type": "string", "enum": ["pt-BR", "en-US"] }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

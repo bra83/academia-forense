@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol02.ch14",
+  "type": "chapter",
+  "volume": 2,
+  "chapter": 14,
+  "title": "Sistemas de arquivos e armazenamento",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Em revisão",
+  "source": {
+    "provider": "google_drive",
+    "fileId": "1a6F1CPG0ujAiVl46Yknc1goiz_DDxDny",
+    "revision": "ED1",
+    "sha256": "574ccfc4cf09f0182de87d6c1a800545a3bfd39001d5e3f5f5ec3785eedc11dc"
+  },
+  "sections": [
+    {
+      "sectionId": "ch14-sec-01",
+      "title": "14.1 Fundamentos e Conceitos (Sistemas de arquivos e armazenamento)",
+      "orderIndex": 0,
+      "markdownContent": "# Sistemas de arquivos e armazenamento\n\nArquivo oficial no Google Drive: `Enciclopedia_Forense_VolII_Capitulo_14_ED1.pdf` (9 páginas A4, SHA-256 `75ac18bdb413556fbd38b685ba81235296ae4d2b7b4e40d2b6c134d323cfe83e`).\n\nENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME II\n\nSistemas de arquivos e\n\nCapítulo 14 · NTFS, FAT, ext4, APFS, metadados e limites de recuperação\n\nDo conhecimento zero à linguagem profissional · Ilustrações originais · Laboratórios seguros · Exemplos\n\nresolvidos · Exercícios comentados\n\nCAPÍTULO 14 · EDIÇÃO 1\n\n13 DE NOVEMBRO DE 2026 · A4 · PDF PESQUISÁVEL\n\nENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME II\n\nCapítulo 14 — Sistemas de arquivos e armazenamento\n\nCapítulo 14 — Sistemas de arquivos e armazenamento",
+      "anchorKey": "ch14_sec01_anchor"
+    },
+    {
+      "sectionId": "ch14-sec-02",
+      "title": "14.2 Procedimentos, Limitações e Verificação",
+      "orderIndex": 1,
+      "markdownContent": "Objetivo profissional. Compreender como um computador organiza dados, por que um nome de arqui‐\n\nvo não é o próprio arquivo e quais informações um examinador pode — ou não pode — extrair de uma\n\nmídia. Este capítulo é fundamental, não treinamento para adquirir ou recuperar dados de dispositivos de\n\nterceiros. O laboratório usa somente arquivos sintéticos produzidos pelo próprio aluno.\n\nLeitura em duas camadas. Em linguagem comum: o sistema de arquivos funciona como um catálogo e um\n\nconjunto de regras para localizar dados armazenados. Em linguagem profissional: é a implementação que\n\nrelaciona nomes e caminhos a estruturas de metadados e unidades de armazenamento, com semânticas\n\nespecíficas de alocação, permissões, timestamps e consistência.\n\n14.1. Da eletricidade à informação: a hierarquia completa\n\nUm computador não guarda uma fotografia como uma folha de papel guardada em uma gaveta. Ele ar‐",
+      "anchorKey": "ch14_sec02_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Diferenciar dados brutos, vestígios digitais, indícios e evidências periciais.",
+    "Calcular a entropia de Shannon em artefatos binários para identificar contramedidas anti-forenses.",
+    "Aplicar o Princípio de Troca de Locard na coleta e fixação de vestígios computacionais."
+  ],
+  "prerequisites": [],
+  "glossary": [
+    {
+      "term": "Vestígio Digital",
+      "definition": "Qualquer dado em formato binário capaz de atestar uma conduta criminosa ou fato sob apuração judicial."
+    },
+    {
+      "term": "Entropia de Shannon",
+      "definition": "Medida estatística de incerteza ou densidade de informação em uma sequência de bytes."
+    },
+    {
+      "term": "Princípio de Locard",
+      "definition": "Postulado segundo o qual o agente necessariamente traz e deixa vestígios no local do fato."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch01-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 1",
+      "assetPath": "assets/figures/ch01_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch01-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 1",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH01-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 1. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch01-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Dos Dados às Evidências Digitais.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch01-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 1?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch01-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Dos Dados às Evidências Digitais",
+      "instructions": "Execute a análise de entropia no arquivo suspeito disk_sample.dd e determine se a partição 2 contém volume TrueCrypt oculto.",
+      "expectedResult": "Entropia superior a 7.98 bits/byte nos setores 2048 a 8192, indicando contêiner cifrado."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch01",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch01-01",
+        "prompt": "Acerca de Dos Dados às Evidências Digitais, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch01-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 1?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

@@ -1,0 +1,16 @@
+name: content_ingestion_cli
+description: CLI tool for ingesting educational packages into Academia Forense
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  content_core:
+    path: ../../packages/content_core
+  drive_sync:
+    path: ../../packages/drive_sync
+  crypto: ^3.0.5
+  path: ^1.9.0
+  args: ^2.5.0

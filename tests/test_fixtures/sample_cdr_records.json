@@ -1,0 +1,58 @@
+[
+  {
+    "record_id": "CDR-001",
+    "timestamp": "2026-10-15T08:14:22Z",
+    "caller_msisdn": "+5531988881111",
+    "callee_msisdn": "+5531977772222",
+    "call_type": "VOICE_OUT",
+    "duration_sec": 142,
+    "cell_id": "ERB-BH-01",
+    "azimuth": 0,
+    "imei": "864201041234567",
+    "tower_name": "Praça Sete Alpha",
+    "latitude": -19.9191,
+    "longitude": -43.9386
+  },
+  {
+    "record_id": "CDR-002",
+    "timestamp": "2026-10-15T08:35:10Z",
+    "caller_msisdn": "+5531988881111",
+    "callee_msisdn": "+5531966663333",
+    "call_type": "SMS_OUT",
+    "duration_sec": 0,
+    "cell_id": "ERB-BH-02",
+    "azimuth": 120,
+    "imei": "864201041234567",
+    "tower_name": "Praça Sete Beta",
+    "latitude": -19.9191,
+    "longitude": -43.9386
+  },
+  {
+    "record_id": "CDR-003",
+    "timestamp": "2026-10-15T09:12:05Z",
+    "caller_msisdn": "+5531999994444",
+    "callee_msisdn": "+5531988881111",
+    "call_type": "VOICE_IN",
+    "duration_sec": 310,
+    "cell_id": "ERB-SAV-01",
+    "azimuth": 30,
+    "imei": "864201041234567",
+    "tower_name": "Savassi Alpha",
+    "latitude": -19.9381,
+    "longitude": -43.9352
+  },
+  {
+    "record_id": "CDR-004",
+    "timestamp": "2026-10-15T10:45:18Z",
+    "caller_msisdn": "+5531988881111",
+    "callee_msisdn": "+5531955555555",
+    "call_type": "VOICE_OUT",
+    "duration_sec": 85,
+    "cell_id": "ERB-NL-01",
+    "azimuth": 270,
+    "imei": "864201041234567",
+    "tower_name": "Nova Lima Vila da Serra",
+    "latitude": -19.9862,
+    "longitude": -43.8471
+  }
+]

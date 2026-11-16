@@ -1,0 +1,99 @@
+# Flutter & Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+
+# Android
+.gradle/
+local.properties
+**/android/**/build/
+**/android/app/release/
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# Windows
+**/windows/flutter/ephemeral/
+**/windows/build/
+*.vcxproj*
+*.sln
+Debug/
+Release/
+*.exe
+*.dll
+
+# Linux / Desktop
+**/linux/flutter/ephemeral/
+
+# C / C++ / Native
+*.o
+*.obj
+*.so
+*.dylib
+*.a
+
+# SQLite & Databases
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Environment & Credentials & Keys
+.env
+.env.*
+*.key
+*.pem
+credentials.json
+service_account.json
+google-services.json
+
+# Tooling / SDK downloads
+tools/flutter/
+tools/*.tar.xz
+tools/*.zip
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE & Editor
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# JetSki / Agent Internal files
+.agents/
+.gemini
+.cache/
+.config/
+.dart-tool/
+.dartServer/
+.flutter
+.local/
+.bash_logout
+.bashrc
+.profile
+.gitconfig
+
+# Raw downloaded Google Drive PDF binaries (inventories and SHA-256 manifests remain tracked)
+content/drive_canonical/
+content/drive_source_docs/*.pdf
+content/drive_source_docs/qa/
+tests/e2e_report.json
+tests/e2e_junit.xml

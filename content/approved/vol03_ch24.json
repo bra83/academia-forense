@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol03.ch24",
+  "type": "chapter",
+  "volume": 3,
+  "chapter": 24,
+  "title": "Estatística descritiva: lendo dados corretamente",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Em revisão",
+  "source": {
+    "provider": "google_drive",
+    "fileId": "1x1Jtx_UICejhrSqb3c5yXVeS9GyFPu_v",
+    "revision": "ED1",
+    "sha256": "18ad0dbd118c14bb63d5349c3c7109350dba4be5a88c820da336410b490d63c8"
+  },
+  "sections": [
+    {
+      "sectionId": "ch24-sec-01",
+      "title": "24.1 Fundamentos e Conceitos (Estatística descritiva: lendo dados corretamente)",
+      "orderIndex": 0,
+      "markdownContent": "# Estatística descritiva: lendo dados corretamente\n\nArquivo oficial no Google Drive: `Enciclopedia_Forense_VolIII_Capitulo_24_ED1_IMPRESSAO.pdf` (9 páginas A4, SHA-256 `8e82fda5d104bb590134e610f0a8b296d0d0e92963452d3f0a0337d3b644da2a`).\n\nCOLEÇÃO · CIÊNCIA DE DADOS E CIÊNCIAS FORENSES\n\nVOLUME III / ESTATÍSTICA E CIÊNCIA DE DADOS FORENSE\n\nEstatística descritiva\n\nLer dados corretamente, sem confundir resumo com\n\nDistribuições observadas, ausências, valores extremos e resumos reproduzí‐\n\nEdição didática 1 • 2026\n\nE N C I C LO P É D I A D E C I Ê N C I A S F O R E N S E S\n\nVOLUME III / CAPÍTULO 24\n\nVolume III — Estatística e Ciência de Dados Forense · Edição 1 · 2026\n\nSituação editorial: capítulo didático. Todos os números e gráficos calculados para os exemplos",
+      "anchorKey": "ch24_sec01_anchor"
+    },
+    {
+      "sectionId": "ch24-sec-02",
+      "title": "24.2 Procedimentos, Limitações e Verificação",
+      "orderIndex": 1,
+      "markdownContent": "são sintéticos. Não são informações sobre Watts, Hae Min Lee ou qualquer processo real. A es‐\n\ntatística aqui apresentada não substitui verificação de origem, integridade e significado dos re‐\n\nObjetivos e pré-requisitos\n\nAo concluir o capítulo, você deverá: reconhecer a unidade de observação de uma tabela; distinguir\n\npopulação, amostra e subconjunto disponível; classificar variáveis; calcular e interpretar frequências,\n\nmédia, mediana, quartis, amplitude, variância e desvio-padrão; avaliar dados ausentes; perceber a in‐\n\nfluência de valores extremos; produzir uma descrição numérica que outro analista possa reproduzir; e\n\nexplicar por que uma estatística não identifica uma pessoa ou causa um acontecimento.\n\nAntes de começar: saber operar com porcentagens e ler uma planilha. Para o laboratório programa‐\n\ndo, são úteis os Capítulos 18 a 23 (Python, CSV e tabelas). Não é necessário já dominar inferência esta‐",
+      "anchorKey": "ch24_sec02_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Diferenciar dados brutos, vestígios digitais, indícios e evidências periciais.",
+    "Calcular a entropia de Shannon em artefatos binários para identificar contramedidas anti-forenses.",
+    "Aplicar o Princípio de Troca de Locard na coleta e fixação de vestígios computacionais."
+  ],
+  "prerequisites": [],
+  "glossary": [
+    {
+      "term": "Vestígio Digital",
+      "definition": "Qualquer dado em formato binário capaz de atestar uma conduta criminosa ou fato sob apuração judicial."
+    },
+    {
+      "term": "Entropia de Shannon",
+      "definition": "Medida estatística de incerteza ou densidade de informação em uma sequência de bytes."
+    },
+    {
+      "term": "Princípio de Locard",
+      "definition": "Postulado segundo o qual o agente necessariamente traz e deixa vestígios no local do fato."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch01-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 1",
+      "assetPath": "assets/figures/ch01_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch01-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 1",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH01-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 1. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch01-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Dos Dados às Evidências Digitais.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch01-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 1?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch01-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Dos Dados às Evidências Digitais",
+      "instructions": "Execute a análise de entropia no arquivo suspeito disk_sample.dd e determine se a partição 2 contém volume TrueCrypt oculto.",
+      "expectedResult": "Entropia superior a 7.98 bits/byte nos setores 2048 a 8192, indicando contêiner cifrado."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch01",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch01-01",
+        "prompt": "Acerca de Dos Dados às Evidências Digitais, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch01-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 1?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

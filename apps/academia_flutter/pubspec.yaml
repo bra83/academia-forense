@@ -1,0 +1,43 @@
+name: academia_flutter
+description: "Academia Forense — Laboratório de Formação (Mobile & Desktop App)"
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  design_system:
+    path: ../../packages/design_system
+  persistence_core:
+    path: ../../packages/persistence_core
+  content_core:
+    path: ../../packages/content_core
+  learning_core:
+    path: ../../packages/learning_core
+  assessment_core:
+    path: ../../packages/assessment_core
+  laboratory_core:
+    path: ../../packages/laboratory_core
+  case_study_core:
+    path: ../../packages/case_study_core
+  ai_gateway:
+    path: ../../packages/ai_gateway
+  rag_core:
+    path: ../../packages/rag_core
+  audio_core:
+    path: ../../packages/audio_core
+  drive_sync:
+    path: ../../packages/drive_sync
+  drift: ^2.20.0
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

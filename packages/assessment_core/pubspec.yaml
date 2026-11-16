@@ -1,0 +1,20 @@
+name: assessment_core
+description: Academia Forense Automated Assessment Engine, Multi-Type Question Evaluation & 80% Progression Benchmark (§8.1, §8.2, §17.1)
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  persistence_core:
+    path: ../persistence_core
+  meta: ^1.15.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0

@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AcademiaForenseChapterPackage",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "contentId",
+    "type",
+    "volume",
+    "chapter",
+    "title",
+    "language",
+    "edition",
+    "editorialStatus",
+    "source",
+    "sections"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": ["1.0"]
+    },
+    "contentId": {
+      "type": "string",
+      "pattern": "^forense\\.vol[0-9]{2}\\.ch[0-9]{2}$"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["chapter"]
+    },
+    "volume": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9
+    },
+    "chapter": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 113
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "type": "string",
+      "enum": ["pt-BR"]
+    },
+    "edition": {
+      "type": "string",
+      "enum": ["REV1", "REV2", "REV3"]
+    },
+    "editorialStatus": {
+      "type": "string",
+      "enum": [
+        "Planejado", "Importado", "Em revisão", "Aprovado", "Publicado", "Substituído", "Arquivado",
+        "planned", "imported", "under_review", "approved", "published", "superseded", "archived"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": ["provider"],
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": ["google_drive", "local_directory", "fixture"]
+        },
+        "fileId": {
+          "type": ["string", "null"]
+        },
+        "revision": {
+          "type": ["string", "null"]
+        },
+        "sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-fA-F0-9]{64}$|^$"
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "content"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "content": { "type": "string" },
+          "page": { "type": ["integer", "null"] }
+        }
+      }
+    },
+    "learningObjectives": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "glossary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["term", "definition"],
+        "properties": {
+          "term": { "type": "string" },
+          "definition": { "type": "string" }
+        }
+      }
+    },
+    "figures": {
+      "type": "array"
+    },
+    "tables": {
+      "type": "array"
+    },
+    "references": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "exercises": {
+      "type": "array"
+    },
+    "laboratories": {
+      "type": "array"
+    },
+    "assessment": {
+      "type": ["object", "null"]
+    },
+    "audio": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "language": { "type": "string" }
+      }
+    }
+  }
+}

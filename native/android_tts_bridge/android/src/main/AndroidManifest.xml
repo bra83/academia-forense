@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.academia_forense.tts_bridge">
+    <queries>
+        <package android:name="com.k2fsa.sherpa.onnx.tts.engine" />
+        <package android:name="com.k2fsa.sherpa.onnx.tts.engine.debug" />
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+</manifest>

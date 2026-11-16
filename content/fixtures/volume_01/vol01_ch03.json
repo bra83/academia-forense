@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch03",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 3,
+  "title": "Arquivos, sistemas e metadados",
+  "language": "pt-BR",
+  "edition": "REV2",
+  "editorialStatus": "Publicado",
+  "source": {
+    "provider": "fixture",
+    "fileId": "1WN_CpC2LMcR_-WwXP2Qyuxw-ih58nMSc",
+    "revision": "2.0",
+    "sha256": "ffcf3385c51c4b8b08120a253c6a9844b8de6138438a06d810ae3e575ce7e300"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "3.1 Arquitetura da Master File Table (MFT) no NTFS",
+      "orderIndex": 0,
+      "markdownContent": "No sistema NTFS, cada arquivo possui um ou mais registros de 1024 bytes na tabela .\n\n68Offset_{Cluster} = VCN \times SectorsPerCluster \times BytesPerSector68\n\nOs atributos essenciais para investigação incluem  (0x10) e  (0x30), permitindo a detecção de adulteração de carimbos de tempo (timestomping).\n\n### Trecho extraído do PDF oficial (Enciclopedia_Forense_Vol1_Cap3_REV2_IMPRESSAO.pdf — 13 páginas, SHA-256: `58c994d176509064...`)\n> ENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME I\n> Da informação binária às propriedades de arquivos e\n> Formação desde o zero · Linguagem profissional explicada · Diagramas autorais · Estudos reais\n> documentados · Laboratórios · Exercícios resolvidos",
+      "anchorKey": "sec01_mft_anchor"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "3.2 Timestomping e Análise de Timestamps MACB",
+      "orderIndex": 1,
+      "markdownContent": "O atributo  pode ser alterado por utilitários de modo usuário, enquanto  é manipulado primordialmente pelo driver do kernel NTFS, criando discrepância analítica que evidencia fraude.",
+      "anchorKey": "sec02_timestomp_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Decodificar registros brutos da tabela  em sistemas de arquivos NTFS.",
+    "Comparar carimbos de data/hora  e  para detectar timestomping.",
+    "Mapear alocação de clusters em  e dados residuais em Slack Space."
+  ],
+  "prerequisites": [
+    "Conhecimentos fundamentais de informática e raciocínio lógico"
+  ],
+  "glossary": [
+    {
+      "term": "MFT",
+      "definition": "Master File Table, banco de dados estruturado do NTFS que cataloga todos os arquivos e diretórios."
+    },
+    {
+      "term": "Timestomping",
+      "definition": "Técnica anti-forense que altera deliberadamente timestamps de arquivos para iludir analistas."
+    },
+    {
+      "term": "Slack Space",
+      "definition": "Espaço residual não utilizado no final de um cluster alocado."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch03-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 3",
+      "assetPath": "assets/figures/ch03_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch03-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 3",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH03-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 3. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch03-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Sistemas de Arquivos e Metadados.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch03-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 3?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch03-01",
+      "domain": "informatics",
+      "title": "Prática Laboratorial Aplicada: Sistemas de Arquivos e Metadados",
+      "instructions": "Extraia o arquivo  da imagem fornecida e use script Python para listar todos os arquivos com timestamps de  anteriores a .",
+      "expectedResult": "Arquivo malware.exe identificado com timestomping de 4 anos em relação ao atributo ."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch03",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch03-01",
+        "prompt": "Acerca de Sistemas de Arquivos e Metadados, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch03-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 3?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

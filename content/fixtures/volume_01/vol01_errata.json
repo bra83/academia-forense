@@ -1,0 +1,86 @@
+[
+  {
+    "errataId": "err-vol01-A1-ch01",
+    "volumeId": 1,
+    "chapterNumber": 1,
+    "chapterId": "forense.vol01.ch01",
+    "revision": "REV2",
+    "printedPageNumber": 25,
+    "originalText": "Referência R2: SWGDE 18-F-002-2.0 de 30/06/2025 (rascunho para comentários públicos) e ausência de identificação completa em [R8]",
+    "correctedText": "Referência R2: SWGDE 18-F-002-2.0, Best Practices for Digital Evidence Collection, Version 2.0 (20 Nov. 2025). Referência [R8]: SWGDE 12-F-006-2.0, Core Competencies for Digital Forensics (aprovada em 6 nov. 2024, doc. de 6 dez. 2024).",
+    "justification": "Achado A1 da Auditoria Técnica dos Capítulos 1–4 e Controle de Qualidade Impresso Vol. I: substituição do rascunho pela edição final publicada pela SWGDE.",
+    "status": "active"
+  },
+  {
+    "errataId": "err-vol01-A3-ch01",
+    "volumeId": 1,
+    "chapterNumber": 1,
+    "chapterId": "forense.vol01.ch01",
+    "revision": "REV2",
+    "printedPageNumber": 15,
+    "originalText": "Set-Content -Encoding UTF8 (sem explicitar diferença entre Windows PowerShell 5.1 com BOM e PowerShell 7 sem BOM)",
+    "correctedText": "Indicar a versão do PowerShell e explicar BOM; para padronizar UTF-8 sem BOM entre edições, utilizar [System.Text.UTF8Encoding]::new($false) e verificar/criar diretório explícito em vez de assumir $HOME\\Documents.",
+    "justification": "Achados A3 e A4 da Auditoria Técnica dos Capítulos 1–4: determinismo de bytes e caminhos universais em instalações com OneDrive.",
+    "status": "active"
+  },
+  {
+    "errataId": "err-vol01-A1A2-ch02",
+    "volumeId": 1,
+    "chapterNumber": 2,
+    "chapterId": "forense.vol01.ch02",
+    "revision": "REV2",
+    "printedPageNumber": 39,
+    "originalText": "Cap. 2, p. 13 (p. 39 acumulada), referência [2] SWGDE 18-F-002-2.0 de 30/06/2025 aplicada sem citação do guia específico de dispositivos móveis",
+    "correctedText": "Atualizar para SWGDE 18-F-002-2.0 (20/11/2025) para computadores/mídias e adicionar SWGDE 18-F-003-2.0, Best Practices for Mobile Device Evidence Collection & Preservation Handling and Acquisition (v2.0 de 21/08/2025).",
+    "justification": "Achados A1 e A2 da Auditoria Técnica dos Capítulos 1–4: delimitação estrita do escopo da norma para celulares.",
+    "status": "active"
+  },
+  {
+    "errataId": "err-vol01-A3-ch03",
+    "volumeId": 1,
+    "chapterNumber": 3,
+    "chapterId": "forense.vol01.ch03",
+    "revision": "REV2",
+    "printedPageNumber": 49,
+    "originalText": "Cap. 3, p. 8 (p. 49 acumulada), §3.8: 'são escritos dois registros de texto' com Set-Content -Encoding UTF8",
+    "correctedText": "Leia-se: 'são escritas duas linhas de texto: um cabeçalho e um registro de dados', especificando a codificação UTF-8 sem BOM para reprodutibilidade do hash SHA-256.",
+    "justification": "Controle de Qualidade e Correções Pontuais (12/11/2026) e Achado A3 da Auditoria Técnica.",
+    "status": "active"
+  },
+  {
+    "errataId": "err-vol01-V1-ch04",
+    "volumeId": 1,
+    "chapterNumber": 4,
+    "chapterId": "forense.vol01.ch04",
+    "revision": "REV2",
+    "printedPageNumber": 64,
+    "originalText": "Cálculo de deriva temporal t=(5400+20)/(1-12/3600) e interseção [20:15:58, 20:16:22] com [20:15:57, 20:16:27]",
+    "correctedText": "Nota de verificação V1 confirmada: interseção exata de 24 segundos (23:15:58Z–23:16:22Z) e t=5438,127 s; manter ressalva de que ERB indica célula/setor de rádio e não posição exata da pessoa.",
+    "justification": "Registro de verificação positiva V1 e V3 da Auditoria Técnica dos Capítulos 1–4.",
+    "status": "active"
+  },
+  {
+    "errataId": "err-vol01-QC-ch05",
+    "volumeId": 1,
+    "chapterNumber": 5,
+    "chapterId": "forense.vol01.ch05",
+    "revision": "REV1",
+    "printedPageNumber": 75,
+    "originalText": "Hipóteses H1 e H2 em exemplos introdutórios",
+    "correctedText": "Nota de controle editorial (Cap. 5–10 REV1): os exemplos utilizam registros sintéticos para exercitar separação entre problema técnico, pergunta jurídica, observação e inferência.",
+    "justification": "Controle Editorial e Técnico Volume I Capítulos 5–10 (13/11/2026).",
+    "status": "active"
+  },
+  {
+    "errataId": "err-vol01-QC-ch10",
+    "volumeId": 1,
+    "chapterNumber": 10,
+    "chapterId": "forense.vol01.ch10",
+    "revision": "REV1",
+    "printedPageNumber": 130,
+    "originalText": "Laboratório integrador FAROL-27 (video_eventos.csv, rede_eventos.csv, afericoes.csv)",
+    "correctedText": "Conferência de hashes byte a byte confirmada para afericoes.csv, rede_eventos.csv, video_eventos.csv e script analise_farol27.py (sobreposição de 3 s e incerteza raiz de 13).",
+    "justification": "Controle Editorial e Técnico Volume I Capítulos 5–10 (71/71 verificações automatizadas aprovadas).",
+    "status": "active"
+  }
+]

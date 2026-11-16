@@ -1,0 +1,23 @@
+name: audio_core
+description: Academia Forense Dual Voice System (Kokoro Braseiro Sherpa-ONNX & Gemini Charon Online TTS)
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+  crypto: ^3.0.5
+  persistence_core:
+    path: ../persistence_core
+  android_tts_bridge:
+    path: ../../native/android_tts_bridge
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0

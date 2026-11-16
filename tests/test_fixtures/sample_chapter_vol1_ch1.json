@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch01",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 1,
+  "title": "Dos dados às evidências",
+  "language": "pt-BR",
+  "edition": "REV2",
+  "editorialStatus": "approved",
+  "source": {
+    "provider": "google_drive",
+    "fileId": "1OUZ8sQqkkZkV_jukq5bKD3fID8ef0mTD",
+    "revision": "2",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sections": [
+    {
+      "id": "sec-01-intro",
+      "title": "1.1 Introdução aos Vestígios Digitais",
+      "content": "A perícia forense digital fundamenta-se na transformação de dados brutos em evidências legalmente válidas e metodologicamente reproduzíveis.",
+      "page": 1
+    },
+    {
+      "id": "sec-02-cadeia",
+      "title": "1.2 Cadeia de Custódia e Hash Criptográfico",
+      "content": "A preservação da integridade da evidência requer o cálculo imediato de funções de dispersão unidirecionais, tais como SHA-256 e MD5, assegurando a rastreabilidade estrita.",
+      "page": 2
+    }
+  ],
+  "learningObjectives": [
+    "Diferenciar dado, vestígio, indício e evidência forense.",
+    "Compreender a cadeia de custódia segundo as normas vigentes."
+  ],
+  "prerequisites": [
+    "Noções básicas de informática e organização de arquivos."
+  ],
+  "glossary": [
+    {
+      "term": "Vestígio",
+      "definition": "Qualquer marca, fato ou sinal material bruto encontrado no local ou suporte examinado."
+    },
+    {
+      "term": "Evidência",
+      "definition": "Vestígio analisado, contextualizado e com relação direta comprovada com o fato investigado."
+    }
+  ],
+  "figures": [],
+  "tables": [],
+  "references": [
+    "Norma ABNT NBR ISO/IEC 27037: Diretrizes para identificação, coleta, aquisição e preservação de evidência digital."
+  ],
+  "exercises": [
+    {
+      "id": "ex-01-01",
+      "question": "Qual a diferença fundamental entre vestígio e evidência?",
+      "options": [
+        "A) Não há diferença; são sinônimos processuais.",
+        "B) Vestígio é o elemento bruto; evidência é o vestígio analisado e comprovadamente vinculado ao fato.",
+        "C) Evidência é sempre física e vestígio é sempre digital.",
+        "D) Vestígio possui fé pública imediata e a evidência necessita de aprovação ministerial."
+      ],
+      "correctOptionIndex": 1,
+      "explanation": "O vestígio torna-se evidência apenas após o devido exame pericial e demonstração de vínculo com o fato investigado."
+    }
+  ],
+  "laboratories": [
+    {
+      "id": "lab-01-hash",
+      "domain": "Perícia Digital",
+      "title": "Verificação de Integridade Criptográfica (SHA-256)",
+      "maxMemoryMb": 16
+    }
+  ],
+  "assessment": {
+    "passingScore": 0.80,
+    "questionsCount": 5
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR"
+  }
+}

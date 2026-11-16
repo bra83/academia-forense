@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol03.ch25",
+  "type": "chapter",
+  "volume": 3,
+  "chapter": 25,
+  "title": "Probabilidade: fundamentos e contagem",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Em revisão",
+  "source": {
+    "provider": "google_drive",
+    "fileId": "1XHXMazK437iqYqmuN1LKTrbG2dpkq8HL",
+    "revision": "ED1",
+    "sha256": "cb96ba9fb9b1c40de34052145acbb17e1fa10594761327a17a0a8e5ed04d1b6f"
+  },
+  "sections": [
+    {
+      "sectionId": "ch25-sec-01",
+      "title": "25.1 Fundamentos e Conceitos (Probabilidade: fundamentos e contagem)",
+      "orderIndex": 0,
+      "markdownContent": "# Probabilidade: fundamentos e contagem\n\nArquivo oficial no Google Drive: `Enciclopedia_Forense_VolIII_Capitulo_25_ED1_IMPRESSAO.pdf` (9 páginas A4, SHA-256 `c18922ec46acdd0ea7b2d3f3c00e21f44e3f212c0a9316fd351caa519ba1c4b8`).\n\nCOLEÇÃO · CIÊNCIA DE DADOS E CIÊNCIAS FORENSES\n\nVOLUME III / ESTATÍSTICA E CIÊNCIA DE DADOS FORENSE\n\nDefinir o espaço amostral antes de calcular uma chance.\n\nEventos, independência, condicionamento, combinações e coincidências múlti‐\n\nEdição didática 1 • 2026\n\nE N C I C LO P É D I A D E C I Ê N C I A S F O R E N S E S\n\nVOLUME III / CAPÍTULO 25\n\nVolume III — Estatística e Ciência de Dados Forense · Edição 1 · 2026\n\nSituação editorial: exemplos matemáticos inteiramente fictícios. Uma probabilidade calculada\n\nsobre um modelo não constitui probabilidade de que uma pessoa seja culpada, esteja em",
+      "anchorKey": "ch25_sec01_anchor"
+    },
+    {
+      "sectionId": "ch25-sec-02",
+      "title": "25.2 Procedimentos, Limitações e Verificação",
+      "orderIndex": 1,
+      "markdownContent": "determinado local ou tenha produzido uma evidência.\n\nObjetivos e pré-requisitos\n\nAo concluir este capítulo você deverá distinguir frequência observada de probabilidade teórica; cons‐\n\ntruir espaços amostrais; trabalhar com eventos e complementos; aplicar regras de soma e produto\n\nsob seus pressupostos; diferenciar independência de associação; calcular probabilidades condicionais\n\nsimples; interpretar combinações; e reconhecer o risco de coincidências geradas por buscas múlti‐\n\nPré-requisitos: frações, porcentagens e leitura de tabelas. O Capítulo 24 apresentou contagens e de‐\n\nnominadores. O Capítulo 27 aprofundará o raciocínio bayesiano; aqui desenvolveremos a linguagem\n\ne as regras elementares.\n\n25.1 — Para que serve probabilidade em uma investigação?",
+      "anchorKey": "ch25_sec02_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Diferenciar dados brutos, vestígios digitais, indícios e evidências periciais.",
+    "Calcular a entropia de Shannon em artefatos binários para identificar contramedidas anti-forenses.",
+    "Aplicar o Princípio de Troca de Locard na coleta e fixação de vestígios computacionais."
+  ],
+  "prerequisites": [],
+  "glossary": [
+    {
+      "term": "Vestígio Digital",
+      "definition": "Qualquer dado em formato binário capaz de atestar uma conduta criminosa ou fato sob apuração judicial."
+    },
+    {
+      "term": "Entropia de Shannon",
+      "definition": "Medida estatística de incerteza ou densidade de informação em uma sequência de bytes."
+    },
+    {
+      "term": "Princípio de Locard",
+      "definition": "Postulado segundo o qual o agente necessariamente traz e deixa vestígios no local do fato."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch01-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 1",
+      "assetPath": "assets/figures/ch01_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch01-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 1",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH01-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 1. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch01-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Dos Dados às Evidências Digitais.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch01-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 1?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch01-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Dos Dados às Evidências Digitais",
+      "instructions": "Execute a análise de entropia no arquivo suspeito disk_sample.dd e determine se a partição 2 contém volume TrueCrypt oculto.",
+      "expectedResult": "Entropia superior a 7.98 bits/byte nos setores 2048 a 8192, indicando contêiner cifrado."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch01",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch01-01",
+        "prompt": "Acerca de Dos Dados às Evidências Digitais, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch01-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 1?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

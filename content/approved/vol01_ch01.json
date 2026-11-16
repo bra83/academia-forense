@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch01",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 1,
+  "title": "Dos dados às evidências",
+  "language": "pt-BR",
+  "edition": "REV2",
+  "editorialStatus": "Publicado",
+  "source": {
+    "provider": "fixture",
+    "fileId": "1TcFh63DTM-hxHGVvGz6DVXOvk2BuMQhK",
+    "revision": "2.0",
+    "sha256": "862d10d6c88ab4a48fa51d0c03aa8769b4d0a4b7f8ab5fe05fc1336a3230a3bc"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "1.1 Da Informação Bruta ao Vestígio Digital",
+      "orderIndex": 0,
+      "markdownContent": "Na computação forense, um dado torna-se evidência mediante aplicação de método científico irrefutável.\n\n68H(X) = -\\sum_{i=1}^n P(x_i) \\log_2 P(x_i)68\n\nA entropia de Shannon quantifica a aleatoriedade de blocos de dados, sendo fundamental para detectar criptografia e compressão em mídias de armazenamento.\n\n| Tipo de Dado | Entropia Típica | Interpretação Forense |\n|---|---|---|\n| Texto Simples (ASCII/UTF-8) | 3.5 a 5.0 | Linguagem natural legível |\n| Binário Executável (PE/ELF) | 6.0 a 7.2 | Código compilado com seções de texto |\n| Arquivo Criptografado/Comprimido | 7.9 a 8.0 | Alta aleatoriedade, presença de chave ou compactador |\n\n### Trecho extraído do PDF oficial (Enciclopedia_Forense_Vol1_Cap1_REV2_IMPRESSAO.pdf — 26 páginas, SHA-256: `36d857a9936c54c0...`)\n> ENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME 1\n> Fundamentos do raciocínio forense, integridade digital e\n> Texto para iniciantes · Terminologia profissional · Casos reais documentados · Ilustrações originais ·\n> Laboratório e exercícios resolvidos",
+      "anchorKey": "sec01_intro_anchor"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "1.2 Princípio de Locard Aplicado ao Ciberespaço",
+      "orderIndex": 1,
+      "markdownContent": "O Princípio de Transferência de Edmond Locard estabelece que todo contato deixa uma marca. Em ambientes digitais, qualquer interação com o sistema operacional altera carimbos de data/hora (MACB), logs de eventos e artefatos de memória volátil.",
+      "anchorKey": "sec02_locard_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Diferenciar dados brutos, vestígios digitais, indícios e evidências periciais.",
+    "Calcular a entropia de Shannon em artefatos binários para identificar contramedidas anti-forenses.",
+    "Aplicar o Princípio de Troca de Locard na coleta e fixação de vestígios computacionais."
+  ],
+  "prerequisites": [],
+  "glossary": [
+    {
+      "term": "Vestígio Digital",
+      "definition": "Qualquer dado em formato binário capaz de atestar uma conduta criminosa ou fato sob apuração judicial."
+    },
+    {
+      "term": "Entropia de Shannon",
+      "definition": "Medida estatística de incerteza ou densidade de informação em uma sequência de bytes."
+    },
+    {
+      "term": "Princípio de Locard",
+      "definition": "Postulado segundo o qual o agente necessariamente traz e deixa vestígios no local do fato."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch01-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 1",
+      "assetPath": "assets/figures/ch01_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch01-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 1",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH01-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 1. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch01-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Dos Dados às Evidências Digitais.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch01-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 1?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch01-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Dos Dados às Evidências Digitais",
+      "instructions": "Execute a análise de entropia no arquivo suspeito disk_sample.dd e determine se a partição 2 contém volume TrueCrypt oculto.",
+      "expectedResult": "Entropia superior a 7.98 bits/byte nos setores 2048 a 8192, indicando contêiner cifrado."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch01",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch01-01",
+        "prompt": "Acerca de Dos Dados às Evidências Digitais, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch01-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 1?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

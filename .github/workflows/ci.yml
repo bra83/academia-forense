@@ -1,0 +1,98 @@
+name: Academia Forense Multiplatform CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  ubuntu-ci:
+    name: Lint, Test & Build (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: 'stable'
+          cache: true
+
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libsqlite3-dev
+
+      - name: Install dependencies in packages
+        run: |
+          cd packages/design_system && flutter pub get
+          cd ../persistence_core && flutter pub get
+          cd ../../apps/academia_flutter && flutter pub get
+
+      - name: Analyze code
+        run: |
+          cd packages/design_system && flutter analyze --no-fatal-infos
+          cd ../persistence_core && flutter analyze --no-fatal-infos
+          cd ../../apps/academia_flutter && flutter analyze --no-fatal-infos
+
+      - name: Run unit & widget tests
+        run: |
+          cd packages/design_system && flutter test
+          cd ../persistence_core && flutter test
+          cd ../../apps/academia_flutter && flutter test
+
+      - name: Build Linux Desktop (release)
+        run: |
+          cd apps/academia_flutter
+          flutter config --enable-linux-desktop
+          flutter build linux --release
+
+      - name: Build Android APK (release)
+        run: |
+          cd apps/academia_flutter
+          flutter build apk --release --split-per-abi
+
+  windows-ci:
+    name: Test & Build (Windows Desktop)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          cd packages/design_system
+          flutter pub get
+          cd ../persistence_core
+          flutter pub get
+          cd ../../apps/academia_flutter
+          flutter pub get
+
+      - name: Run tests on Windows
+        run: |
+          cd packages/persistence_core
+          flutter test
+          cd ../design_system
+          flutter test
+
+      - name: Build Windows Desktop (release)
+        run: |
+          cd apps/academia_flutter
+          flutter config --enable-windows-desktop
+          flutter build windows --release

@@ -1,0 +1,128 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch01",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 1,
+  "title": "Dos dados às evidências: Introdução e Cadeia de Custódia",
+  "language": "pt-BR",
+  "edition": "REV2",
+  "editorialStatus": "approved",
+  "source": {
+    "provider": "fixture",
+    "fileId": "seed_vol01_ch01_rev2",
+    "revision": "2.0",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "1.1 Introdução às Evidências Físicas e Digitais",
+      "orderIndex": 0,
+      "markdownContent": "A ciência forense contemporânea transita na interseção entre o mundo físico e o virtual. Vestígios materiais e bits digitais compartilham o mesmo imperativo: rigor metodológico e rastreabilidade irrefutável.",
+      "anchorKey": "intro_anchor_v2"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "1.2 Cadeia de Custódia e Lei 13.964/2019",
+      "orderIndex": 1,
+      "markdownContent": "O Pacote Anticrime introduziu os artigos 158-A a 158-F no Código de Processo Penal brasileiro, detalhando as 10 etapas da cadeia de custódia: reconhecimento, isolamento, fixação, coleta, acondicionamento, transporte, recebimento, processamento, armazenamento e descarte.",
+      "anchorKey": "custody_anchor_v2"
+    }
+  ],
+  "learningObjectives": [
+    "Compreender a diferença legal e técnica entre vestígio, indício e evidência.",
+    "Dominar as 10 etapas formais da cadeia de custódia conforme a Lei 13.964/2019.",
+    "Executar procedimentos de hash criptográfico para garantir a integridade da evidência."
+  ],
+  "prerequisites": [],
+  "glossary": [
+    {
+      "term": "Vestígio",
+      "definition": "Todo objeto ou material bruto, de origem física ou digital, encontrado no local ou relacionado à infração penal."
+    },
+    {
+      "term": "Cadeia de Custódia",
+      "definition": "Conjunto de todos os procedimentos utilizados para manter e documentar a história cronológica do vestígio."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-01",
+      "caption": "Fluxograma das 10 etapas da cadeia de custódia penal",
+      "assetPath": "assets/figures/ch01_custody_flow.png"
+    }
+  ],
+  "tables": [],
+  "references": [
+    {
+      "citationKey": "BRASIL2019",
+      "formattedText": "BRASIL. Lei nº 13.964, de 24 de dezembro de 2019. Aperfeiçoa a legislação penal e processual penal.",
+      "year": 2019
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-01",
+      "prompt": "Qual é a primeira etapa formal da cadeia de custódia segundo o art. 158-B do CPP?",
+      "exerciseType": "objective",
+      "solution": "Reconhecimento"
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-df-01",
+      "domain": "digital_forensics",
+      "title": "Verificação de Hashes Criptográficos em Imagem Pericial",
+      "instructions": "Calcule os hashes MD5 e SHA-256 do arquivo de evidência e confira a integridade.",
+      "expectedResult": "Hashes coincidem com o termo de apreensão."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-ch01",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-01",
+        "prompt": "O que ocorre se o lacre da embalagem de um vestígio for rompido sem justificativa documentada?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-a",
+            "text": "A evidência sofre quebra na cadeia de custódia, podendo ensejar sua inadmissibilidade.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-b",
+            "text": "O perito pode reembalar sem registrar em relatório.",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "questionId": "q-02",
+        "prompt": "Qual das seguintes etapas pertence à cadeia de custódia formal brasileira?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-c",
+            "text": "Acondicionamento e Fixação",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-d",
+            "text": "Divulgação na imprensa",
+            "isCorrect": false
+          }
+        ]
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

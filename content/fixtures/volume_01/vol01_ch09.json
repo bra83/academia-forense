@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch09",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 9,
+  "title": "Documentação científica e redação de conclusões",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Publicado",
+  "source": {
+    "provider": "fixture",
+    "fileId": "1o2ZAbeqPcTKzo3fCvNkZtW8YFzzKsimA",
+    "revision": "1.0",
+    "sha256": "1713e110178db1e4047ab666b6214d5ae3803258578a974b0a68483f050d4ff9"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "9.1 Registros Detalhados de Chamadas (CDR / Bilhetagem)",
+      "orderIndex": 0,
+      "markdownContent": "Os registros de bilhetagem (Call Detail Records) contêm metadados cruciais:\n\n- MSISDN (número de telefone)\n- IMSI (identificador do chip SIM)\n- IMEI (identificador do aparelho celular)\n- CGI (Cell Global Identification: MCC-MNC-LAC-CellID)\n- Duração e tipo da chamada (Voz, SMS, Dados)\n\n### Trecho extraído do PDF oficial (Enciclopedia_Forense_VolI_Capitulo_09_REV1_IMPRESSAO.pdf — 11 páginas, SHA-256: `4e1a662b4d03ef51...`)\n> ENCICLOPÉDIA DE CIÊNCIAS FORENSES • VOLUME I\n> Documentação científica e redação\n> Notas, relatórios, linguagem e revisão crítica\n> Explicação desde o zero • Linguagem profissional lado a lado • Diagramas originais • Casos reais",
+      "anchorKey": "sec01_cdr_anchor"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "9.2 Diagrama de Cobertura Setorial de ERB e Azimute",
+      "orderIndex": 1,
+      "markdownContent": "Cada Estação Rádio Base (ERB) é dividida em setores com azimutes angulares (geralmente 3 setores de 120 graus: alfa, beta, gama).\n\nO perito deve traçar os arcos de cobertura sem incorrer no erro judiciário de afirmar que o celular estava exatamente sob a torre.",
+      "anchorKey": "sec02_erb_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Interpretar registros CDR fornecidos por operadoras de telefonia móvel.",
+    "Calcular e plotar setores de cobertura de ERBs a partir de coordenadas e azimute.",
+    "Reconstituir linhas do tempo de deslocamento sem extrapolar os limites técnicos da bilhetagem."
+  ],
+  "prerequisites": [
+    "Conhecimentos fundamentais de informática e raciocínio lógico"
+  ],
+  "glossary": [
+    {
+      "term": "CDR",
+      "definition": "Call Detail Record: registro estruturado de bilhetagem gerado pelas centrais telefônicas."
+    },
+    {
+      "term": "ERB",
+      "definition": "Estação Rádio Base: antena transmissora e receptora da rede celular."
+    },
+    {
+      "term": "Azimute",
+      "definition": "Direção angular em graus medida a partir do norte geográfico que define o eixo do setor da ERB."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch09-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 9",
+      "assetPath": "assets/figures/ch09_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch09-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 9",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH09-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 9. Edição REV1, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch09-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Telefonia Celular, CDRs e ERBs.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch09-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 9?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch09-01",
+      "domain": "telephony",
+      "title": "Prática Laboratorial Aplicada: Telefonia Celular, CDRs e ERBs",
+      "instructions": "Processe a planilha de CDR e localize os setores das ERBs acionadas durante a janela temporal do roubo.",
+      "expectedResult": "Trajetória reconstruída pelas ERBs 724-05-1044-12 e 724-05-1044-13 entre 21:15 e 21:40."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch09",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch09-01",
+        "prompt": "Acerca de Telefonia Celular, CDRs e ERBs, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch09-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 9?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

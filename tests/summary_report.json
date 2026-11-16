@@ -1,0 +1,3524 @@
+{
+  "suite": "Academia Forense E2E Test Suite",
+  "timestamp": "2026-11-16T11:09:07Z",
+  "duration_sec": 0.564,
+  "summary": {
+    "total": 351,
+    "passed": 351,
+    "failed": 0,
+    "errored": 0,
+    "skipped": 0
+  },
+  "tests": [
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature01DesignSystem.test_f01_tc01_exact_hex_tokens_defined",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature01DesignSystem",
+      "method": "test_f01_tc01_exact_hex_tokens_defined",
+      "description": "Verify all exact palette tokens from §5.1 are present and distinct.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature01DesignSystem.test_f01_tc02_text_main_on_background_meets_wcag_aaa",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature01DesignSystem",
+      "method": "test_f01_tc02_text_main_on_background_meets_wcag_aaa",
+      "description": "Verify main text (#26322C) on main background (#F5F6F3) exceeds WCAG AAA (7.0:1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature01DesignSystem.test_f01_tc03_text_main_on_card_surface_meets_wcag_aaa",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature01DesignSystem",
+      "method": "test_f01_tc03_text_main_on_card_surface_meets_wcag_aaa",
+      "description": "Verify main text (#26322C) on card surface (#FFFFFF) exceeds WCAG AAA (7.0:1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature01DesignSystem.test_f01_tc04_primary_forest_on_white_meets_wcag_aaa",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature01DesignSystem",
+      "method": "test_f01_tc04_primary_forest_on_white_meets_wcag_aaa",
+      "description": "Verify primary forest (#20533F) on card surface (#FFFFFF) exceeds 7.0:1.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature01DesignSystem.test_f01_tc05_card_specifications_validation",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature01DesignSystem",
+      "method": "test_f01_tc05_card_specifications_validation",
+      "description": "Verify card specifications: border radius 12-16dp, subtle border and surface.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature01DesignSystem.test_f01_tc06_ui_state_enum_completeness",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature01DesignSystem",
+      "method": "test_f01_tc06_ui_state_enum_completeness",
+      "description": "Verify explicit UI state representation (§22: loading, error, ready, empty, success).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature01DesignSystem.test_f01_tc07_wcag_aaa_helper_verification",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature01DesignSystem",
+      "method": "test_f01_tc07_wcag_aaa_helper_verification",
+      "description": "Verify WCAG AAA helper returns True for compliant pairs and False for low-contrast pairs.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature02DualNavigation.test_f02_tc01_android_five_destinations_exact_order",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature02DualNavigation",
+      "method": "test_f02_tc01_android_five_destinations_exact_order",
+      "description": "Verify the 5 canonical Android navigation tabs from §5.2.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature02DualNavigation.test_f02_tc02_responsive_mode_selection_android_vs_windows",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature02DualNavigation",
+      "method": "test_f02_tc02_responsive_mode_selection_android_vs_windows",
+      "description": "Verify mobile selects bottom bar and Windows selects lateral navigation rail.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature02DualNavigation.test_f02_tc03_wide_tablet_breakpoint_triggers_rail",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature02DualNavigation",
+      "method": "test_f02_tc03_wide_tablet_breakpoint_triggers_rail",
+      "description": "Verify viewport width >= 800 dp uses NavigationRail even on Android tablet.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature02DualNavigation.test_f02_tc04_back_stack_navigation_preserves_history",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature02DualNavigation",
+      "method": "test_f02_tc04_back_stack_navigation_preserves_history",
+      "description": "Verify back navigation stack behaves in LIFO order without losing user state.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature02DualNavigation.test_f02_tc05_keyboard_avoiding_layout_spec",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature02DualNavigation",
+      "method": "test_f02_tc05_keyboard_avoiding_layout_spec",
+      "description": "Verify layout contracts require scroll views so virtual keyboard does not obscure inputs.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature03AdjustableTypography.test_f03_tc01_typographic_scale_hierarchy_bounds",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature03AdjustableTypography",
+      "method": "test_f03_tc01_typographic_scale_hierarchy_bounds",
+      "description": "Verify typographic scale standards from §5.1.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature03AdjustableTypography.test_f03_tc02_adjustable_font_size_within_bounds",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature03AdjustableTypography",
+      "method": "test_f03_tc02_adjustable_font_size_within_bounds",
+      "description": "Verify user font size adjustment between 14sp and 22sp.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature03AdjustableTypography.test_f03_tc03_academic_line_spacing_factor",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature03AdjustableTypography",
+      "method": "test_f03_tc03_academic_line_spacing_factor",
+      "description": "Verify continuous academic reading line height factor is 1.5.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature03AdjustableTypography.test_f03_tc04_pt_br_glyph_integrity",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature03AdjustableTypography",
+      "method": "test_f03_tc04_pt_br_glyph_integrity",
+      "description": "Verify Brazilian Portuguese glyphs retain integrity in strings.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature03AdjustableTypography.test_f03_tc05_contrast_safety_rejects_light_green_on_white",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature03AdjustableTypography",
+      "method": "test_f03_tc05_contrast_safety_rejects_light_green_on_white",
+      "description": "Verify system rejects light green (#E7F0EA) text over white background.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature04Persistence.test_f04_tc01_all_24_tables_exist",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature04Persistence",
+      "method": "test_f04_tc01_all_24_tables_exist",
+      "description": "Verify all 24 entities from §17 exist in SQLite schema.",
+      "status": "PASS",
+      "duration_sec": 0.0017,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature04Persistence.test_f04_tc02_foreign_key_enforcement_blocks_orphans",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature04Persistence",
+      "method": "test_f04_tc02_foreign_key_enforcement_blocks_orphans",
+      "description": "Verify foreign key constraint blocks inserting chapter with non-existent volume.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature04Persistence.test_f04_tc03_transactional_rollback_preserves_state",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature04Persistence",
+      "method": "test_f04_tc03_transactional_rollback_preserves_state",
+      "description": "Verify transaction rollback removes partial uncommitted inserts.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature04Persistence.test_f04_tc04_cascade_deletion_on_volume_deletes_chapters",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature04Persistence",
+      "method": "test_f04_tc04_cascade_deletion_on_volume_deletes_chapters",
+      "description": "Verify cascade delete deletes child chapters when parent volume is deleted.",
+      "status": "PASS",
+      "duration_sec": 0.0013,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature04Persistence.test_f04_tc05_reading_position_and_annotation_persistence",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature04Persistence",
+      "method": "test_f04_tc05_reading_position_and_annotation_persistence",
+      "description": "Verify reading position upsert and annotation preservation.",
+      "status": "PASS",
+      "duration_sec": 0.0012,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature05SecureVault.test_f05_tc01_byok_encryption_roundtrip",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature05SecureVault",
+      "method": "test_f05_tc01_byok_encryption_roundtrip",
+      "description": "Verify API key is encrypted at rest and decrypts accurately.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature05SecureVault.test_f05_tc02_key_masking_format",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature05SecureVault",
+      "method": "test_f05_tc02_key_masking_format",
+      "description": "Verify key masking shows only first 6 and last 4 characters (§10.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature05SecureVault.test_f05_tc03_wipe_vault_removes_key_completely",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature05SecureVault",
+      "method": "test_f05_tc03_wipe_vault_removes_key_completely",
+      "description": "Verify wiping key leaves no residual ciphertext in vault.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature05SecureVault.test_f05_tc04_weekly_target_default_and_update",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature05SecureVault",
+      "method": "test_f05_tc04_weekly_target_default_and_update",
+      "description": "Verify weekly study target defaults to 13.0 hours and accepts updates.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature05SecureVault.test_f05_tc05_log_sanitizer_prevents_api_key_leakage",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature05SecureVault",
+      "method": "test_f05_tc05_log_sanitizer_prevents_api_key_leakage",
+      "description": "Verify logging filter strips raw API keys before emitting logs.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature06CurriculumTree.test_f06_tc01_total_volumes_and_113_chapters_coverage",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature06CurriculumTree",
+      "method": "test_f06_tc01_total_volumes_and_113_chapters_coverage",
+      "description": "Verify curriculum distribution exactly spans 9 volumes and chapters 1-113.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature06CurriculumTree.test_f06_tc02_chapter_to_volume_mapping",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature06CurriculumTree",
+      "method": "test_f06_tc02_chapter_to_volume_mapping",
+      "description": "Verify specific chapters map to their official volumes.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature06CurriculumTree.test_f06_tc03_editorial_lifecycle_7_states",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature06CurriculumTree",
+      "method": "test_f06_tc03_editorial_lifecycle_7_states",
+      "description": "Verify the 7 exact editorial lifecycle states from §24.3.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature06CurriculumTree.test_f06_tc04_public_availability_filtering",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature06CurriculumTree",
+      "method": "test_f06_tc04_public_availability_filtering",
+      "description": "Verify student view only exposes Aprovado and Publicado chapters.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature06CurriculumTree.test_f06_tc05_lifecycle_transition_workflow",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature06CurriculumTree",
+      "method": "test_f06_tc05_lifecycle_transition_workflow",
+      "description": "Verify sequential transition workflow from Planejado up to Publicado.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature07VolumeIPrintPreservation.test_f07_tc01_volume_1_exact_133_printed_pages_baseline",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature07VolumeIPrintPreservation",
+      "method": "test_f07_tc01_volume_1_exact_133_printed_pages_baseline",
+      "description": "Verify Volume I physical print count equals exactly 133 pages (§1.3).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature07VolumeIPrintPreservation.test_f07_tc02_chapters_1_to_4_use_rev2",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature07VolumeIPrintPreservation",
+      "method": "test_f07_tc02_chapters_1_to_4_use_rev2",
+      "description": "Verify chapters 1 through 4 are registered strictly as REV2.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature07VolumeIPrintPreservation.test_f07_tc03_chapters_5_to_10_use_rev1",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature07VolumeIPrintPreservation",
+      "method": "test_f07_tc03_chapters_5_to_10_use_rev1",
+      "description": "Verify chapters 5 through 10 are registered strictly as REV1.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature07VolumeIPrintPreservation.test_f07_tc04_digital_errata_linked_to_printed_page",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature07VolumeIPrintPreservation",
+      "method": "test_f07_tc04_digital_errata_linked_to_printed_page",
+      "description": "Verify digital errata attaches to physical page without modifying print baseline.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_01_to_07.TestFeature07VolumeIPrintPreservation.test_f07_tc05_errata_query_by_chapter_and_page",
+      "module": "tests.e2e.tier1_features.test_features_01_to_07",
+      "class": "TestFeature07VolumeIPrintPreservation",
+      "method": "test_f07_tc05_errata_query_by_chapter_and_page",
+      "description": "Verify querying errata for specific chapter and page returns correction.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature08Section19JsonSchema.test_f08_tc01_canonical_sample_package_passes_validation",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature08Section19JsonSchema",
+      "method": "test_f08_tc01_canonical_sample_package_passes_validation",
+      "description": "Verify the canonical Vol 1 Ch 1 package validates with zero schema errors.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature08Section19JsonSchema.test_f08_tc02_missing_required_fields_fails_validation",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature08Section19JsonSchema",
+      "method": "test_f08_tc02_missing_required_fields_fails_validation",
+      "description": "Verify missing schemaVersion, contentId, or sections fails validation.",
+      "status": "PASS",
+      "duration_sec": 0.0005,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature08Section19JsonSchema.test_f08_tc03_invalid_content_id_regex_rejected",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature08Section19JsonSchema",
+      "method": "test_f08_tc03_invalid_content_id_regex_rejected",
+      "description": "Verify contentId must strictly match pattern ^forense\\.vol[0-9]{2}\\.ch[0-9]{2}$.",
+      "status": "PASS",
+      "duration_sec": 0.0005,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature08Section19JsonSchema.test_f08_tc04_edition_enum_validation",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature08Section19JsonSchema",
+      "method": "test_f08_tc04_edition_enum_validation",
+      "description": "Verify edition accepts REV1/REV2/REV3 and rejects arbitrary strings.",
+      "status": "PASS",
+      "duration_sec": 0.0007,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature08Section19JsonSchema.test_f08_tc05_zero_recompilation_extensibility",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature08Section19JsonSchema",
+      "method": "test_f08_tc05_zero_recompilation_extensibility",
+      "description": "Verify adding new sections, glossary terms and exercises does not violate schema.",
+      "status": "PASS",
+      "duration_sec": 0.0004,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature09DualModeReader.test_f09_tc01_mode_switching_between_pdf_and_markdown",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature09DualModeReader",
+      "method": "test_f09_tc01_mode_switching_between_pdf_and_markdown",
+      "description": "Verify seamless switching between PDF verbatim viewer and Markdown study mode.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature09DualModeReader.test_f09_tc02_origin_provenance_tracking",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature09DualModeReader",
+      "method": "test_f09_tc02_origin_provenance_tracking",
+      "description": "Verify origin metadata (volume, chapter, revision, sha256, page) is preserved.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature09DualModeReader.test_f09_tc03_math_and_formula_preservation",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature09DualModeReader",
+      "method": "test_f09_tc03_math_and_formula_preservation",
+      "description": "Verify mathematical formulas and special characters remain intact in study mode.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature09DualModeReader.test_f09_tc04_reading_position_preserved_on_mode_switch",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature09DualModeReader",
+      "method": "test_f09_tc04_reading_position_preserved_on_mode_switch",
+      "description": "Verify page and scroll ratio do not reset when toggling reader mode.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature09DualModeReader.test_f09_tc05_fallback_to_pdf_for_complex_layouts",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature09DualModeReader",
+      "method": "test_f09_tc05_fallback_to_pdf_for_complex_layouts",
+      "description": "Verify fallback to original PDF when reflowable layout transcription has low fidelity.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature10ContentProgressDecoupling.test_f10_tc01_user_notes_survive_revision_update",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature10ContentProgressDecoupling",
+      "method": "test_f10_tc01_user_notes_survive_revision_update",
+      "description": "Verify notes are not wiped when updating a chapter to REV2.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature10ContentProgressDecoupling.test_f10_tc02_anchor_drift_detection_raises_warning",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature10ContentProgressDecoupling",
+      "method": "test_f10_tc02_anchor_drift_detection_raises_warning",
+      "description": "Verify missing anchor in new revision sets drift_warning without deleting note.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature10ContentProgressDecoupling.test_f10_tc03_historical_assessment_scores_are_immutable",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature10ContentProgressDecoupling",
+      "method": "test_f10_tc03_historical_assessment_scores_are_immutable",
+      "description": "Verify revision updates do not modify historical assessment scores.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature10ContentProgressDecoupling.test_f10_tc04_multiple_notes_independent_drift_evaluation",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature10ContentProgressDecoupling",
+      "method": "test_f10_tc04_multiple_notes_independent_drift_evaluation",
+      "description": "Verify multiple notes evaluate drift independently based on their anchors.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature10ContentProgressDecoupling.test_f10_tc05_audit_journal_tracks_content_revision_history",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature10ContentProgressDecoupling",
+      "method": "test_f10_tc05_audit_journal_tracks_content_revision_history",
+      "description": "Verify revision changes are recorded in content revision journal.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature11LocalFts5Search.test_f11_tc01_exact_keyword_search",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature11LocalFts5Search",
+      "method": "test_f11_tc01_exact_keyword_search",
+      "description": "Verify searching exact keyword returns matched chapter.",
+      "status": "PASS",
+      "duration_sec": 0.0007,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature11LocalFts5Search.test_f11_tc02_prefix_search",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature11LocalFts5Search",
+      "method": "test_f11_tc02_prefix_search",
+      "description": "Verify prefix wildcard search finds matching terms.",
+      "status": "PASS",
+      "duration_sec": 0.0005,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature11LocalFts5Search.test_f11_tc03_snippet_generation_highlights_matched_term",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature11LocalFts5Search",
+      "method": "test_f11_tc03_snippet_generation_highlights_matched_term",
+      "description": "Verify FTS5 snippet wraps matched keywords in designated tags.",
+      "status": "PASS",
+      "duration_sec": 0.0005,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature11LocalFts5Search.test_f11_tc04_multiple_terms_and_operator",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature11LocalFts5Search",
+      "method": "test_f11_tc04_multiple_terms_and_operator",
+      "description": "Verify query with multiple keywords matches documents containing both.",
+      "status": "PASS",
+      "duration_sec": 0.0005,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature11LocalFts5Search.test_f11_tc05_no_matches_returns_empty_list_cleanly",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature11LocalFts5Search",
+      "method": "test_f11_tc05_no_matches_returns_empty_list_cleanly",
+      "description": "Verify non-existent term returns empty list without database exception.",
+      "status": "PASS",
+      "duration_sec": 0.0004,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature12IngestionProviders.test_f12_tc01_local_provider_ingests_and_computes_sha256",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature12IngestionProviders",
+      "method": "test_f12_tc01_local_provider_ingests_and_computes_sha256",
+      "description": "Verify local directory provider correctly reads file and computes valid SHA-256.",
+      "status": "PASS",
+      "duration_sec": 0.0002,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature12IngestionProviders.test_f12_tc02_sha256_deduplication_prevents_duplicate_processing",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature12IngestionProviders",
+      "method": "test_f12_tc02_sha256_deduplication_prevents_duplicate_processing",
+      "description": "Verify identical SHA-256 hash allows deduplicating incoming sync payloads.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature12IngestionProviders.test_f12_tc03_drive_provider_reports_blocked_when_unauthenticated",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature12IngestionProviders",
+      "method": "test_f12_tc03_drive_provider_reports_blocked_when_unauthenticated",
+      "description": "Verify Drive provider reports BLOCKED and does NOT simulate success when token is missing.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature12IngestionProviders.test_f12_tc04_missing_file_raises_file_not_found",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature12IngestionProviders",
+      "method": "test_f12_tc04_missing_file_raises_file_not_found",
+      "description": "Verify local provider raises FileNotFoundError on non-existent path.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature12IngestionProviders.test_f12_tc05_sync_journal_entry_structure",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature12IngestionProviders",
+      "method": "test_f12_tc05_sync_journal_entry_structure",
+      "description": "Verify sync journal entry accurately records source, timestamp, and status.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature13TenStepLessonEngine.test_f13_tc01_exact_10_didactic_steps_defined",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature13TenStepLessonEngine",
+      "method": "test_f13_tc01_exact_10_didactic_steps_defined",
+      "description": "Verify all 10 didactic steps from §8 are defined in canonical sequence.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature13TenStepLessonEngine.test_f13_tc02_step_by_step_progression",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature13TenStepLessonEngine",
+      "method": "test_f13_tc02_step_by_step_progression",
+      "description": "Verify advancing through lesson updates completed steps and step index.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature13TenStepLessonEngine.test_f13_tc03_completion_at_step_10",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature13TenStepLessonEngine",
+      "method": "test_f13_tc03_completion_at_step_10",
+      "description": "Verify completing all 10 steps achieves 100% progress and is_completed=True.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature13TenStepLessonEngine.test_f13_tc04_didactic_component_rendering_models",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature13TenStepLessonEngine",
+      "method": "test_f13_tc04_didactic_component_rendering_models",
+      "description": "Verify structured didactic components (quadros, fórmulas, código) are supported (§8.1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature13TenStepLessonEngine.test_f13_tc05_step_backwards_navigation_allowed",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature13TenStepLessonEngine",
+      "method": "test_f13_tc05_step_backwards_navigation_allowed",
+      "description": "Verify student can navigate back to review previous completed steps.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature14AssessmentAnd80PercentMastery.test_f14_tc01_exact_80_percent_score_passes",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature14AssessmentAnd80PercentMastery",
+      "method": "test_f14_tc01_exact_80_percent_score_passes",
+      "description": "Verify scoring exactly 80% (e.g. 4/5 questions) passes assessment.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature14AssessmentAnd80PercentMastery.test_f14_tc02_below_80_percent_fails_benchmark",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature14AssessmentAnd80PercentMastery",
+      "method": "test_f14_tc02_below_80_percent_fails_benchmark",
+      "description": "Verify scoring 79.9% or below (e.g. 3/5 questions = 60%) fails.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature14AssessmentAnd80PercentMastery.test_f14_tc03_perfect_score_passes",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature14AssessmentAnd80PercentMastery",
+      "method": "test_f14_tc03_perfect_score_passes",
+      "description": "Verify scoring 100% passes with full marks.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature14AssessmentAnd80PercentMastery.test_f14_tc04_rubric_evaluation_weighted_passing",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature14AssessmentAnd80PercentMastery",
+      "method": "test_f14_tc04_rubric_evaluation_weighted_passing",
+      "description": "Verify discursive exam rubric weighted score satisfies benchmark.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_08_to_14.TestFeature14AssessmentAnd80PercentMastery.test_f14_tc05_attempt_logging_and_competency_mastery",
+      "module": "tests.e2e.tier1_features.test_features_08_to_14",
+      "class": "TestFeature14AssessmentAnd80PercentMastery",
+      "method": "test_f14_tc05_attempt_logging_and_competency_mastery",
+      "description": "Verify attempt details logged and competency marked mastered only on pass.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature15AdaptiveStudyPlan.test_f15_tc01_weekly_study_target_tracking",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature15AdaptiveStudyPlan",
+      "method": "test_f15_tc01_weekly_study_target_tracking",
+      "description": "Verify sessions accumulate correctly toward the 13h weekly target.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature15AdaptiveStudyPlan.test_f15_tc02_spaced_repetition_interval_advancement",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature15AdaptiveStudyPlan",
+      "method": "test_f15_tc02_spaced_repetition_interval_advancement",
+      "description": "Verify successful passing score advances interval from 1 to 3 to 7 days.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature15AdaptiveStudyPlan.test_f15_tc03_failing_score_triggers_immediate_one_day_review",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature15AdaptiveStudyPlan",
+      "method": "test_f15_tc03_failing_score_triggers_immediate_one_day_review",
+      "description": "Verify score below 80% resets review interval to 1 day.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature15AdaptiveStudyPlan.test_f15_tc04_competency_gap_diagnostic",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature15AdaptiveStudyPlan",
+      "method": "test_f15_tc04_competency_gap_diagnostic",
+      "description": "Verify gaps identified when scores fall below 0.80 benchmark.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature15AdaptiveStudyPlan.test_f15_tc05_overdue_review_detection",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature15AdaptiveStudyPlan",
+      "method": "test_f15_tc05_overdue_review_detection",
+      "description": "Verify overdue reviews are flagged when scheduled date is in the past.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature16DynamicGeminiDiscovery.test_f16_tc01_parse_model_list_response",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature16DynamicGeminiDiscovery",
+      "method": "test_f16_tc01_parse_model_list_response",
+      "description": "Verify parser extracts models cleanly from API JSON payload.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature16DynamicGeminiDiscovery.test_f16_tc02_categorize_text_models_correctly",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature16DynamicGeminiDiscovery",
+      "method": "test_f16_tc02_categorize_text_models_correctly",
+      "description": "Verify models supporting generateContent are categorized as text tutor models.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature16DynamicGeminiDiscovery.test_f16_tc03_categorize_speech_models_correctly",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature16DynamicGeminiDiscovery",
+      "method": "test_f16_tc03_categorize_speech_models_correctly",
+      "description": "Verify models supporting generateSpeech are categorized as audio models.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature16DynamicGeminiDiscovery.test_f16_tc04_pagination_token_handling",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature16DynamicGeminiDiscovery",
+      "method": "test_f16_tc04_pagination_token_handling",
+      "description": "Verify pagination nextPageToken is preserved for subsequent discovery calls.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature16DynamicGeminiDiscovery.test_f16_tc05_no_hardcoded_models_discovery_flexibility",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature16DynamicGeminiDiscovery",
+      "method": "test_f16_tc05_no_hardcoded_models_discovery_flexibility",
+      "description": "Verify discovering novel future models without code modification.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature17SevenTutorModes.test_f17_tc01_exact_7_pedagogical_modes_defined",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature17SevenTutorModes",
+      "method": "test_f17_tc01_exact_7_pedagogical_modes_defined",
+      "description": "Verify all 7 modes from §9.3 are present in enum.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature17SevenTutorModes.test_f17_tc02_simplificar_mode_prompt_directive",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature17SevenTutorModes",
+      "method": "test_f17_tc02_simplificar_mode_prompt_directive",
+      "description": "Verify 'simplificar' mode prompt contains beginner-friendly directives.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature17SevenTutorModes.test_f17_tc03_aprofundar_mode_prompt_directive",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature17SevenTutorModes",
+      "method": "test_f17_tc03_aprofundar_mode_prompt_directive",
+      "description": "Verify 'aprofundar' mode prompt contains advanced technical rigor directives.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature17SevenTutorModes.test_f17_tc04_me_testar_mode_prompt_socratic_directive",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature17SevenTutorModes",
+      "method": "test_f17_tc04_me_testar_mode_prompt_socratic_directive",
+      "description": "Verify 'meTestar' mode instructs Socratic questioning without giving away answers.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature17SevenTutorModes.test_f17_tc05_orientar_lab_mode_prompt_directive",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature17SevenTutorModes",
+      "method": "test_f17_tc05_orientar_lab_mode_prompt_directive",
+      "description": "Verify 'orientarLab' mode prompt focuses on execution guidance.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature18StrictRagProvenance.test_f18_tc01_unapproved_chapters_filtered_out_of_context",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature18StrictRagProvenance",
+      "method": "test_f18_tc01_unapproved_chapters_filtered_out_of_context",
+      "description": "Verify unapproved, planned or draft chapters are excluded from RAG prompt.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature18StrictRagProvenance.test_f18_tc02_parse_valid_fonte_citation_tag",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature18StrictRagProvenance",
+      "method": "test_f18_tc02_parse_valid_fonte_citation_tag",
+      "description": "Verify parser identifies [FONTE: ...] and [INFERÊNCIA] tags.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature18StrictRagProvenance.test_f18_tc03_reject_ungrounded_encyclopedia_claims",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature18StrictRagProvenance",
+      "method": "test_f18_tc03_reject_ungrounded_encyclopedia_claims",
+      "description": "Verify response without citation tag is identified as lacking [FONTE] tag.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature18StrictRagProvenance.test_f18_tc04_explicit_declaration_of_lack_of_source",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature18StrictRagProvenance",
+      "method": "test_f18_tc04_explicit_declaration_of_lack_of_source",
+      "description": "Verify out-of-scope question response acknowledges lack of approved material.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature18StrictRagProvenance.test_f18_tc05_citation_metadata_structure",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature18StrictRagProvenance",
+      "method": "test_f18_tc05_citation_metadata_structure",
+      "description": "Verify citation metadata includes document ID, chapter, and page.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature19AndroidNativeTtsBridge.test_f19_tc01_package_detection_supported_engine",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature19AndroidNativeTtsBridge",
+      "method": "test_f19_tc01_package_detection_supported_engine",
+      "description": "Verify detection of com.k2fsa.sherpa.onnx.tts.engine package.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature19AndroidNativeTtsBridge.test_f19_tc02_package_detection_debug_engine",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature19AndroidNativeTtsBridge",
+      "method": "test_f19_tc02_package_detection_debug_engine",
+      "description": "Verify detection of com.k2fsa.sherpa.onnx.tts.engine.debug package.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature19AndroidNativeTtsBridge.test_f19_tc03_uninstalled_engine_reports_error_state",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature19AndroidNativeTtsBridge",
+      "method": "test_f19_tc03_uninstalled_engine_reports_error_state",
+      "description": "Verify uninstalled engine transitions to error state and returns empty voices.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature19AndroidNativeTtsBridge.test_f19_tc04_voice_selection_validation",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature19AndroidNativeTtsBridge",
+      "method": "test_f19_tc04_voice_selection_validation",
+      "description": "Verify setting genuine voice succeeds, and invalid voice name is rejected.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature19AndroidNativeTtsBridge.test_f19_tc05_method_channel_call_serialization",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature19AndroidNativeTtsBridge",
+      "method": "test_f19_tc05_method_channel_call_serialization",
+      "description": "Verify method call payload structure for native MethodChannel.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature20SentenceSegmenter.test_f20_tc01_chunk_bounds_within_maximum",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature20SentenceSegmenter",
+      "method": "test_f20_tc01_chunk_bounds_within_maximum",
+      "description": "Verify no chunk exceeds the maximum limit of 650 characters.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature20SentenceSegmenter.test_f20_tc02_max_num_sentences_constraint",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature20SentenceSegmenter",
+      "method": "test_f20_tc02_max_num_sentences_constraint",
+      "description": "Verify chunks do not contain more than maxNumSentences=2.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature20SentenceSegmenter.test_f20_tc03_punctuation_aware_boundary_splitting",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature20SentenceSegmenter",
+      "method": "test_f20_tc03_punctuation_aware_boundary_splitting",
+      "description": "Verify chunks always end with proper punctuation and never cut words.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature20SentenceSegmenter.test_f20_tc04_no_omitted_text_preserves_total_content",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature20SentenceSegmenter",
+      "method": "test_f20_tc04_no_omitted_text_preserves_total_content",
+      "description": "Verify all words from original text are preserved across generated chunks.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature20SentenceSegmenter.test_f20_tc05_first_chunk_available_immediately",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature20SentenceSegmenter",
+      "method": "test_f20_tc05_first_chunk_available_immediately",
+      "description": "Verify first chunk is returned immediately for low-latency playback (§12.4).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature21GeminiCharonTts.test_f21_tc01_wav_header_length_exactly_44_bytes",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature21GeminiCharonTts",
+      "method": "test_f21_tc01_wav_header_length_exactly_44_bytes",
+      "description": "Verify generated RIFF WAV header is exactly 44 bytes in length.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature21GeminiCharonTts.test_f21_tc02_wav_header_magic_constants",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature21GeminiCharonTts",
+      "method": "test_f21_tc02_wav_header_magic_constants",
+      "description": "Verify RIFF, WAVE, fmt , and data magic constants.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature21GeminiCharonTts.test_f21_tc03_wav_header_mathematical_rates",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature21GeminiCharonTts",
+      "method": "test_f21_tc03_wav_header_mathematical_rates",
+      "description": "Verify ByteRate and BlockAlign calculations.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature21GeminiCharonTts.test_f21_tc04_charon_voice_request_payload",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature21GeminiCharonTts",
+      "method": "test_f21_tc04_charon_voice_request_payload",
+      "description": "Verify Gemini TTS request payload configures Charon voice and pt-BR.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_15_to_21.TestFeature21GeminiCharonTts.test_f21_tc05_pcm_base64_to_playable_wav",
+      "module": "tests.e2e.tier1_features.test_features_15_to_21",
+      "class": "TestFeature21GeminiCharonTts",
+      "method": "test_f21_tc05_pcm_base64_to_playable_wav",
+      "description": "Verify assembling 44-byte header with decoded Base64 PCM creates complete WAV file.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature22AudioPlayerUi.test_f22_tc01_playback_speed_bounds_and_step",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature22AudioPlayerUi",
+      "method": "test_f22_tc01_playback_speed_bounds_and_step",
+      "description": "Verify speed adjustments strictly comply with 0.65x to 1.50x range.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature22AudioPlayerUi.test_f22_tc02_playback_state_transitions",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature22AudioPlayerUi",
+      "method": "test_f22_tc02_playback_state_transitions",
+      "description": "Verify state transitions: idle -> playing -> paused -> playing.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature22AudioPlayerUi.test_f22_tc03_paragraph_highlight_synchronization",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature22AudioPlayerUi",
+      "method": "test_f22_tc03_paragraph_highlight_synchronization",
+      "description": "Verify current paragraph index advances and steps back correctly.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature22AudioPlayerUi.test_f22_tc04_paragraph_boundary_clamping",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature22AudioPlayerUi",
+      "method": "test_f22_tc04_paragraph_boundary_clamping",
+      "description": "Verify seeking cannot exceed [0, total_paragraphs - 1].",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature22AudioPlayerUi.test_f22_tc05_anti_silent_fallback_enforcement",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature22AudioPlayerUi",
+      "method": "test_f22_tc05_anti_silent_fallback_enforcement",
+      "description": "Verify engine failure emits explicit error and forbids silent fallback (§11.1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature23MultiDisciplineLab.test_f23_tc01_exact_7_lab_domains_defined",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature23MultiDisciplineLab",
+      "method": "test_f23_tc01_exact_7_lab_domains_defined",
+      "description": "Verify all 7 lab domains from §14.1 are present in LabDomain enum.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature23MultiDisciplineLab.test_f23_tc02_digital_forensics_hash_lab",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature23MultiDisciplineLab",
+      "method": "test_f23_tc02_digital_forensics_hash_lab",
+      "description": "Verify genuine SHA-256 and MD5 calculations on sample forensic disk image bytes.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature23MultiDisciplineLab.test_f23_tc03_telephony_cdr_parsing_lab",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature23MultiDisciplineLab",
+      "method": "test_f23_tc03_telephony_cdr_parsing_lab",
+      "description": "Verify parsing synthetic CDR records fixture and extracting tower IDs.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature23MultiDisciplineLab.test_f23_tc04_mathematics_bayes_probability_lab",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature23MultiDisciplineLab",
+      "method": "test_f23_tc04_mathematics_bayes_probability_lab",
+      "description": "Verify mathematical calculation of Bayesian posterior probability.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature23MultiDisciplineLab.test_f23_tc05_programming_sql_query_execution_lab",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature23MultiDisciplineLab",
+      "method": "test_f23_tc05_programming_sql_query_execution_lab",
+      "description": "Verify executing SQL analysis in SQLite and fetching results.",
+      "status": "PASS",
+      "duration_sec": 0.0002,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature24PlatformBoundedLabs.test_f24_tc01_android_lightweight_lab_under_32mb_authorized",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature24PlatformBoundedLabs",
+      "method": "test_f24_tc01_android_lightweight_lab_under_32mb_authorized",
+      "description": "Verify lightweight lab (e.g. 5MB) is authorized to run on Android.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature24PlatformBoundedLabs.test_f24_tc02_android_oversized_payload_rejected",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature24PlatformBoundedLabs",
+      "method": "test_f24_tc02_android_oversized_payload_rejected",
+      "description": "Verify payload exceeding 32MB (e.g. 40MB) is rejected on Android.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature24PlatformBoundedLabs.test_f24_tc03_pandas_heavy_lab_routed_to_windows",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature24PlatformBoundedLabs",
+      "method": "test_f24_tc03_pandas_heavy_lab_routed_to_windows",
+      "description": "Verify Pandas/full Python labs are rejected on Android and accepted on Windows.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature24PlatformBoundedLabs.test_f24_tc04_exact_boundary_32mb_permitted",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature24PlatformBoundedLabs",
+      "method": "test_f24_tc04_exact_boundary_32mb_permitted",
+      "description": "Verify exact boundary of 32MB (33,554,432 bytes) is accepted.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature24PlatformBoundedLabs.test_f24_tc05_boundary_plus_one_byte_rejected",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature24PlatformBoundedLabs",
+      "method": "test_f24_tc05_boundary_plus_one_byte_rejected",
+      "description": "Verify 32MB + 1 byte is rejected on Android.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature25InvestigativeCaseMatrix.test_f25_tc01_tripartite_ontology_separation",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature25InvestigativeCaseMatrix",
+      "method": "test_f25_tc01_tripartite_ontology_separation",
+      "description": "Verify strict tripartite ontology: Facts, Inferences, Hypotheses.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature25InvestigativeCaseMatrix.test_f25_tc02_chronological_timeline_ordering",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature25InvestigativeCaseMatrix",
+      "method": "test_f25_tc02_chronological_timeline_ordering",
+      "description": "Verify documented facts are sorted in strict chronological sequence.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature25InvestigativeCaseMatrix.test_f25_tc03_inference_must_link_to_documented_fact",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature25InvestigativeCaseMatrix",
+      "method": "test_f25_tc03_inference_must_link_to_documented_fact",
+      "description": "Verify inference linked to valid fact passes methodological validation.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature25InvestigativeCaseMatrix.test_f25_tc04_unlinked_inference_fails_validation",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature25InvestigativeCaseMatrix",
+      "method": "test_f25_tc04_unlinked_inference_fails_validation",
+      "description": "Verify ungrounded inference without fact citation fails methodology check.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature25InvestigativeCaseMatrix.test_f25_tc05_alternative_hypotheses_preservation",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature25InvestigativeCaseMatrix",
+      "method": "test_f25_tc05_alternative_hypotheses_preservation",
+      "description": "Verify multiple competing hypotheses are maintained simultaneously without premature bias.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature26PortfolioAndPdfExport.test_f26_tc01_report_bundle_generation",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature26PortfolioAndPdfExport",
+      "method": "test_f26_tc01_report_bundle_generation",
+      "description": "Verify report bundle contains all required fields and signature.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature26PortfolioAndPdfExport.test_f26_tc02_mandatory_non_accreditation_disclaimer",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature26PortfolioAndPdfExport",
+      "method": "test_f26_tc02_mandatory_non_accreditation_disclaimer",
+      "description": "Verify report contains strict non-accreditation disclaimer (§16.1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature26PortfolioAndPdfExport.test_f26_tc03_signature_tamper_detection",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature26PortfolioAndPdfExport",
+      "method": "test_f26_tc03_signature_tamper_detection",
+      "description": "Verify altering report methodology invalidates original cryptographic signature.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature26PortfolioAndPdfExport.test_f26_tc04_meu_espaco_dashboard_aggregation",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature26PortfolioAndPdfExport",
+      "method": "test_f26_tc04_meu_espaco_dashboard_aggregation",
+      "description": "Verify Meu Espaço summary aggregates progress, completed labs, and hours.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature26PortfolioAndPdfExport.test_f26_tc05_pdf_binary_header_spec",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature26PortfolioAndPdfExport",
+      "method": "test_f26_tc05_pdf_binary_header_spec",
+      "description": "Verify simulated PDF export begins with standard %PDF- magic bytes.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature27CiCdWorkflows.test_f27_tc01_workflow_file_exists_and_valid_yaml",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature27CiCdWorkflows",
+      "method": "test_f27_tc01_workflow_file_exists_and_valid_yaml",
+      "description": "Verify .github/workflows/ci.yml exists and parses as valid YAML.",
+      "status": "PASS",
+      "duration_sec": 0.0042,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature27CiCdWorkflows.test_f27_tc02_triggers_on_push_and_pr",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature27CiCdWorkflows",
+      "method": "test_f27_tc02_triggers_on_push_and_pr",
+      "description": "Verify workflow triggers on push and pull_request to main/master.",
+      "status": "PASS",
+      "duration_sec": 0.0036,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature27CiCdWorkflows.test_f27_tc03_ubuntu_job_includes_test_and_apk_build",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature27CiCdWorkflows",
+      "method": "test_f27_tc03_ubuntu_job_includes_test_and_apk_build",
+      "description": "Verify ubuntu-ci job contains flutter test and flutter build apk steps.",
+      "status": "PASS",
+      "duration_sec": 0.0035,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature27CiCdWorkflows.test_f27_tc04_windows_job_runs_on_windows_latest",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature27CiCdWorkflows",
+      "method": "test_f27_tc04_windows_job_runs_on_windows_latest",
+      "description": "Verify windows-ci job runs on windows-latest and builds desktop release.",
+      "status": "PASS",
+      "duration_sec": 0.0035,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature27CiCdWorkflows.test_f27_tc05_release_gate_tests_precede_builds",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature27CiCdWorkflows",
+      "method": "test_f27_tc05_release_gate_tests_precede_builds",
+      "description": "Verify in Ubuntu CI that test steps precede artifact build steps.",
+      "status": "PASS",
+      "duration_sec": 0.0034,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature28AntiCheatingIntegrity.test_f28_tc01_real_cryptographic_hash_math",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature28AntiCheatingIntegrity",
+      "method": "test_f28_tc01_real_cryptographic_hash_math",
+      "description": "Verify authentic mathematical calculation of SHA-256 without trivial mock bypasses.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature28AntiCheatingIntegrity.test_f28_tc02_database_integrity_unique_constraint",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature28AntiCheatingIntegrity",
+      "method": "test_f28_tc02_database_integrity_unique_constraint",
+      "description": "Verify real SQLite unique constraint raises IntegrityError on collision.",
+      "status": "PASS",
+      "duration_sec": 0.0002,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature28AntiCheatingIntegrity.test_f28_tc03_score_percentage_clamping",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature28AntiCheatingIntegrity",
+      "method": "test_f28_tc03_score_percentage_clamping",
+      "description": "Verify exam scores are strictly bound within [0.0, 1.0] and passing is >= 0.80.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature28AntiCheatingIntegrity.test_f28_tc04_rag_chunk_tamper_detection",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature28AntiCheatingIntegrity",
+      "method": "test_f28_tc04_rag_chunk_tamper_detection",
+      "description": "Verify modifying one byte in a RAG document chunk alters its SHA-256.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_features_22_to_28.TestFeature28AntiCheatingIntegrity.test_f28_tc05_zero_dummy_mock_contract_verification",
+      "module": "tests.e2e.tier1_features.test_features_22_to_28",
+      "class": "TestFeature28AntiCheatingIntegrity",
+      "method": "test_f28_tc05_zero_dummy_mock_contract_verification",
+      "description": "Verify contracts enforce type safety and reject None/empty parameters.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_milestone2_seed_fixtures.TestMilestone2SeedFixtures.test_m2_tc01_section_19_schema_is_valid_draft_2020_12",
+      "module": "tests.e2e.tier1_features.test_milestone2_seed_fixtures",
+      "class": "TestMilestone2SeedFixtures",
+      "method": "test_m2_tc01_section_19_schema_is_valid_draft_2020_12",
+      "description": "Verify section_19_schema.json itself is a valid Draft 2020-12 meta-schema.",
+      "status": "PASS",
+      "duration_sec": 0.0218,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_milestone2_seed_fixtures.TestMilestone2SeedFixtures.test_m2_tc02_curriculum_manifest_schema_is_valid_draft_2020_12",
+      "module": "tests.e2e.tier1_features.test_milestone2_seed_fixtures",
+      "class": "TestMilestone2SeedFixtures",
+      "method": "test_m2_tc02_curriculum_manifest_schema_is_valid_draft_2020_12",
+      "description": "Verify curriculum_manifest_schema.json itself is a valid Draft 2020-12 schema.",
+      "status": "PASS",
+      "duration_sec": 0.0126,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_milestone2_seed_fixtures.TestMilestone2SeedFixtures.test_m2_tc03_curriculum_manifest_validation_and_7_states",
+      "module": "tests.e2e.tier1_features.test_milestone2_seed_fixtures",
+      "class": "TestMilestone2SeedFixtures",
+      "method": "test_m2_tc03_curriculum_manifest_validation_and_7_states",
+      "description": "Verify curriculum.manifest.json validates and defines all 7 official editorial states.",
+      "status": "PASS",
+      "duration_sec": 0.0074,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_milestone2_seed_fixtures.TestMilestone2SeedFixtures.test_m2_tc04_all_10_seed_packages_validate_against_section_19_schema",
+      "module": "tests.e2e.tier1_features.test_milestone2_seed_fixtures",
+      "class": "TestMilestone2SeedFixtures",
+      "method": "test_m2_tc04_all_10_seed_packages_validate_against_section_19_schema",
+      "description": "Verify all 10 Volume 1 chapter packages validate with zero errors.",
+      "status": "PASS",
+      "duration_sec": 0.0077,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_milestone2_seed_fixtures.TestMilestone2SeedFixtures.test_m2_tc05_package_authentic_sha256_calculation",
+      "module": "tests.e2e.tier1_features.test_milestone2_seed_fixtures",
+      "class": "TestMilestone2SeedFixtures",
+      "method": "test_m2_tc05_package_authentic_sha256_calculation",
+      "description": "Verify authentic SHA-256 checksums are calculated deterministically.",
+      "status": "PASS",
+      "duration_sec": 0.0015,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_milestone2_seed_fixtures.TestMilestone2SeedFixtures.test_m2_tc06_volume_1_digital_errata_integrity",
+      "module": "tests.e2e.tier1_features.test_milestone2_seed_fixtures",
+      "class": "TestMilestone2SeedFixtures",
+      "method": "test_m2_tc06_volume_1_digital_errata_integrity",
+      "description": "Verify vol01_errata.json references physical pages between 1 and 133.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_milestone2_seed_fixtures.TestMilestone2SeedFixtures.test_m2_tc07_sqlite_fts5_virtual_table_structure",
+      "module": "tests.e2e.tier1_features.test_milestone2_seed_fixtures",
+      "class": "TestMilestone2SeedFixtures",
+      "method": "test_m2_tc07_sqlite_fts5_virtual_table_structure",
+      "description": "Verify SQLite FTS5 virtual table operates with unicode61 tokenizer.",
+      "status": "PASS",
+      "duration_sec": 0.0006,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier1_features.test_milestone2_seed_fixtures.TestMilestone2SeedFixtures.test_m2_tc08_google_drive_unauthenticated_blocked",
+      "module": "tests.e2e.tier1_features.test_milestone2_seed_fixtures",
+      "class": "TestMilestone2SeedFixtures",
+      "method": "test_m2_tc08_google_drive_unauthenticated_blocked",
+      "description": "Verify Google Drive provider reports BLOCKED without simulating fake success.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f1_card_radius_boundaries",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f1_card_radius_boundaries",
+      "description": "Boundary: Card border radius must be between 12.0dp and 16.0dp.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f1_contrast_failure_light_on_white",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f1_contrast_failure_light_on_white",
+      "description": "Boundary: Light green (#E7F0EA) on white (#FFFFFF) must fail WCAG AAA (7.0:1) and AA (4.5:1).",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f1_contrast_success_text_on_background",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f1_contrast_success_text_on_background",
+      "description": "Boundary: Primary dark text (#26322C) on background (#F5F6F3) must meet WCAG AAA.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f1_forbidden_aesthetic_detection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f1_forbidden_aesthetic_detection",
+      "description": "Boundary: Videogame neon, gore, and skull aesthetic tokens must be rejected.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f1_invalid_hex_token_rejections",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f1_invalid_hex_token_rejections",
+      "description": "Boundary: Invalid hex strings must raise ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f2_android_tab_index_bounds",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f2_android_tab_index_bounds",
+      "description": "Boundary: Valid tab indices are exactly 0 to 4. -1 and 5 must raise IndexError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f2_android_tab_overflow_prevention",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f2_android_tab_overflow_prevention",
+      "description": "Boundary: Android BottomBar cannot exceed 5 destinations (§5.2).",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f2_breakpoint_bottom_bar_at_600dp",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f2_breakpoint_bottom_bar_at_600dp",
+      "description": "Boundary: Exactly 600.0dp and below resolves to Android BottomBar; 600.1dp to NavigationRail.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f2_invalid_viewport_dimensions",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f2_invalid_viewport_dimensions",
+      "description": "Boundary: Non-positive viewport dimensions must raise ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f2_navigation_back_stack_pop_empty",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f2_navigation_back_stack_pop_empty",
+      "description": "Boundary: Popping an empty navigation back-stack returns None cleanly.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f3_extreme_text_handling",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f3_extreme_text_handling",
+      "description": "Boundary: Zero-length text and 100,000-char continuous text handling.",
+      "status": "PASS",
+      "duration_sec": 0.0022,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f3_font_size_lower_bound_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f3_font_size_lower_bound_rejection",
+      "description": "Boundary: Font size < 14.0 sp must be rejected.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f3_font_size_upper_bound_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f3_font_size_upper_bound_rejection",
+      "description": "Boundary: Font size > 22.0 sp must be rejected.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f3_font_size_valid_boundaries",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f3_font_size_valid_boundaries",
+      "description": "Boundary: Exact boundaries 14.0 sp and 22.0 sp are accepted.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f3_line_height_boundaries",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f3_line_height_boundaries",
+      "description": "Boundary: Line height <= 0 or < 1.0 or > 3.0 must raise ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f4_duplicate_primary_key_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f4_duplicate_primary_key_rejection",
+      "description": "Boundary: Inserting duplicate volume_id raises IntegrityError.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f4_foreign_key_violation_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f4_foreign_key_violation_rejection",
+      "description": "Boundary: Inserting chapter referencing non-existent volume_id raises IntegrityError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f4_not_null_constraint_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f4_not_null_constraint_rejection",
+      "description": "Boundary: Inserting NULL into NOT NULL column raises IntegrityError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f4_schema_completeness_24_entities",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f4_schema_completeness_24_entities",
+      "description": "Boundary: Verify that all 24 required entities exist in the SQLite schema.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f4_transaction_atomic_rollback",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f4_transaction_atomic_rollback",
+      "description": "Boundary: Failed statement in transaction rolls back entire batch atomically.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f5_control_character_injection_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f5_control_character_injection_rejection",
+      "description": "Boundary: API key containing control characters, newlines or null bytes raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f5_empty_api_key_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f5_empty_api_key_rejection",
+      "description": "Boundary: Setting empty or whitespace-only API key must raise ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f5_log_masking_never_exposes_plaintext",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f5_log_masking_never_exposes_plaintext",
+      "description": "Boundary: Vault masked output must never reveal raw key plaintext.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f5_tampered_ciphertext_detection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f5_tampered_ciphertext_detection",
+      "description": "Boundary: Corrupted/tampered vault ciphertext raises error upon decoding.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f5_weekly_study_target_boundaries",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f5_weekly_study_target_boundaries",
+      "description": "Boundary: Weekly study target <= 0 or > 168 hours must raise ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f6_chapter_number_out_of_bounds",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f6_chapter_number_out_of_bounds",
+      "description": "Boundary: Chapter number must be between 1 and 113.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f6_illegal_editorial_transition",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f6_illegal_editorial_transition",
+      "description": "Boundary: Transition from 'Planejado' directly to 'Publicado' is forbidden.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f6_invalid_editorial_state_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f6_invalid_editorial_state_rejection",
+      "description": "Boundary: Editorial state must be one of the 7 official states (§24.3).",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f6_planned_chapter_no_full_content",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f6_planned_chapter_no_full_content",
+      "description": "Boundary: Planned chapter must appear as 'Previsto', not as a completed lesson (§3).",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f6_volume_number_out_of_bounds",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f6_volume_number_out_of_bounds",
+      "description": "Boundary: Volume number must be between 1 and 9.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f7_errata_empty_text_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f7_errata_empty_text_rejection",
+      "description": "Boundary: Errata entry with empty or whitespace text must be rejected.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f7_errata_page_boundary",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f7_errata_page_boundary",
+      "description": "Boundary: Errata page must be within 1 and 133.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f7_vol1_ch1_to_4_strictly_rev2",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f7_vol1_ch1_to_4_strictly_rev2",
+      "description": "Boundary: Vol I Chapters 1-4 must strictly use REV2 (§1.3). REV1/REV3 must fail.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f7_vol1_ch5_to_10_strictly_rev1",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f7_vol1_ch5_to_10_strictly_rev1",
+      "description": "Boundary: Vol I Chapters 5-10 must strictly use REV1 (§1.3). REV2 must fail.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07.TestBoundariesFeatures01To07.test_f7_vol1_total_print_pages_exact_133",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_01_to_07",
+      "class": "TestBoundariesFeatures01To07",
+      "method": "test_f7_vol1_total_print_pages_exact_133",
+      "description": "Boundary: Total printed physical pages for Volume I must be exactly 133 (§1.3).",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f10_anchor_drift_warning_on_revision_update",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f10_anchor_drift_warning_on_revision_update",
+      "description": "Boundary: When anchor text disappears in new revision, note is PRESERVED with drift_warning=1 (§2.2).",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f10_bookmark_persistence_across_revisions",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f10_bookmark_persistence_across_revisions",
+      "description": "Boundary: Bookmarks referencing logical sections survive revision updates.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f10_immutable_historical_assessment_attempts",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f10_immutable_historical_assessment_attempts",
+      "description": "Boundary: Updating a chapter revision must never alter or reset historical assessment scores (§2.2).",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f10_reading_position_ratio_clamping",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f10_reading_position_ratio_clamping",
+      "description": "Boundary: Reading position scroll ratio must clamp between 0.0 and 1.0; page >= 1.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f10_rollback_safety_preserves_user_data",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f10_rollback_safety_preserves_user_data",
+      "description": "Boundary: Editorial rollback to previous revision does not delete annotations or attempts.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f11_empty_query_returns_empty_list",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f11_empty_query_returns_empty_list",
+      "description": "Boundary: Empty or whitespace query returns empty string from sanitizer.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f11_extremely_long_query_handling",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f11_extremely_long_query_handling",
+      "description": "Boundary: 2500-character search query is safely processed without overflow.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f11_special_characters_sanitization",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f11_special_characters_sanitization",
+      "description": "Boundary: FTS special characters (*, ^, quotes, parens) are sanitized.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f11_sql_injection_defense_in_fts_search",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f11_sql_injection_defense_in_fts_search",
+      "description": "Boundary: SQL injection attempts are safely stripped and escaped.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f11_zero_match_query_returns_empty_list",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f11_zero_match_query_returns_empty_list",
+      "description": "Boundary: Non-matching term query returns empty list without error.",
+      "status": "PASS",
+      "duration_sec": 0.0013,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f12_duplicate_package_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f12_duplicate_package_rejection",
+      "description": "Boundary: Ingesting duplicate package with identical contentId, edition and hash raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f12_local_directory_import_nonexistent_path",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f12_local_directory_import_nonexistent_path",
+      "description": "Boundary: Local directory import from non-existent directory raises FileNotFoundError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f12_missing_drive_oauth_token_raises_auth_error",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f12_missing_drive_oauth_token_raises_auth_error",
+      "description": "Boundary: Ingestion without Drive token raises PermissionError (no fake success).",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f12_network_timeout_during_sync_preserves_local_state",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f12_network_timeout_during_sync_preserves_local_state",
+      "description": "Boundary: Socket timeout during sync raises TimeoutError and preserves local catalog.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f12_tampered_package_sha256_mismatch",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f12_tampered_package_sha256_mismatch",
+      "description": "Boundary: Ingesting package where calculated hash != declared sha256 raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f13_empty_lesson_steps_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f13_empty_lesson_steps_rejection",
+      "description": "Boundary: Lesson package with 0 steps raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f13_empty_step_content_validation",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f13_empty_step_content_validation",
+      "description": "Boundary: Step with empty title or empty body raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f13_missing_canonical_steps_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f13_missing_canonical_steps_rejection",
+      "description": "Boundary: Lesson missing one of the 10 canonical didactic steps raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f13_out_of_order_step_progression",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f13_out_of_order_step_progression",
+      "description": "Boundary: Attempting to access Step 8 (Assessment) before completing prerequisites raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f13_step_index_out_of_bounds",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f13_step_index_out_of_bounds",
+      "description": "Boundary: Step index < 1 or > 10 raises IndexError.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f14_immutable_attempt_record_enforcement",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f14_immutable_attempt_record_enforcement",
+      "description": "Boundary: Finalized assessment attempt record cannot be mutated.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f14_negative_or_over_100_score_rejected",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f14_negative_or_over_100_score_rejected",
+      "description": "Boundary: Score < 0.0 or > 100.0 raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f14_score_at_79_99_strictly_fails",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f14_score_at_79_99_strictly_fails",
+      "description": "Boundary: Score of 79.99% strictly FAILS 80.00% benchmark (§8.2, §17.1).",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f14_score_at_80_00_strictly_passes",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f14_score_at_80_00_strictly_passes",
+      "description": "Boundary: Score of exactly 80.00% PASSES benchmark.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f14_zero_questions_assessment_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f14_zero_questions_assessment_rejection",
+      "description": "Boundary: Assessment with 0 questions raises ValueError / ZeroDivisionError.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f8_invalid_schema_version_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f8_invalid_schema_version_rejection",
+      "description": "Boundary: schemaVersion != '1.0' (e.g. '2.0', '0.9') raises ValidationError.",
+      "status": "PASS",
+      "duration_sec": 0.0237,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f8_malformed_json_syntax_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f8_malformed_json_syntax_rejection",
+      "description": "Boundary: Corrupted/malformed JSON syntax raises json.JSONDecodeError.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f8_missing_mandatory_top_level_fields",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f8_missing_mandatory_top_level_fields",
+      "description": "Boundary: Missing mandatory fields raises jsonschema.ValidationError.",
+      "status": "PASS",
+      "duration_sec": 0.0397,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f8_null_fields_forbidden_in_published_status",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f8_null_fields_forbidden_in_published_status",
+      "description": "Boundary: In 'Publicado' status, source.sha256 and source.fileId cannot be null (§19).",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f8_type_mismatch_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f8_type_mismatch_rejection",
+      "description": "Boundary: Type mismatch in fields raises jsonschema.ValidationError.",
+      "status": "PASS",
+      "duration_sec": 0.0122,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f9_corrupted_pdf_header_handling",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f9_corrupted_pdf_header_handling",
+      "description": "Boundary: Corrupted/empty PDF file raises ValueError with clear error.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f9_dual_mode_scroll_ratio_preservation",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f9_dual_mode_scroll_ratio_preservation",
+      "description": "Boundary: Switching between PDF and Markdown mode preserves scroll ratio and page.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f9_markdown_script_injection_sanitization",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f9_markdown_script_injection_sanitization",
+      "description": "Boundary: Markdown content containing script tags is sanitized.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f9_missing_pdf_asset_error_handling",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f9_missing_pdf_asset_error_handling",
+      "description": "Boundary: Opening non-existent PDF file raises FileNotFoundError cleanly.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14.TestBoundariesFeatures08To14.test_f9_page_navigation_out_of_bounds",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_08_to_14",
+      "class": "TestBoundariesFeatures08To14",
+      "method": "test_f9_page_navigation_out_of_bounds",
+      "description": "Boundary: Requesting page <= 0 or page > totalPages raises IndexError.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f15_spaced_repetition_non_positive_interval",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f15_spaced_repetition_non_positive_interval",
+      "description": "Boundary: Spaced repetition interval <= 0 days raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f15_study_session_future_timestamp_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f15_study_session_future_timestamp_rejection",
+      "description": "Boundary: Study session timestamp in the future raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f15_study_session_negative_duration",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f15_study_session_negative_duration",
+      "description": "Boundary: Study session with negative duration raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f15_weekly_target_non_positive_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f15_weekly_target_non_positive_rejection",
+      "description": "Boundary: Weekly study target <= 0.0 hours must raise ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f15_weekly_target_overflow_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f15_weekly_target_overflow_rejection",
+      "description": "Boundary: Weekly study target > 168.0 hours must raise ValueError (§17.1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f16_empty_api_key_raises_401",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f16_empty_api_key_raises_401",
+      "description": "Boundary: Discovering models with empty/invalid API key raises PermissionError (HTTP 401).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f16_model_categorization_text_vs_audio",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f16_model_categorization_text_vs_audio",
+      "description": "Boundary: Text generation models and Audio TTS models must not be mixed (§10.1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f16_model_not_found_raises_404",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f16_model_not_found_raises_404",
+      "description": "Boundary: Requesting model not present in discovered models raises LookupError (HTTP 404).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f16_offline_network_failure_handling",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f16_offline_network_failure_handling",
+      "description": "Boundary: Network failure during model discovery raises ConnectionError without fake mock.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f16_quota_exceeded_raises_429",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f16_quota_exceeded_raises_429",
+      "description": "Boundary: Account quota exhausted raises RuntimeError (HTTP 429: ResourceExhausted).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f17_empty_user_query_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f17_empty_user_query_rejection",
+      "description": "Boundary: Query with empty string or whitespace raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f17_excessive_query_length_boundary",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f17_excessive_query_length_boundary",
+      "description": "Boundary: Prompt exceeding 8192 characters raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f17_invalid_tutor_mode_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f17_invalid_tutor_mode_rejection",
+      "description": "Boundary: Tutor mode must be one of the 7 official modes (§9.3).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f17_me_testar_socratic_mode_directive",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f17_me_testar_socratic_mode_directive",
+      "description": "Boundary: meTestar mode must include Socratic evaluation directive (§9.1, §9.3).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f17_prompt_injection_adversarial_defense",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f17_prompt_injection_adversarial_defense",
+      "description": "Boundary: Prompt injection attempts are detected and rejected.",
+      "status": "PASS",
+      "duration_sec": 0.0002,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f18_citation_page_out_of_bounds",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f18_citation_page_out_of_bounds",
+      "description": "Boundary: Citation referencing page outside chapter page count raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f18_empty_context_declares_absence_of_support",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f18_empty_context_declares_absence_of_support",
+      "description": "Boundary: When no approved chunks match, system must declare absence of support, not hallucinate (§9.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f18_fake_chapter_citation_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f18_fake_chapter_citation_rejection",
+      "description": "Boundary: Response referencing nonexistent volume/chapter raises LookupError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f18_unapproved_chapter_context_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f18_unapproved_chapter_context_rejection",
+      "description": "Boundary: RAG context cannot be injected from chapters with editorialStatus != 'Aprovado'/'Publicado' (§9.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f18_untagged_claim_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f18_untagged_claim_rejection",
+      "description": "Boundary: Tutor response citing content without [FONTE] or [INFERÊNCIA] tag raises ValueError (§9.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f19_empty_voice_list_handling",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f19_empty_voice_list_handling",
+      "description": "Boundary: Engine returning 0 voices blocks voice selection gracefully.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f19_missing_sherpa_onnx_package_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f19_missing_sherpa_onnx_package_rejection",
+      "description": "Boundary: When com.k2fsa.sherpa.onnx.tts.engine package is not found, raises ModuleNotFoundError (§12.1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f19_uninitialized_engine_speak_call_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f19_uninitialized_engine_speak_call_rejection",
+      "description": "Boundary: Calling speak() before engine initialization raises RuntimeError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f19_unknown_voice_selection_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f19_unknown_voice_selection_rejection",
+      "description": "Boundary: Requesting unknown voice ID raises ValueError (§12.1: não inventar aliases falsos).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f19_unsupported_android_api_level",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f19_unsupported_android_api_level",
+      "description": "Boundary: Bridge on Android API < 26 raises EnvironmentError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f20_chunk_maximum_size_enforcement",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f20_chunk_maximum_size_enforcement",
+      "description": "Boundary: Chunks must not exceed 650 characters.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f20_chunk_minimum_size_concatenation",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f20_chunk_minimum_size_concatenation",
+      "description": "Boundary: Sentences are combined into chunks (target ~450, range 250-650 chars) (§12.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f20_max_two_sentences_per_chunk",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f20_max_two_sentences_per_chunk",
+      "description": "Boundary: maxNumSentences <= 2 constraint per chunk (§12.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f20_no_mid_word_truncation",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f20_no_mid_word_truncation",
+      "description": "Boundary: Chunking must never split in the middle of a word (§12.3).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f20_target_size_distribution",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f20_target_size_distribution",
+      "description": "Boundary: Paragraph segmentation produces chunks close to target 450 characters (§12.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f21_corrupted_base64_audio_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f21_corrupted_base64_audio_rejection",
+      "description": "Boundary: Corrupted base64 payload from Gemini API raises Error (§13).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f21_invalid_riff_wave_magic_bytes",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f21_invalid_riff_wave_magic_bytes",
+      "description": "Boundary: Audio byte buffer missing 'RIFF' or 'WAVE' raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f21_truncated_wav_header_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f21_truncated_wav_header_rejection",
+      "description": "Boundary: Audio byte buffer < 44 bytes raises ValueError (§21).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f21_unsupported_voice_selection_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f21_unsupported_voice_selection_rejection",
+      "description": "Boundary: Requesting unsupported voice in Gemini TTS raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21.TestBoundariesFeatures15To21.test_f21_zero_byte_audio_payload_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_15_to_21",
+      "class": "TestBoundariesFeatures15To21",
+      "method": "test_f21_zero_byte_audio_payload_rejection",
+      "description": "Boundary: Empty audio response raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f22_seek_position_clamping",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f22_seek_position_clamping",
+      "description": "Boundary: Seek position < 0.0s clamped to 0.0s; seek > track duration clamped to duration.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f22_silent_fallback_attempt_strictly_blocked",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f22_silent_fallback_attempt_strictly_blocked",
+      "description": "Boundary: Silent fallback to Kokoro on Gemini TTS failure is strictly blocked without confirmation (§11.1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f22_speed_slider_lower_bound_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f22_speed_slider_lower_bound_rejection",
+      "description": "Boundary: Speed < 0.65x raises ValueError (§12.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f22_speed_slider_upper_bound_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f22_speed_slider_upper_bound_rejection",
+      "description": "Boundary: Speed > 1.50x raises ValueError (§12.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f22_speed_step_snapping_0_05",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f22_speed_step_snapping_0_05",
+      "description": "Boundary: Speed values snap to nearest 0.05x step.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f23_forensic_hash_mismatch_verification",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f23_forensic_hash_mismatch_verification",
+      "description": "Boundary: Evidence disk image verification with tampered byte fails SHA-256 and MD5 checks.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f23_invalid_lab_domain_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f23_invalid_lab_domain_rejection",
+      "description": "Boundary: Domain must be one of the 7 official domains (§14.1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f23_malformed_sql_student_query_handling",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f23_malformed_sql_student_query_handling",
+      "description": "Boundary: Syntax error in student SQL lab query is caught cleanly without crash.",
+      "status": "PASS",
+      "duration_sec": 0.0002,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f23_missing_lab_dataset_file_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f23_missing_lab_dataset_file_rejection",
+      "description": "Boundary: Lab referencing nonexistent dataset file raises FileNotFoundError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f23_telephony_cdr_timestamp_inversion",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f23_telephony_cdr_timestamp_inversion",
+      "description": "Boundary: Telephony CDR record where call_end < call_start raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f24_android_memory_budget_exceeded",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f24_android_memory_budget_exceeded",
+      "description": "Boundary: Memory allocation > 32MB on Android budget triggers MemoryError (§14.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f24_clean_worker_process_termination",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f24_clean_worker_process_termination",
+      "description": "Boundary: Aborted lab worker terminates cleanly without zombies.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f24_lab_execution_timeout_termination",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f24_lab_execution_timeout_termination",
+      "description": "Boundary: Lab code execution exceeding time limit raises TimeoutError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f24_sandbox_forbidden_syscall_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f24_sandbox_forbidden_syscall_rejection",
+      "description": "Boundary: Code containing system calls or socket network calls is rejected by sandbox.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f24_unsupported_platform_capability_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f24_unsupported_platform_capability_rejection",
+      "description": "Boundary: Attempting to run Windows-only heavy Python lab on Android raises RuntimeError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f25_alternative_hypothesis_mandatory",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f25_alternative_hypothesis_mandatory",
+      "description": "Boundary: Case conclusion asserting 100% certainty without evaluating alternative hypotheses is rejected (§15.1, §15.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f25_chronological_timeline_inversion",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f25_chronological_timeline_inversion",
+      "description": "Boundary: Timeline event B ordered before event A when evidence timestamps prove A < B raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f25_contradictory_evidence_detection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f25_contradictory_evidence_detection",
+      "description": "Boundary: Asserting a claim that contradicts verified documented evidence raises ValueError (§15.2).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f25_empty_case_submission_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f25_empty_case_submission_rejection",
+      "description": "Boundary: Submitting case analysis with 0 facts or 0 hypotheses raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f25_fact_vs_inference_classification_error",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f25_fact_vs_inference_classification_error",
+      "description": "Boundary: Categorizing an unverified claim as 'Documented Fact' without evidence pointer raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f26_empty_portfolio_export_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f26_empty_portfolio_export_rejection",
+      "description": "Boundary: Exporting portfolio PDF when user has 0 completed activities raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f26_missing_mandatory_report_fields",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f26_missing_mandatory_report_fields",
+      "description": "Boundary: Report missing Methodology, Limitations, or Conclusion raises ValueError (§16.1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f26_report_date_chronology_inconsistency",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f26_report_date_chronology_inconsistency",
+      "description": "Boundary: Report generation date before lab completion date raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f26_tampered_digital_signature_detection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f26_tampered_digital_signature_detection",
+      "description": "Boundary: Report with tampered digital signature hash fails signature verification.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f26_unaccredited_academic_claim_blocked",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f26_unaccredited_academic_claim_blocked",
+      "description": "Boundary: Claiming official MEC or police accreditation in exported report raises PermissionError (§16.1).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f27_deprecated_runner_os_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f27_deprecated_runner_os_rejection",
+      "description": "Boundary: Specifying deprecated runner (e.g. ubuntu-18.04) raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f27_hardcoded_secrets_scanner",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f27_hardcoded_secrets_scanner",
+      "description": "Boundary: Workflow containing hardcoded plaintext API keys is flagged by secret scanner.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f27_malformed_github_actions_yaml_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f27_malformed_github_actions_yaml_rejection",
+      "description": "Boundary: Corrupted YAML syntax in workflow file raises yaml.YAMLError.",
+      "status": "PASS",
+      "duration_sec": 0.0004,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f27_missing_mandatory_platform_jobs",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f27_missing_mandatory_platform_jobs",
+      "description": "Boundary: CI workflow missing ubuntu-latest or windows-latest raises ValueError (§25).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f27_release_gate_without_test_execution_blocked",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f27_release_gate_without_test_execution_blocked",
+      "description": "Boundary: Workflow attempting to release APK without requiring test gate job raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f28_assessment_question_randomization_on_retake",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f28_assessment_question_randomization_on_retake",
+      "description": "Boundary: Assessment retake must randomize question sequence to prevent static cramming.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f28_direct_database_grade_tampering_detection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f28_direct_database_grade_tampering_detection",
+      "description": "Boundary: Unaudited direct modification of user grade without attempt log raises ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f28_dummy_mock_pass_detection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f28_dummy_mock_pass_detection",
+      "description": "Boundary: Static test linter detects and rejects trivial pass or empty test cases (§28).",
+      "status": "PASS",
+      "duration_sec": 0.0003,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f28_exit_code_tampering_detection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f28_exit_code_tampering_detection",
+      "description": "Boundary: Test runner returns non-zero exit code when any failure occurs.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28.TestBoundariesFeatures22To28.test_f28_unverified_real_case_name_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_boundaries_22_to_28",
+      "class": "TestBoundariesFeatures22To28",
+      "method": "test_f28_unverified_real_case_name_rejection",
+      "description": "Boundary: Real case names (e.g. Watts, Hae Min Lee) without verified provenance tag raises ValueError (§15.3).",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_anchor_drift_modified_vs_removed_text",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_anchor_drift_modified_vs_removed_text",
+      "description": "Adversarial: Notes survive revision; drift warning flags when anchor is removed vs intact.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_curriculum_completeness_and_bounds",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_curriculum_completeness_and_bounds",
+      "description": "Adversarial: 9 volumes, 113 chapters continuity with zero gaps or overlaps.",
+      "status": "PASS",
+      "duration_sec": 0.0003,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_duplicate_package_sha256_detection",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_duplicate_package_sha256_detection",
+      "description": "Adversarial: Duplicate package ingestion with identical SHA-256 prevents redundant ingestion.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_fts5_edge_cases_and_special_characters",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_fts5_edge_cases_and_special_characters",
+      "description": "Adversarial: SQLite FTS5 handles empty queries, special characters, and non-existent terms gracefully.",
+      "status": "PASS",
+      "duration_sec": 0.0007,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_historical_scores_preservation",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_historical_scores_preservation",
+      "description": "Adversarial: Chapter updates must NEVER overwrite or drop past student evaluation scores.",
+      "status": "PASS",
+      "duration_sec": 0.0002,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_missing_file_path_handling",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_missing_file_path_handling",
+      "description": "Adversarial: Missing file path is handled safely with FileNotFoundError and zero crashes.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_schema_corrupt_json_files",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_schema_corrupt_json_files",
+      "description": "Adversarial: Corrupt, truncated, or non-object JSON files return validation errors.",
+      "status": "PASS",
+      "duration_sec": 0.0024,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_schema_invalid_content_id_regex",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_schema_invalid_content_id_regex",
+      "description": "Adversarial: contentId violating ^forense\\.vol[0-9]{2}\\.ch[0-9]{2}$ is rejected.",
+      "status": "PASS",
+      "duration_sec": 0.009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_schema_missing_each_required_field",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_schema_missing_each_required_field",
+      "description": "Adversarial: Removing any of the mandatory required fields triggers validation failure.",
+      "status": "PASS",
+      "duration_sec": 0.0135,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_schema_out_of_range_chapter",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_schema_out_of_range_chapter",
+      "description": "Adversarial: chapter outside 1..113 is rejected.",
+      "status": "PASS",
+      "duration_sec": 0.0048,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_schema_out_of_range_volume",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_schema_out_of_range_volume",
+      "description": "Adversarial: volume outside 1..9 is rejected.",
+      "status": "PASS",
+      "duration_sec": 0.0047,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_schema_validator_cli_exit_codes",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_schema_validator_cli_exit_codes",
+      "description": "Adversarial: validate.py CLI exits with 0 on valid packages, exits with 1 on invalid packages.",
+      "status": "PASS",
+      "duration_sec": 0.2061,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_unauthenticated_drive_provider_state",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_unauthenticated_drive_provider_state",
+      "description": "Adversarial: Unauthenticated Google Drive state returns BLOCKED without simulating network success.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m2_adversarial.TestMilestone2Adversarial.test_adv_volume1_exact_133_printed_pages_and_errata_bounds",
+      "module": "tests.e2e.tier2_boundaries.test_m2_adversarial",
+      "class": "TestMilestone2Adversarial",
+      "method": "test_adv_volume1_exact_133_printed_pages_and_errata_bounds",
+      "description": "Adversarial: Volume 1 exact 133 printed pages baseline; errata outside [1..133] rejected.",
+      "status": "PASS",
+      "duration_sec": 0.0006,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_10_step_lesson_engine_jumping_and_step_8_lock",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_10_step_lesson_engine_jumping_and_step_8_lock",
+      "description": "Feature 13 / §8, §8.1: Out-of-order forward jumping is rejected; Step 8 remains locked.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_80_percent_passing_benchmark_strict_boundary",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_80_percent_passing_benchmark_strict_boundary",
+      "description": "Feature 14 / §8.2: Exact 80.00% passes benchmark while 79.99% strictly fails.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_ai_gateway_http_error_taxonomy",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_ai_gateway_http_error_taxonomy",
+      "description": "Feature 16 / §10.1, §10.2: HTTP status codes strictly mapped to typed exceptions.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_citation_bounds_and_tag_validation",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_citation_bounds_and_tag_validation",
+      "description": "Feature 18 / §9.2: Citation volume (1-9), chapter (1-113), page bounds, and required tags.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_model_discovery_text_vs_audio_separation",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_model_discovery_text_vs_audio_separation",
+      "description": "Feature 16 / §10.1: Strict separation between text tutor and audio speech models.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_prompt_injection_resistance",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_prompt_injection_resistance",
+      "description": "Feature 17 / §9.3: Prompt injection patterns strictly rejected with exception.",
+      "status": "PASS",
+      "duration_sec": 0.0003,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_rag_unapproved_chapter_rejection",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_rag_unapproved_chapter_rejection",
+      "description": "Feature 18 / §9.2, §18.3: Chapters in non-approved states strictly rejected from RAG context.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_score_boundaries_0_and_100_and_out_of_bounds",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_score_boundaries_0_and_100_and_out_of_bounds",
+      "description": "Feature 14 / §8.2: 0.0% fails, 100.0% passes, scores <0.0 or >100.0 raise ValueError.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_spaced_repetition_progression_and_reset",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_spaced_repetition_progression_and_reset",
+      "description": "Feature 15 / §17.1: Interval progression for passing scores vs 1-day reset for failing.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_weekly_target_boundaries_and_rollover",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_weekly_target_boundaries_and_rollover",
+      "description": "Feature 15 / §17.1: 0h, negative, >168h rejected; weekly rollover isolation.",
+      "status": "PASS",
+      "duration_sec": 0.0001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier2_boundaries.test_m3_adversarial.TestMilestone3Adversarial.test_adv_zero_hallucination_guarantee_message",
+      "module": "tests.e2e.tier2_boundaries.test_m3_adversarial",
+      "class": "TestMilestone3Adversarial",
+      "method": "test_adv_zero_hallucination_guarantee_message",
+      "description": "Feature 18 / §9.2: Absence of approved support triggers exact zero-hallucination declaration.",
+      "status": "PASS",
+      "duration_sec": 0.0,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_01_f1_design_system_and_f2_dual_nav",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_01_f1_design_system_and_f2_dual_nav",
+      "description": "Theme application across Android BottomBar and Windows NavigationRail.",
+      "status": "PASS",
+      "duration_sec": 0.0013,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_02_f1_design_system_and_f3_typography",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_02_f1_design_system_and_f3_typography",
+      "description": "Font size scaling recalculating card margins and line heights.",
+      "status": "PASS",
+      "duration_sec": 0.0008,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_03_f2_dual_nav_and_f9_dual_reader",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_03_f2_dual_nav_and_f9_dual_reader",
+      "description": "Switching navigation tabs while keeping reader position intact.",
+      "status": "PASS",
+      "duration_sec": 0.0008,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_04_f3_typography_and_f22_audio_highlight",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_04_f3_typography_and_f22_audio_highlight",
+      "description": "Paragraph highlight tracking with adjusted font sizes.",
+      "status": "PASS",
+      "duration_sec": 0.0008,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_05_f4_persistence_and_f5_secure_vault",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_05_f4_persistence_and_f5_secure_vault",
+      "description": "Database storing settings with API key encrypted in secure vault.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_06_f4_persistence_and_f6_curriculum",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_06_f4_persistence_and_f6_curriculum",
+      "description": "Relational foreign key integrity between Volumes and Chapters.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_07_f4_persistence_and_f10_decoupling",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_07_f4_persistence_and_f10_decoupling",
+      "description": "Content package update preserves existing student annotations and scores.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_08_f4_persistence_and_f11_fts5",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_08_f4_persistence_and_f11_fts5",
+      "description": "Full-text search index synchronization on chapter insert/update.",
+      "status": "PASS",
+      "duration_sec": 0.0011,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_09_f4_persistence_and_f14_assessment",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_09_f4_persistence_and_f14_assessment",
+      "description": "Recording assessment attempts with question scores aggregating to pass/fail.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_10_f4_persistence_and_f15_adaptive_plan",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_10_f4_persistence_and_f15_adaptive_plan",
+      "description": "Study session logging updating weekly 13h accumulation.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_11_f4_persistence_and_f26_portfolio",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_11_f4_persistence_and_f26_portfolio",
+      "description": "Querying user completed labs and assessments to build portfolio.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_12_f6_curriculum_and_f7_vol_i_print",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_12_f6_curriculum_and_f7_vol_i_print",
+      "description": "Master catalog marking Vol I Ch 1-4 REV2 and Ch 5-10 REV1 with printed flags.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_13_f6_curriculum_and_f8_section_19_schema",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_13_f6_curriculum_and_f8_section_19_schema",
+      "description": "Ingesting ChapterPackage adhering to Section 19 schema into curriculum tree.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_14_f6_curriculum_and_f12_sync_provider",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_14_f6_curriculum_and_f12_sync_provider",
+      "description": "Provider discovering new chapter and inserting with status 'Importado'.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_15_f8_schema_and_f13_10_step_lesson",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_15_f8_schema_and_f13_10_step_lesson",
+      "description": "Validating lesson package containing all 10 didactic sections.",
+      "status": "PASS",
+      "duration_sec": 0.0008,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_16_f9_dual_reader_and_f20_chunker",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_16_f9_dual_reader_and_f20_chunker",
+      "description": "Reflowable markdown text fed into Kokoro 450-char chunking engine.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_17_f10_decoupling_and_f12_sync_provider",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_17_f10_decoupling_and_f12_sync_provider",
+      "description": "Drive sync updating chapter text without destroying student bookmarks.",
+      "status": "PASS",
+      "duration_sec": 0.0009,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_18_f13_lesson_and_f14_assessment",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_18_f13_lesson_and_f14_assessment",
+      "description": "Completing 10-step lesson unlocking module assessment.",
+      "status": "PASS",
+      "duration_sec": 0.0008,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_19_f13_lesson_and_f17_tutor_modes",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_19_f13_lesson_and_f17_tutor_modes",
+      "description": "In-lesson AI tutor mode selection (Explicar/Aprofundar/etc.) scoped to lesson topic.",
+      "status": "PASS",
+      "duration_sec": 0.0007,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_20_f14_assessment_and_f15_study_plan",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_20_f14_assessment_and_f15_study_plan",
+      "description": "Failing assessment (<80%) triggering spaced repetition review recommendation.",
+      "status": "PASS",
+      "duration_sec": 0.0008,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_21_f16_model_discovery_and_f17_tutor_modes",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_21_f16_model_discovery_and_f17_tutor_modes",
+      "description": "Discovered Gemini model selected and bound to tutor query session.",
+      "status": "PASS",
+      "duration_sec": 0.0007,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_22_f17_tutor_and_f18_strict_rag",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_22_f17_tutor_and_f18_strict_rag",
+      "description": "Tutor response filtered through RAG citation engine requiring [FONTE] tags.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_23_f19_kokoro_tts_and_f20_chunker",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_23_f19_kokoro_tts_and_f20_chunker",
+      "description": "Sentence segmenter output streamed into Android TTS bridge queue.",
+      "status": "PASS",
+      "duration_sec": 0.0008,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_24_f21_gemini_tts_and_f22_audio_ui",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_24_f21_gemini_tts_and_f22_audio_ui",
+      "description": "Online Charon TTS playback displaying speed slider without silent Kokoro fallback.",
+      "status": "PASS",
+      "duration_sec": 0.0008,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_25_f23_multi_domain_labs_and_f24_platform_bounds",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_25_f23_multi_domain_labs_and_f24_platform_bounds",
+      "description": "Running Digital Forensics hash lab respecting 32MB mobile limit.",
+      "status": "PASS",
+      "duration_sec": 0.0039,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_26_f23_labs_and_f25_case_studies",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_26_f23_labs_and_f25_case_studies",
+      "description": "Lab data outputs linked as documented evidence in Case Studies.",
+      "status": "PASS",
+      "duration_sec": 0.0017,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_27_f25_case_studies_and_f26_portfolio",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_27_f25_case_studies_and_f26_portfolio",
+      "description": "Completed case analysis exported as signed forensic PDF in Meu Espaço.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier3_pairwise.test_pairwise_interactions.TestPairwiseInteractions.test_28_f27_ci_workflows_and_f28_anti_cheating",
+      "module": "tests.e2e.tier3_pairwise.test_pairwise_interactions",
+      "class": "TestPairwiseInteractions",
+      "method": "test_28_f27_ci_workflows_and_f28_anti_cheating",
+      "description": "GitHub Actions workflow enforcing execution of full test suite and failing on dummy bypasses.",
+      "status": "PASS",
+      "duration_sec": 0.001,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier4_scenarios.test_scenarios_workload.TestTier4RealWorldScenarios.test_scenario_01_student_onboarding_and_first_chapter_study",
+      "module": "tests.e2e.tier4_scenarios.test_scenarios_workload",
+      "class": "TestTier4RealWorldScenarios",
+      "method": "test_scenario_01_student_onboarding_and_first_chapter_study",
+      "description": "Scenario 1: Student Onboarding & First Chapter Study.",
+      "status": "PASS",
+      "duration_sec": 0.0031,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier4_scenarios.test_scenarios_workload.TestTier4RealWorldScenarios.test_scenario_02_offline_assessment_and_spaced_repetition_review",
+      "module": "tests.e2e.tier4_scenarios.test_scenarios_workload",
+      "class": "TestTier4RealWorldScenarios",
+      "method": "test_scenario_02_offline_assessment_and_spaced_repetition_review",
+      "description": "Scenario 2: Offline Assessment & Spaced Repetition Review.",
+      "status": "PASS",
+      "duration_sec": 0.0029,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier4_scenarios.test_scenarios_workload.TestTier4RealWorldScenarios.test_scenario_03_ai_tutor_forensic_questioning_and_rag_citation",
+      "module": "tests.e2e.tier4_scenarios.test_scenarios_workload",
+      "class": "TestTier4RealWorldScenarios",
+      "method": "test_scenario_03_ai_tutor_forensic_questioning_and_rag_citation",
+      "description": "Scenario 3: AI Tutor Forensic Questioning & RAG Citation.",
+      "status": "PASS",
+      "duration_sec": 0.0343,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier4_scenarios.test_scenarios_workload.TestTier4RealWorldScenarios.test_scenario_04_digital_forensics_hash_lab_execution_and_report",
+      "module": "tests.e2e.tier4_scenarios.test_scenarios_workload",
+      "class": "TestTier4RealWorldScenarios",
+      "method": "test_scenario_04_digital_forensics_hash_lab_execution_and_report",
+      "description": "Scenario 4: Digital Forensics Hash Lab Execution & Report.",
+      "status": "PASS",
+      "duration_sec": 0.0027,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier4_scenarios.test_scenarios_workload.TestTier4RealWorldScenarios.test_scenario_05_telephony_cdr_investigative_case_analysis",
+      "module": "tests.e2e.tier4_scenarios.test_scenarios_workload",
+      "class": "TestTier4RealWorldScenarios",
+      "method": "test_scenario_05_telephony_cdr_investigative_case_analysis",
+      "description": "Scenario 5: Telephony CDR Investigative Case Analysis.",
+      "status": "PASS",
+      "duration_sec": 0.0029,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier4_scenarios.test_scenarios_workload.TestTier4RealWorldScenarios.test_scenario_06_drive_package_ingestion_and_safe_revision_update",
+      "module": "tests.e2e.tier4_scenarios.test_scenarios_workload",
+      "class": "TestTier4RealWorldScenarios",
+      "method": "test_scenario_06_drive_package_ingestion_and_safe_revision_update",
+      "description": "Scenario 6: Drive Package Ingestion & Safe Revision Update.",
+      "status": "PASS",
+      "duration_sec": 0.0037,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier4_scenarios.test_scenarios_workload.TestTier4RealWorldScenarios.test_scenario_07_dual_engine_audio_failure_and_recovery_without_silent_fallback",
+      "module": "tests.e2e.tier4_scenarios.test_scenarios_workload",
+      "class": "TestTier4RealWorldScenarios",
+      "method": "test_scenario_07_dual_engine_audio_failure_and_recovery_without_silent_fallback",
+      "description": "Scenario 7: Dual-Engine Audio Failure & Recovery Without Silent Fallback.",
+      "status": "PASS",
+      "duration_sec": 0.0027,
+      "error": null
+    },
+    {
+      "test_id": "tests.e2e.tier4_scenarios.test_scenarios_workload.TestTier4RealWorldScenarios.test_scenario_08_multiplatform_database_migration_and_backup_restore",
+      "module": "tests.e2e.tier4_scenarios.test_scenarios_workload",
+      "class": "TestTier4RealWorldScenarios",
+      "method": "test_scenario_08_multiplatform_database_migration_and_backup_restore",
+      "description": "Scenario 8: Multiplatform Database Migration & Backup Restore.",
+      "status": "PASS",
+      "duration_sec": 0.0082,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+ENCICLOPEDIA DE CIENCIAS FORENSES — ORGANIZACAO DO GOOGLE DRIVE
+Data de organizacao: 13/11/2026 (referencia local)
+
+COMO ENCONTRAR OS MATERIAIS
+- 00_Indice_e_Controle: indice mestre, auditorias, relatorios de qualidade e arquivo de edicoes antigas.
+- Volume_01_Fundamentos: Capitulos_01 a 10, um PDF em cada pasta; pasta 00_PDFs_Reunidos_Para_Imprimir.
+- Volume_02_Computacao_Python_SQL_Matematica: Capitulos_11 a 19, um PDF em cada pasta e, onde disponiveis, scripts e dados praticos; pasta 00_PDFs_Reunidos_Para_Imprimir.
+- Projetos_de_Pesquisa: pastas preparadas para estudos Watts e Hae Min Lee, ainda sem acervos probatorios originais adicionados.
+
+SITUACAO EDITORIAL
+- Volume I: 10 capitulos ja impressos pelo aluno, 133 paginas. Capitulos 1 a 4 usam REV2; capitulos 5 a 10 usam REV1.
+- Volume II: capitulos 11 a 19 produzidos. Capitulos 20 a 23 ainda pendentes.
+- PDFs reunidos sao copias dos capitulos individuais e servem para impressao em lotes; NAO imprimir o PDF reunido e os mesmos capitulos individuais em duplicidade.
+- 99_Arquivo_Antigo_NAO_IMPRIMIR: versoes substituidas, mantidas apenas como historico. Nao utilizar para estudo/ impressao.
+
+BOAS PRATICAS
+- Cada futuro capitulo deve receber PDF, laboratorios, conjuntos de dados sintéticos e relatorio de verificacao quando disponiveis.
+- Registrar revisoes e mover versoes substituidas para o arquivo antigo.
+- Os arquivos da pasta de pesquisa nao sao, por si, uma prova da cadeia de custodia dos casos reais.
+- O arquivo CSV de inventario contem hashes dos ARQUIVOS LOCAIS enviados para organizacao, e nao uma verificacao posterior do download do Google Drive.
+
+Este documento descreve a organizacao atual; nao implica sincronizacao automatica de novos materiais.

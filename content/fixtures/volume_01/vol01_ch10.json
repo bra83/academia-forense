@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch10",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 10,
+  "title": "Laboratório integrador e avaliação do Volume I",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Publicado",
+  "source": {
+    "provider": "fixture",
+    "fileId": "15HKJ0gkOLadA_6FTUDrjPR5iOP-AxR7J",
+    "revision": "1.0",
+    "sha256": "2688c40f0297268928decfa9ce7e222c35f5003f0b92b0c53e740ba6c8028499"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "10.1 Estrutura Formal do Laudo Pericial Criminal",
+      "orderIndex": 0,
+      "markdownContent": "O laudo pericial é uma peça técnico-jurídica formal que deve conter:\n\n1. Preâmbulo e autoridade requisitante\n2. Histórico da requisição e quesitos oficiais\n3. Descrição dos vestígios e exames preliminares\n4. Metodologia científica e equipamentos empregados\n5. Análise dos resultados e fundamentação técnica\n6. Conclusão e resposta aos quesitos\n7. Encerramento e assinatura dos peritos\n\n### Trecho extraído do PDF oficial (Enciclopedia_Forense_VolI_Capitulo_10_REV1_IMPRESSAO.pdf — 12 páginas, SHA-256: `f42f1637b7911cbd...`)\n> ENCICLOPÉDIA DE CIÊNCIAS FORENSES • VOLUME I\n> Laboratório integrador e avaliação\n> Um caso sintético completo, da fonte ao relatório\n> Explicação desde o zero • Linguagem profissional lado a lado • Diagramas originais • Casos reais",
+      "anchorKey": "sec01_laudo_anchor"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "10.2 Resposta a Quesitos e Clareza Comunicativa",
+      "orderIndex": 1,
+      "markdownContent": "As respostas aos quesitos formulados pelo Ministério Público, Magistrado ou Defesa devem ser precisas, fundamentadas nos vestígios coligidos e imunes a opiniões pessoais ou especulações não respaldadas pela prova material.",
+      "anchorKey": "sec02_quesitos_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Redigir laudo pericial criminal conforme os cânones do Código de Processo Penal.",
+    "Responder quesitos com clareza, objetividade e sustentação metodológica irrefutável.",
+    "Diferenciar conclusão categórica de conclusão probabilística baseada em razão de verossimilhança."
+  ],
+  "prerequisites": [
+    "Conhecimentos fundamentais de informática e raciocínio lógico"
+  ],
+  "glossary": [
+    {
+      "term": "Laudo Pericial",
+      "definition": "Documento oficial elaborado por perito oficial relatando exames, análises e conclusões técnicas."
+    },
+    {
+      "term": "Quesito",
+      "definition": "Pergunta técnica formulada pelas partes ou pelo juízo a ser respondida no laudo."
+    },
+    {
+      "term": "Parecer Técnico",
+      "definition": "Peça elaborada por assistente técnico contratado por uma das partes processuais."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch10-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 10",
+      "assetPath": "assets/figures/ch10_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch10-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 10",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH10-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 10. Edição REV1, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch10-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Metodologia Pericial e Elaboração de Laudos.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch10-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 10?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch10-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Metodologia Pericial e Elaboração de Laudos",
+      "instructions": "Redija a conclusão pericial e responda aos 3 quesitos da acusação baseando-se nas evidências coletadas nos capítulos anteriores.",
+      "expectedResult": "Laudo final estruturado com respostas objetivas e conclusão atestando presença do malware na data do crime."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch10",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch10-01",
+        "prompt": "Acerca de Metodologia Pericial e Elaboração de Laudos, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch10-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 10?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

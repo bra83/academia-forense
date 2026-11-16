@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch08",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 8,
+  "title": "Vieses cognitivos e controle de qualidade",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Publicado",
+  "source": {
+    "provider": "fixture",
+    "fileId": "1vS88wIgQG8iDqIgWlbQxibCQCbHHiTzy",
+    "revision": "1.0",
+    "sha256": "3a3b4d0597946c54e9f80fc09652d0174512cd95be08a54e18f1c0588d5374ad"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "8.1 Funções Resumo Unidirecionais (MD5, SHA-1, SHA-256)",
+      "orderIndex": 0,
+      "markdownContent": "Uma função hash criptográfica  = H(M)$ mapeia uma mensagem de tamanho arbitrário para uma cadeia de comprimento fixo com as seguintes propriedades:\n\n1. Resistência à pré-imagem\n2. Resistência à segunda pré-imagem\n3. Resistência a colisões\n\nEmbora colisões práticas tenham sido comprovadas para MD5 e SHA-1, o algoritmo SHA-256 permanece matematicamente seguro e mandatório na perícia criminal.\n\n### Trecho extraído do PDF oficial (Enciclopedia_Forense_VolI_Capitulo_08_REV1_IMPRESSAO.pdf — 10 páginas, SHA-256: `bfe31d2183d87dbb...`)\n> ENCICLOPÉDIA DE CIÊNCIAS FORENSES • VOLUME I\n> Vieses cognitivos e controle de\n> Controles contra erros humanos e de processo\n> Explicação desde o zero • Linguagem profissional lado a lado • Diagramas originais • Casos reais",
+      "anchorKey": "sec01_hash_anchor"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "8.2 Assinatura Digital e Infraestrutura de Chaves Públicas (ICP-Brasil)",
+      "orderIndex": 1,
+      "markdownContent": "O perito assina seus laudos com certificado digital ICP-Brasil (Padrão A3 ou A4), garantindo autenticidade, integridade e o não-repúdio estatuído pela MP 2.200-2/2001.",
+      "anchorKey": "sec02_assinatura_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Calcular e auditar hashes SHA-256 em arquivos de evidência garantindo integridade probatória.",
+    "Diferenciar colisões matemáticas de vulnerabilidades fáticas em algoritmos legados (MD5 vs SHA-256).",
+    "Validar assinaturas digitais assimétricas ICP-Brasil em laudos e peças periciais."
+  ],
+  "prerequisites": [
+    "Conhecimentos fundamentais de informática e raciocínio lógico"
+  ],
+  "glossary": [
+    {
+      "term": "Hash Criptográfico",
+      "definition": "Algoritmo determinístico que calcula uma impressão digital binária única de dados."
+    },
+    {
+      "term": "Colisão Criptográfica",
+      "definition": "Situação matemática em que duas mensagens distintas resultam no mesmo valor hash."
+    },
+    {
+      "term": "Não-Repúdio",
+      "definition": "Garantia jurídica e técnica de que o autor não pode negar a autoria do documento assinado."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch08-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 8",
+      "assetPath": "assets/figures/ch08_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch08-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 8",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH08-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 8. Edição REV1, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch08-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Criptografia, Hashes e Assinaturas Digitais.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch08-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 8?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch08-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Criptografia, Hashes e Assinaturas Digitais",
+      "instructions": "Gere o hash SHA-256 da imagem disk.raw antes e depois de montar somente-leitura e confirme a inviolabilidade.",
+      "expectedResult": "Hashes SHA-256 idênticos nos dois instantes: 3a7b9c...4e8f1a, confirmando integridade perfeita."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch08",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch08-01",
+        "prompt": "Acerca de Criptografia, Hashes e Assinaturas Digitais, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch08-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 8?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

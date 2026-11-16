@@ -1,0 +1,620 @@
+[
+  {
+    "id": "1gQHy8LLFS5B4vnZCBQ57EDEePlryfhbt",
+    "path": "00_Indice_e_Controle/Controle_de_Qualidade/CONTROLE_DE_QUALIDADE_C05_A_C10_REV1.pdf",
+    "sha256": "45a32b05f1fe1f567230914ba4b8eefd93e9201e49889d25ed275fac072ccb73",
+    "size": 19213
+  },
+  {
+    "id": "1cIpb1dDXIYljdvRSe3xozOr8tYDDGVRV",
+    "path": "00_Indice_e_Controle/Controle_de_Qualidade/Controle_Qualidade_Impresso_VolI_1a4_2026-11-12.pdf",
+    "sha256": "1df14ef4bef6602fcc6dae797345bd0e44316628b80d47f48649b75396afe57c",
+    "size": 75029
+  },
+  {
+    "id": "1a0R123W3B5Y6_3SCTQ6QID4qqeGU4-7m",
+    "path": "00_Indice_e_Controle/Controle_de_Qualidade/CONTROLE_QUALIDADE_VOLUME_II_C11_C13.pdf",
+    "sha256": "31ae03fea08b61ec519a74a98d97e4b6e73ae85edc793ff5da0d3ce404b89833",
+    "size": 41369
+  },
+  {
+    "id": "1a0FJtqdvbOX5MsHQdOd-qoHSE8TZbVXQ",
+    "path": "00_Indice_e_Controle/Controle_de_Qualidade/CONTROLE_QUALIDADE_VOLUME_II_C14_C16_ED1.pdf",
+    "sha256": "adb5770a48d8725c4463b446f0434ca4f5aec39d1fe952401ac92b4ac18e8eb0",
+    "size": 30413
+  },
+  {
+    "id": "1UL5tzuH_LES74cyohHH6y_WPN4-tuXxU",
+    "path": "00_Indice_e_Controle/Controle_de_Qualidade/CONTROLE_QUALIDADE_VOLUME_II_C17_C19_ED1.pdf",
+    "sha256": "901d2687382f1ad1334a4010c02c22d6f4375b41375799b27454dacf6be9fa7a",
+    "size": 54429
+  },
+  {
+    "id": "1c5e4XNT7H17aGE8mbSeEvmhqWrLZBHTt",
+    "path": "00_Indice_e_Controle/INDICE_ARQUIVOS_ENCICLOPEDIA_DRIVE_2026-11-13.csv",
+    "sha256": "87ceef414a776798b0c729c176463537afd8887f2b65843aad79a065015590b2",
+    "size": 6732
+  },
+  {
+    "id": "1KCWzcGJi7_eIWg4RaDyBtcCvOdLHS21D",
+    "path": "00_Indice_e_Controle/INDICE_MESTRE_ENCICLOPEDIA_CIENCIAS_FORENSES_V1_2026.pdf",
+    "sha256": "234d80c263f49231972e59524efab18cb46e164300cd4aa5b33b26e41f486381",
+    "size": 86559
+  },
+  {
+    "id": "15yx8yfoQMTi97utVWRrBiqJ7C2j8UT1y",
+    "path": "00_Indice_e_Controle/LEIA_PRIMEIRO_ENCICLOPEDIA_DRIVE.txt",
+    "sha256": "6b9edf069b0d642229db77bee006f8be6dd9cdca5dc2ae97087f51f679d55933",
+    "size": 1737
+  },
+  {
+    "id": "1TcFh63DTM-hxHGVvGz6DVXOvk2BuMQhK",
+    "path": "Volume_01_Fundamentos/Capitulo_01/Enciclopedia_Forense_Vol1_Cap1_REV2_IMPRESSAO.pdf",
+    "sha256": "36d857a9936c54c0acdedc62090c08e3890499983192bf6c8ee6c4202d3c7767",
+    "size": 709249
+  },
+  {
+    "id": "1OpBygNb47I829GFSTxVejr_-zojklrQt",
+    "path": "Volume_01_Fundamentos/Capitulo_02/Enciclopedia_Forense_Vol1_Cap2_REV2_IMPRESSAO.pdf",
+    "sha256": "63d15d0a704083bd1dd2189c591e7f0bda0612d7f15c2480a10dd73e2d02bc6a",
+    "size": 809147
+  },
+  {
+    "id": "1WN_CpC2LMcR_-WwXP2Qyuxw-ih58nMSc",
+    "path": "Volume_01_Fundamentos/Capitulo_03/Enciclopedia_Forense_Vol1_Cap3_REV2_IMPRESSAO.pdf",
+    "sha256": "58c994d176509064e94e612f02df97fc17e5775b4bd2a0343fd3324060936379",
+    "size": 798072
+  },
+  {
+    "id": "14fyAEaaI0lcCvFiAFyncRap1S9Ftt-It",
+    "path": "Volume_01_Fundamentos/Capitulo_04/Enciclopedia_Forense_Vol1_Cap4_REV2_IMPRESSAO.pdf",
+    "sha256": "9180b0d4025152819b8d4a47941ab2eb06d55801e50d4278b44c3a037a60b315",
+    "size": 737211
+  },
+  {
+    "id": "1xXM0h9wO_wvPe25Pgg2LTLNQsNNqyta1",
+    "path": "Volume_01_Fundamentos/Capitulo_05/Enciclopedia_Forense_VolI_Capitulo_05_REV1_IMPRESSAO.pdf",
+    "sha256": "55bee71877eefc6e08e452a925baa8b88c6bd4702b92c5138e6264f452cd39e9",
+    "size": 100713
+  },
+  {
+    "id": "1nGcniIhhUikyiahsq9mw94GNNOtzTB_e",
+    "path": "Volume_01_Fundamentos/Capitulo_06/Enciclopedia_Forense_VolI_Capitulo_06_REV1_IMPRESSAO.pdf",
+    "sha256": "15580cd0789c79842fe2805e49c276c5bd35c6ed92d823516b3ed182ea52ea92",
+    "size": 97458
+  },
+  {
+    "id": "1vFl2eb8UHRM9EJCxIIf1sk9eWP65PUO1",
+    "path": "Volume_01_Fundamentos/Capitulo_07/Enciclopedia_Forense_VolI_Capitulo_07_REV1_IMPRESSAO.pdf",
+    "sha256": "cf1cc71828087ece2953d332fe89daca3316663f84e7482a453cc4e93ed3be88",
+    "size": 98769
+  },
+  {
+    "id": "1vS88wIgQG8iDqIgWlbQxibCQCbHHiTzy",
+    "path": "Volume_01_Fundamentos/Capitulo_08/Enciclopedia_Forense_VolI_Capitulo_08_REV1_IMPRESSAO.pdf",
+    "sha256": "bfe31d2183d87dbbb5fcfeb3441abd337a08efc0dba122030415f622c3afe7a2",
+    "size": 90123
+  },
+  {
+    "id": "1o2ZAbeqPcTKzo3fCvNkZtW8YFzzKsimA",
+    "path": "Volume_01_Fundamentos/Capitulo_09/Enciclopedia_Forense_VolI_Capitulo_09_REV1_IMPRESSAO.pdf",
+    "sha256": "4e1a662b4d03ef511c82bd510bd3efde3109da1bf5d33a2451943ca7a2ab7150",
+    "size": 96328
+  },
+  {
+    "id": "1yt8vR_07NdFOgr5mx8lE1X5qHaWE6Hf1",
+    "path": "Volume_01_Fundamentos/Capitulo_10/afericoes.csv",
+    "sha256": "a5dea77b15e78b38ed918e467a89194661340ef1d139de8e61b73c2e9f893e94",
+    "size": 176
+  },
+  {
+    "id": "1UD7FX_zTxzjhrsfRFhY7Gz6A6Y-KmH7N",
+    "path": "Volume_01_Fundamentos/Capitulo_10/analise_farol27.py",
+    "sha256": "d35811101879ca64366bfd3a3ed8c59a71d3e0664eb50ff4633f16843efc8ba4",
+    "size": 1785
+  },
+  {
+    "id": "15HKJ0gkOLadA_6FTUDrjPR5iOP-AxR7J",
+    "path": "Volume_01_Fundamentos/Capitulo_10/Enciclopedia_Forense_VolI_Capitulo_10_REV1_IMPRESSAO.pdf",
+    "sha256": "f42f1637b7911cbdb5b7d5ba0ee7a797f2bbf14c5b321de9a018b52dd89a8fdf",
+    "size": 103739
+  },
+  {
+    "id": "1gORadg17qYF8-_IcBA1f5y7t2faLaAxv",
+    "path": "Volume_01_Fundamentos/Capitulo_10/rede_eventos.csv",
+    "sha256": "b1cc10a4d5dfa81d802938317b11b265446989c38d731c7d8574d8400ef27bd7",
+    "size": 242
+  },
+  {
+    "id": "1fKzPB5BZpNAdW3v-hVFO644yBhiMJJH_",
+    "path": "Volume_01_Fundamentos/Capitulo_10/video_eventos.csv",
+    "sha256": "c6a9995a62d51b9bcb5c56d1ea493c98dd48bc7e6ab7771d7280961ae6274621",
+    "size": 321
+  },
+  {
+    "id": "1LoxnPHcufgu_bnj31XLquWl0SZHiCWAH",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/00_Controle_Qualidade/CONTROLE_QUALIDADE_VOLUME_II_C20_C23_ED1.pdf",
+    "sha256": "b8b4dcb38221dba8187e58e0cf8177baaf903892d5541d1d82526d240d75f9e9",
+    "size": 30397
+  },
+  {
+    "id": "1Ge_Li45B3eevjdKGCvfkjlSz_QxZeQNK",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/00_Controle_Qualidade/preflight_C20_C23.json",
+    "sha256": "6cb2528aa1ff4669b05b240fa6e8124a207a2800a6b7ba17d27b3f65b9030129",
+    "size": 1112
+  },
+  {
+    "id": "13XzU42s27AnI4W2RIZ2_bU_n2HuoHslg",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_11/Enciclopedia_Forense_VolII_Capitulo_11_ED1.pdf",
+    "sha256": "aa3a32952b1d195b4c269f023e23f19ba1a9aef60505fd85fb580a08b2560049",
+    "size": 102062
+  },
+  {
+    "id": "1BBc5KgKlEB1TT-UkF0LfDachm5iYDXcy",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_11/validador_cap11_13.py",
+    "sha256": "f119958a289cb99573d41c11769f934d00df6fa2075ae7a203b3de2f1087edd8",
+    "size": 868
+  },
+  {
+    "id": "1fD2F40xqkUvS_nb8BXXaEZxNAR-yvibs",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_12/Enciclopedia_Forense_VolII_Capitulo_12_ED1.pdf",
+    "sha256": "e519818e40a1a29811d73b524f837eab2e8a29bd66ae26eee97bc15fd2e97b4c",
+    "size": 101366
+  },
+  {
+    "id": "1pO4Jqh4xXE6PIr-9FsQpvbzUocyohybe",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_12/lab_windows_cap12.ps1",
+    "sha256": "29219cb69f53b0a97e7afb58a381a1518a1e3669b591ffe164de33d806b0bcf2",
+    "size": 1234
+  },
+  {
+    "id": "1LkRlomhVbFLW2svdiEBywkD_A22Ooqrt",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_13/Enciclopedia_Forense_VolII_Capitulo_13_ED1.pdf",
+    "sha256": "997d87b122af0e815e82272628c16d5a25e90fe27835052ddc48d90ee6f0265a",
+    "size": 101166
+  },
+  {
+    "id": "16BAoeF3-6g44mG5sbWcFpXi3Be8j1mvg",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_13/lab_linux_cap13.sh",
+    "sha256": "7632cbfd4a4c232ff80fbfea5b4847baf2d7880260c19f2d587faa2eb0cb31aa",
+    "size": 799
+  },
+  {
+    "id": "1a6F1CPG0ujAiVl46Yknc1goiz_DDxDny",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_14/Enciclopedia_Forense_VolII_Capitulo_14_ED1.pdf",
+    "sha256": "75ac18bdb413556fbd38b685ba81235296ae4d2b7b4e40d2b6c134d323cfe83e",
+    "size": 102594
+  },
+  {
+    "id": "125b2CQ1YAA6Ba8ZmPzahji7mAg_jysYI",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_14/lab_cap14_estrutura.py",
+    "sha256": "f7868268f752c4fbbfa02c11205571a23e6da3bfa3d194cdedbbe0d8cd47e544",
+    "size": 1416
+  },
+  {
+    "id": "1-7ZCUOD3zvUQ197WChYSkrnqi9lCixoJ",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_15/Enciclopedia_Forense_VolII_Capitulo_15_ED1.pdf",
+    "sha256": "61bffb6ce75e351c0dc96e4fd6f567fb24a7b02272bbf89617b51be102eca8f5",
+    "size": 100300
+  },
+  {
+    "id": "1LausjML35Q6Z1sg43Kj-ddx3l9LmiMK0",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_15/lab_cap15_formatos.py",
+    "sha256": "357804ece3fcd07fde48ee6c813afbe4d30e441f32d9905eb9d4292a73c68d1b",
+    "size": 2956
+  },
+  {
+    "id": "1yVirnXgIKlWTX4fnNYdVdRPJngkhxMYJ",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_16/Enciclopedia_Forense_VolII_Capitulo_16_ED1.pdf",
+    "sha256": "137d006a23d90e8b07fd298d15f7afcddc2b9f3e2b1ff21239595ab6be32af44",
+    "size": 110632
+  },
+  {
+    "id": "184heKehMt528M-JcI2PEWSYAUcRiy-VK",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_16/lab_cap16_fluxos.py",
+    "sha256": "e8bbcb80b3c278a7cb0750ce653818867dfaf5553124571f420db27a53671e27",
+    "size": 2307
+  },
+  {
+    "id": "1GLSEEqaliIdUE9ry58glPsuB5HkmZBm1",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_17/Enciclopedia_Forense_VolII_Capitulo_17_ED1.pdf",
+    "sha256": "e39af5026be188deb6d0aafa5f5bcc9fe885ba2402d1f53783ebb994620b1f13",
+    "size": 303253
+  },
+  {
+    "id": "1VeHwpuv9bSvLVj1AmmK2h1alGPqHMokK",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_17/lab_cap17_matematica.py",
+    "sha256": "63d1cc4129444ca42fb2916f20a7b504b967df4ef1530ce37027a3a2572134e5",
+    "size": 1159
+  },
+  {
+    "id": "1MhwO6XNdFi8-pxZo3-5A8qAuBkxQ9qrL",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_18/Enciclopedia_Forense_VolII_Capitulo_18_ED1.pdf",
+    "sha256": "9a82fcdd0fd832661f078a7599b289d9f6f6e0d80b19c9aaa6728ea7e4ec4963",
+    "size": 201826
+  },
+  {
+    "id": "1DZrJ6gSBxOU2UZqDn9KrsTRQgzZ6w_WO",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_18/eventos_sinteticos.csv",
+    "sha256": "530d23401eaad94dbbcf81c346daa406fc07e089384d4371ba0385106041fd31",
+    "size": 209
+  },
+  {
+    "id": "1pHgRCEpfULf6hVwAbYHQTI1Oub7_6XAN",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_18/lab_cap18_leitor.py",
+    "sha256": "1deebb74b3c41205261fff3a49281d460a7e59a926fbdda303daaea94c6b6621",
+    "size": 1969
+  },
+  {
+    "id": "1CXy76SHxeCe47w0mUavBbeZoD1aKKqkx",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_19/Enciclopedia_Forense_VolII_Capitulo_19_ED1.pdf",
+    "sha256": "24581512901a1d9e207a834d8937d5dbaefaf258926ee01d1cfc7e1aeab1af88",
+    "size": 229466
+  },
+  {
+    "id": "1a4GJcN5ZIxfPPcVJH6uL9LWGPtCSOA1g",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_19/eventos_sinteticos.csv",
+    "sha256": "530d23401eaad94dbbcf81c346daa406fc07e089384d4371ba0385106041fd31",
+    "size": 209
+  },
+  {
+    "id": "16fJzcm_3XkFJdTY7-90QWkiI_Itiy14I",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_19/lab_cap19_pipeline.py",
+    "sha256": "6adf164550e19c961200e3de74c7a1b845d3cd8e79601b888d0faea99dd86f23",
+    "size": 3226
+  },
+  {
+    "id": "1DRkdP8lMVNLu06hbSW5JnhIpqCeYXeX4",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_19/LEIA_PRIMEIRO.txt",
+    "sha256": "847e3d6a4d6d653a69e10e30a326944c38534b1f042ba4bf2ac6d9961f3fc8e1",
+    "size": 1391
+  },
+  {
+    "id": "1ZZlE5IwO1Q3zSPJw-q7y63yPrEYJq5Li",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_19/testar_cap17_19.py",
+    "sha256": "b37bf80df808d710368d7833fe365823e57980f9aa8b0c538b1e8f2620051386",
+    "size": 2533
+  },
+  {
+    "id": "16APeHZ04rQO2LJZOXOtZLdfB3Hk2jBts",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_20/Enciclopedia_Forense_VolII_Capitulo_20_ED1.pdf",
+    "sha256": "cf1837010fcabe0adefeb3dbe1143a2ebb09288f71cb258427c07fea43055ecf",
+    "size": 158144
+  },
+  {
+    "id": "1moN0pEUVbkJ7Gb124CZQxf87x8Yz2Hqp",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_20/eventos_sinteticos.csv",
+    "sha256": "ddb77a25848df81bad0b7be542ea69501c03e02930e3728a949dadcf6a1c368f",
+    "size": 818
+  },
+  {
+    "id": "1WdTj3uGA9c6xaeEDmpWdUyoZTOGAWVQn",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_20/fontes_sinteticas.csv",
+    "sha256": "1b9e0c97760dd81181a66cd1d0931bf0c022ea37671f02d36bbaabe24735f102",
+    "size": 184
+  },
+  {
+    "id": "1lINdXAV6cuBYfqpzT0THATJ9m2O6OCcX",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_20/lab20_pandas.py",
+    "sha256": "24ba79b86764ae808bbe7b6981fa0cbf0387b1c12a4f00b71698854553fa7c11",
+    "size": 1875
+  },
+  {
+    "id": "1gQvbDYJQEEV7XcOW70Q3fYPC4l0_sPxe",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_20/LEIA_PRIMEIRO.txt",
+    "sha256": "e403dc9a2c58538db6d4371bad8531370b469f77d0c7e9829c00a98aa12b121f",
+    "size": 2166
+  },
+  {
+    "id": "14EjcVd4msu7VqVdSbhJc3BvV-ePduYU4",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_20/requirements_laboratorio.txt",
+    "sha256": "6979eeaed30ec7f45ff725f33240136e49c396fdf8a5ef12964fb2960c8a5d1e",
+    "size": 27
+  },
+  {
+    "id": "1i0HQ1dfgih-zPmMPnan1V_bbdYtVZXRS",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_21/consultas_cap21.sql",
+    "sha256": "4f2ea307dcc964bbb1448b9ca301fd883f560262d09e040746486cf2a28f5e5e",
+    "size": 441
+  },
+  {
+    "id": "15sdDQgVjwJMD_crukDkfPJpOf1sc2vd9",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_21/criar_banco.py",
+    "sha256": "c118036085f68a6bc82343b237ab3162be73922e134ec0cb468f2e058dc93953",
+    "size": 2721
+  },
+  {
+    "id": "11pzMdjeu6TXBM_ym5CxG0i8Vcct-Kxrc",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_21/Enciclopedia_Forense_VolII_Capitulo_21_ED1.pdf",
+    "sha256": "588ea665e69c8e4bb17605f8c25a1d6f929f2e791b16b5d8d658108f03a290fb",
+    "size": 119847
+  },
+  {
+    "id": "1TDTpBw0tFAZ17X9jrLARDPn_nMl7_Xgp",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_21/eventos_sinteticos.csv",
+    "sha256": "ddb77a25848df81bad0b7be542ea69501c03e02930e3728a949dadcf6a1c368f",
+    "size": 818
+  },
+  {
+    "id": "1XfGcrD-FpWQxoR17ZyN51KeVnditAUmP",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_21/fontes_sinteticas.csv",
+    "sha256": "1b9e0c97760dd81181a66cd1d0931bf0c022ea37671f02d36bbaabe24735f102",
+    "size": 184
+  },
+  {
+    "id": "1VwQ2sFf844PQ-ShDp6FS0OdpsGwVQ6xv",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_21/LEIA_PRIMEIRO.txt",
+    "sha256": "e403dc9a2c58538db6d4371bad8531370b469f77d0c7e9829c00a98aa12b121f",
+    "size": 2166
+  },
+  {
+    "id": "1MgAhvB_VZ0GPyVKxFuL-McWKTJZe1pro",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_22/consultas_cap22.sql",
+    "sha256": "00e7dc0c0662b549e163c5c264aeb9f875afc2d305c1e31b969450cbb0e55de7",
+    "size": 1379
+  },
+  {
+    "id": "1tcyEyH8OUSwtH4ixBeIs9q9LQHamF8HB",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_22/criar_banco.py",
+    "sha256": "c118036085f68a6bc82343b237ab3162be73922e134ec0cb468f2e058dc93953",
+    "size": 2721
+  },
+  {
+    "id": "13DKF64tHOuqN-7nuk5BKFt2xoYoy4WGg",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_22/Enciclopedia_Forense_VolII_Capitulo_22_ED1.pdf",
+    "sha256": "c198561ca746b4cbaab910a1798935c5e5fa80464175c0a3ba7898cb48ca12b7",
+    "size": 169310
+  },
+  {
+    "id": "1569PqC9h_3sh_n-VsrlUL6yZ4CQAVOeq",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_22/eventos_sinteticos.csv",
+    "sha256": "ddb77a25848df81bad0b7be542ea69501c03e02930e3728a949dadcf6a1c368f",
+    "size": 818
+  },
+  {
+    "id": "1m-tLrcsw5P9x7exkUGifxg8u6UZu3BR6",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_22/fontes_sinteticas.csv",
+    "sha256": "1b9e0c97760dd81181a66cd1d0931bf0c022ea37671f02d36bbaabe24735f102",
+    "size": 184
+  },
+  {
+    "id": "1HcwKaLVajXYIJcnEpcFfdosv-K0HWXfa",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_22/LEIA_PRIMEIRO.txt",
+    "sha256": "e403dc9a2c58538db6d4371bad8531370b469f77d0c7e9829c00a98aa12b121f",
+    "size": 2166
+  },
+  {
+    "id": "1x0dEsxv2-I1QPvwJQV3Ec9BShHQsYLEt",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/consultas_cap21.sql",
+    "sha256": "4f2ea307dcc964bbb1448b9ca301fd883f560262d09e040746486cf2a28f5e5e",
+    "size": 441
+  },
+  {
+    "id": "1oe1lG19NKhuZ-ttG3iPr5anf2siduXIe",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/consultas_cap22.sql",
+    "sha256": "00e7dc0c0662b549e163c5c264aeb9f875afc2d305c1e31b969450cbb0e55de7",
+    "size": 1379
+  },
+  {
+    "id": "1nX_hrgASyR-v-FiYibQ6qFFzkar2eQh9",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/criar_banco.py",
+    "sha256": "c118036085f68a6bc82343b237ab3162be73922e134ec0cb468f2e058dc93953",
+    "size": 2721
+  },
+  {
+    "id": "1ml0ER15_36e0zJT3_y5Vs0WzA8gkMlAI",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/Enciclopedia_Forense_VolII_Capitulo_23_ED1.pdf",
+    "sha256": "83ee9f07479f1f4a8221aa497f98219b4bb70ea401d87baf101c598bcc96984b",
+    "size": 105412
+  },
+  {
+    "id": "1rQcjH_N-znwBModOJYOpx52q5LYo7OUk",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/eventos_sinteticos.csv",
+    "sha256": "ddb77a25848df81bad0b7be542ea69501c03e02930e3728a949dadcf6a1c368f",
+    "size": 818
+  },
+  {
+    "id": "19xgUZUUhmsoh_s_kVvOWjS_eOop-cwhH",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/fontes_sinteticas.csv",
+    "sha256": "1b9e0c97760dd81181a66cd1d0931bf0c022ea37671f02d36bbaabe24735f102",
+    "size": 184
+  },
+  {
+    "id": "1pVR0m79UMv5FnvoLgB0_b1GyslInRtHp",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/lab20_pandas.py",
+    "sha256": "24ba79b86764ae808bbe7b6981fa0cbf0387b1c12a4f00b71698854553fa7c11",
+    "size": 1875
+  },
+  {
+    "id": "12qfoVsEfjmagUbo4P-7JBXHMjl_3tubX",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/lab23_manifesto.py",
+    "sha256": "504f426017682cb5db21ba1fa6ecd5ff6a8607b028398590e6cdff07a6c17049",
+    "size": 1468
+  },
+  {
+    "id": "1Vm2GJwSS7tJ_g9JmEUFHb-gZAnUeP8hW",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/LEIA_PRIMEIRO.txt",
+    "sha256": "e403dc9a2c58538db6d4371bad8531370b469f77d0c7e9829c00a98aa12b121f",
+    "size": 2166
+  },
+  {
+    "id": "1DKVuzmpxlhVqG9IVYT7AiZ0ALxcbSwjD",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/requirements_laboratorio.txt",
+    "sha256": "6979eeaed30ec7f45ff725f33240136e49c396fdf8a5ef12964fb2960c8a5d1e",
+    "size": 27
+  },
+  {
+    "id": "1MlYtmt3NU70cfdNUcoUqHIWnEiJby8cw",
+    "path": "Volume_02_Computacao_Python_SQL_Matematica/Capitulo_23/testar_laboratorios.py",
+    "sha256": "321470e2667a4280d2b2c6eadf3a562ae918eeaba664b98d63bfbfaf1a619ba3",
+    "size": 2623
+  },
+  {
+    "id": "1EsIGS9U0Uc8Xw-HBQDH-qTqjsRZDeiK6",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/00_Controle_Qualidade/CONTROLE_DE_QUALIDADE_VOLUME_III_C24_C26_ED1.pdf",
+    "sha256": "da9bc0b8be4534b8dca6e132520a89634f68fea90ffad65f24f04d6c41ae815f",
+    "size": 23385
+  },
+  {
+    "id": "13ACvmsWHDX9uw-I6rVKREYWnipnLm71b",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/00_Controle_Qualidade/MANIFESTO_SHA256_REMESSA_C24_C26.csv",
+    "sha256": "e358ed414466d1c7a615727ebcd2dd2d9410a6e271af7876cc122855da030067",
+    "size": 2562
+  },
+  {
+    "id": "1dd0VMNUS7VcCdYw_maHEWKYxQfWJq2TM",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/00_Controle_Qualidade/preflight_remessa_C24_C26.py",
+    "sha256": "3e3a4c71320ba696169dc0fc45952bbc8ad882274fc3c239fb198f616967e731",
+    "size": 2377
+  },
+  {
+    "id": "1ASWAPACnrv_ddN9UI2MO7TGQINFYb61W",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/00_Controle_Qualidade/resultado_preflight_C24_C26.json",
+    "sha256": "190567740f7bacaf1884ef908e725f202c6203921ff45aab84e7ab6f52028b2e",
+    "size": 1538
+  },
+  {
+    "id": "1sxb24JvLWEwhRIhVADE1OUf5TAazy8w0",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/00_Controle_Qualidade/validar_conteudo_C24_C26.py",
+    "sha256": "4001ee03ca0922e58dee6858040cff1df87659f418f89a1cbd89e8f57faa76a4",
+    "size": 2072
+  },
+  {
+    "id": "1cTsOFGdgbzzvs4QfRX8cEYo_fG20gTul",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_24/cap24_boxplot.png",
+    "sha256": "f2c50f464c680de1015f1c63aded16e08c75a570e4b03b3547eabac8fc593dd1",
+    "size": 25533
+  },
+  {
+    "id": "1YyjR4dt7Qmby5M4suT9JxLzQaTCqVxGS",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_24/cap24_cobertura.png",
+    "sha256": "cd95422b595edeb299cb8fa66eb4cfffeea9c532fcbe39898be1fca16f490d66",
+    "size": 35161
+  },
+  {
+    "id": "17uhwpQRLied4WLFUdvAxb0WAdEpBAG57",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_24/cap24_descritiva.py",
+    "sha256": "a9b25acdc1d61d9e8a4d25085da6f77545efd2ccdd115dda92fbd34004642a63",
+    "size": 1467
+  },
+  {
+    "id": "1eKwc5HkL2rIcQEg6ztG2vbjAJTaYrsa3",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_24/cap24_histogramas.png",
+    "sha256": "f3396ec97a2f8525f747692919f01a86cab473519e67a32a696eebf90586714e",
+    "size": 43881
+  },
+  {
+    "id": "15mO39cucr3xf-siqW60RAz2vD8uwJn2o",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_24/Capitulo_24.md",
+    "sha256": "000ef4eb50fc3ccaf602706199c6c86f1f4f706750862988fea9c47bb587f08d",
+    "size": 21144
+  },
+  {
+    "id": "173YKtM1uzAwcHdDzaGrCCaEQiYzXd3A1",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_24/chamadas_sinteticas.csv",
+    "sha256": "5828dc00e64f37c8e89ef23816f6e28f049d5ea0ae422f8f01fdd020d96ef27a",
+    "size": 1182
+  },
+  {
+    "id": "1x1Jtx_UICejhrSqb3c5yXVeS9GyFPu_v",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_24/Enciclopedia_Forense_VolIII_Capitulo_24_ED1_IMPRESSAO.pdf",
+    "sha256": "8e82fda5d104bb590134e610f0a8b296d0d0e92963452d3f0a0337d3b644da2a",
+    "size": 156018
+  },
+  {
+    "id": "197SWyxWU4KA8oYIZEVWAu59TVRK3RTR2",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_24/gerar_dados.py",
+    "sha256": "70a0466bc923203440070e2c02f9d6327b9aee8b5233ac55065a59e9ff362768",
+    "size": 1009
+  },
+  {
+    "id": "1-jcrA7kVeKd3WHIXAPsdpJHPoW-EdV3q",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_24/README.txt",
+    "sha256": "fb42c9be7d7042eb49da3823e1be59753166089fa0e4ce1c9e16064d92704bb0",
+    "size": 779
+  },
+  {
+    "id": "1IkQG827xRHBSjT_VJ7vP1VI88irYhoW0",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_25/cap25_espaco_amostral.png",
+    "sha256": "06bfd626810bf0baf5794eebd4471e982273df7757e8c2a302923980c077835d",
+    "size": 33722
+  },
+  {
+    "id": "1FuT3mFQvHh9my_BYNcIIxeUqqqcNsq81",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_25/cap25_multiplas_buscas.png",
+    "sha256": "fcc627048a5b64a11ee2f6037146f5980bef43a73e058e1dd50f9ab13171cc78",
+    "size": 62207
+  },
+  {
+    "id": "1qm7nrfaaOBvrpPJ6uVfaXh3gIvR0i3C7",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_25/cap25_probabilidade.py",
+    "sha256": "3c737919c50d5b4f5f9254a259fea620a0d344cf69d82f5716bc7bfd81eeecd8",
+    "size": 565
+  },
+  {
+    "id": "1qBJF1Ta6SCFoU7UAvxLfOqBHXFABpyVM",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_25/Capitulo_25.md",
+    "sha256": "36d4e8f30061c6b6a45f5d3f3c98cf0d2538d25fb4b9eb5be126c1539a2127d9",
+    "size": 18028
+  },
+  {
+    "id": "1XHXMazK437iqYqmuN1LKTrbG2dpkq8HL",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_25/Enciclopedia_Forense_VolIII_Capitulo_25_ED1_IMPRESSAO.pdf",
+    "sha256": "c18922ec46acdd0ea7b2d3f3c00e21f44e3f212c0a9316fd351caa519ba1c4b8",
+    "size": 145109
+  },
+  {
+    "id": "1lrbU7u1HVuRFLU00vN2Y8zBHTKCUQ3bw",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_25/README.txt",
+    "sha256": "fb42c9be7d7042eb49da3823e1be59753166089fa0e4ce1c9e16064d92704bb0",
+    "size": 779
+  },
+  {
+    "id": "1pc3HQqv3Hz2VWLHeN678VIIic7xZYzZw",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_26/cap26_discretas.png",
+    "sha256": "b7a660f825f9039a61fc08415cf6b40a4e1a840a1fe72e548278d82eda988857",
+    "size": 50222
+  },
+  {
+    "id": "1X9W4zdV632ACSyj3i6cHe-EKIfbJYSJr",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_26/cap26_distribuicoes.py",
+    "sha256": "8a80dddc3146e48a9d17f6ea01b56b69459384676f7dbd12a8fa780792355485",
+    "size": 869
+  },
+  {
+    "id": "1wU15vb6kghuKzMSjovNMbculaB1nFe8F",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_26/cap26_montecarlo.png",
+    "sha256": "2655e71fc7ec5f11f6f248f50254b6732b4cf274757e580aec107654809b143e",
+    "size": 79869
+  },
+  {
+    "id": "1w0UIRZjHPTAjqF-Juo8F9FE0sY43aR5d",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_26/cap26_normal.png",
+    "sha256": "ea80d53ae56fca65feee382fbaa0035393ba0245858c58db59a2044d75a8add8",
+    "size": 62777
+  },
+  {
+    "id": "146Jm9kXvj2WOeXpnvv1gtpTSCZ6oMCVg",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_26/Capitulo_26.md",
+    "sha256": "f3579d9afd5ec8476a6e37e19ead7c9777dd2166f532b040df627177f691802f",
+    "size": 21031
+  },
+  {
+    "id": "1GiUyjlOAKCtY5TIFLvp0a-ckPtJsuRSO",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_26/contagens_sinteticas.csv",
+    "sha256": "95110a5283cef56be9a2a901060f632654b6a7fa24a56fcde86bccae974f2144",
+    "size": 2007
+  },
+  {
+    "id": "15by68L-QhG7WEjP_hiTjsrBuxgzj40t1",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_26/Enciclopedia_Forense_VolIII_Capitulo_26_ED1_IMPRESSAO.pdf",
+    "sha256": "be871573aa2746a8749c45b0e65a177331e7c634714bf3e6b819fbcff471a0b6",
+    "size": 239536
+  },
+  {
+    "id": "1Embt1x59knXdAJQZ2r35HcNauQp9ghUg",
+    "path": "Volume_03_Estatistica_Ciencia_de_Dados_Forense/Capitulo_26/README.txt",
+    "sha256": "fb42c9be7d7042eb49da3823e1be59753166089fa0e4ce1c9e16064d92704bb0",
+    "size": 779
+  }
+]

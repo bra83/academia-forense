@@ -1,0 +1,22 @@
+name: case_study_core
+description: Academia Forense Case Study Methodology Evaluator, Forensic Timeline & Signed Portfolio PDF Exporter (§15, §16)
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  persistence_core:
+    path: ../persistence_core
+  crypto: ^3.0.3
+  meta: ^1.15.0
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
