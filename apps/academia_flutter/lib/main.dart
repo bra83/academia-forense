@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:drift/drift.dart' as drift;
@@ -270,11 +269,15 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
         "SELECT COUNT(*) AS total FROM laboratory_runs WHERE is_passed = 1 AND laboratory_id NOT LIKE 'lab_demo_%'",
       ).getSingle();
       final sessions = await widget.db.userProgressDao.getRecentStudySessions(limit: 10000);
+      final now = DateTime.now();
+      final weekStart = DateTime(now.year, now.month, now.day)
+          .subtract(Duration(days: now.weekday - DateTime.monday));
+      final weekSessions = sessions.where((s) => !s.startTime.isBefore(weekStart));
       if (!mounted) return;
       setState(() {
         _completedAssessments = assessments.read<int>('total');
         _verifiedLabs = labs.read<int>('total');
-        _studyHours = sessions.fold<int>(0, (v, e) => v + e.durationSeconds) / 3600.0;
+        _studyHours = weekSessions.fold<int>(0, (v, e) => v + e.durationSeconds) / 3600.0;
       });
     } catch (_) {
       if (mounted) setState(() => _assessmentStatus = 'Não foi possível ler as métricas locais.');
@@ -1135,22 +1138,21 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
         ),
         const SizedBox(height: 16),
         ForensicCard(
-          title: 'Portfólio e Emissão de Relatório Assinado (§16.1)',
-          subtitle: 'Assinatura Criptográfica SHA-256 e PDF Binário',
+          title: 'Portfólio de Formação',
+          subtitle: 'Exportação de relatório final ainda em desenvolvimento',
           leading: const Icon(Icons.picture_as_pdf_rounded, color: ForensicColors.forestGreenDark),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Gere o laudo didático consolidado dos exercícios periciais executados. '
-                'O documento gerado contém hash criptográfico verificável contra adulterações '
-                'e o aviso de natureza educacional.',
+                'O aplicativo ainda não dispõe de exportação de um arquivo PDF real para o dispositivo. '
+                'O resumo antigo era apenas exibido na tela, e um hash SHA-256 não equivale a assinatura digital.'
                 style: ForensicTypography.body,
               ),
               const SizedBox(height: 16),
               ForensicPrimaryButton(
                 onPressed: _exportSignedPdfReport,
-                label: 'Exportar Relatório PDF',
+                label: 'Ver situação da exportação PDF',
                 icon: const Icon(Icons.download_rounded, size: 18),
               ),
             ],
@@ -1159,9 +1161,9 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
         if (_portfolioExportStatus.isNotEmpty) ...[
           const SizedBox(height: 16),
           ForensicCard(
-            title: 'Laudo Pericial Emitido',
-            subtitle: 'Validação Criptográfica e Binária 100% Autêntica',
-            leading: const Icon(Icons.verified_rounded, color: ForensicColors.forestGreenPrimary),
+            title: 'Estado da exportação',
+            subtitle: 'Nenhum arquivo PDF foi entregue',
+            leading: const Icon(Icons.info_outline_rounded, color: ForensicColors.forestGreenPrimary),
             child: SelectableText(
               _portfolioExportStatus,
               style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
@@ -1251,33 +1253,11 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
   }
 
   Future<void> _exportSignedPdfReport() async {
-    final bundle = PortfolioReportExporter.generateReportBundle(
-      activityId: 'PORTFOLIO_ACADEMIA_2026',
-      studentName: 'Perito Forense Discente',
-      methodology: 'Investigação Técnico-Científica Multidisciplinar Integrada (7 Domínios)',
-      resultsSummary: 'Validação 100% em Hashes Criptográficos, Telefonia CDR, Bayes e Preservação de Cadeia de Custódia.',
-      includePdf: true,
-    );
-
-    final pdfBytes = bundle.pdfBytes ?? Uint8List(0);
-    final isPdfValid = pdfBytes.length > 5 &&
-        pdfBytes[0] == 0x25 &&
-        pdfBytes[1] == 0x50 &&
-        pdfBytes[2] == 0x44 &&
-        pdfBytes[3] == 0x46; // %PDF
-
-    final buffer = StringBuffer();
-    buffer.writeln('RELATÓRIO FORENSE ASSINADO DIGITALMENTE:');
-    buffer.writeln('• Atividade: ${bundle.activityId}');
-    buffer.writeln('• Discente: ${bundle.studentName}');
-    buffer.writeln('• Timestamp UTC: ${bundle.timestamp}');
-    buffer.writeln('• Assinatura SHA-256: ${bundle.sha256Signature}');
-    buffer.writeln('• Integridade da Assinatura: ${bundle.verifyIntegrity() ? "VÁLIDA (Inviolável)" : "INVÁLIDA"}');
-    buffer.writeln('• Binário PDF: ${pdfBytes.length} bytes gerados | Magic Bytes: ${isPdfValid ? "%PDF-1.4 (VÁLIDO)" : "INVÁLIDO"}');
-    buffer.writeln('\n${bundle.disclaimer}');
-
     setState(() {
-      _portfolioExportStatus = buffer.toString();
+      _portfolioExportStatus =
+          'O fluxo de exportação de relatório ainda não está implementado. '
+          'Nenhum PDF foi salvo no aparelho. '
+          'Os exercícios didáticos não equivalem a resultados periciais certificados.';
     });
   }
 
