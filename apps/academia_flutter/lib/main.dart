@@ -103,6 +103,9 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
   // Laboratory & Case Study state (Tab 3)
   LabDomain _selectedDomain = LabDomain.telephony;
   String _labOutput = '';
+  final TextEditingController _telephonyCsvController = TextEditingController(text: '''call_id,timestamp,caller_msisdn,callee_msisdn,duration_sec,cell_tower_id,latitude,longitude
+C1,2026-11-16T10:00:00Z,+5531988880001,+5531977770002,120,ERB_BH_CENTRO_1,-19.92,-43.94
+C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93,-43.93''');
   bool _isExecutingLab = false;
   String _caseValidationOutput = '';
 
@@ -134,6 +137,7 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
   void dispose() {
     _geminiKeyController.dispose();
     _tutorQuestionController.dispose();
+    _telephonyCsvController.dispose();
     super.dispose();
   }
 
@@ -758,6 +762,7 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
                       setState(() {
                         _selectedDomain = d;
                         _labOutput = '';
+                        _labLastSuccess = null;
                       });
                     }
                   },
@@ -768,8 +773,8 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
         ),
         const SizedBox(height: 16),
         ForensicCard(
-          title: 'Telefonia: Cruzamento de CDRs e ERBs',
-          subtitle: 'Ambiente: CDRAnalyzer',
+          title: '${_selectedDomain.displayName} — prática didática',
+          subtitle: 'Dados de treino; execução não certifica competência',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -777,6 +782,17 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
                 'Analise registros de chamadas telefônicas e verifique o alinhamento com azimute de antenas celulares.',
                 style: ForensicTypography.body,
               ),
+              if (_selectedDomain == LabDomain.telephony) ...[
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _telephonyCsvController,
+                  maxLines: 6,
+                  decoration: const InputDecoration(
+                    labelText: 'Cole ou edite registros CDR (CSV de treino)',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
               const SizedBox(height: 16),
               ForensicPrimaryButton(
                 onPressed: _isExecutingLab ? null : () => _executeLabForDomain(_selectedDomain),
@@ -790,8 +806,11 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
           const SizedBox(height: 16),
           ForensicCard(
             title: 'Diagnóstico da Execução Forense',
-            subtitle: 'Status: Aprovado • Drift Relational Log Registrado',
-            leading: const Icon(Icons.check_circle_rounded, color: ForensicColors.forestGreenPrimary),
+            subtitle: _labLastSuccess == true
+                ? 'Exemplo executado e salvo; nenhuma proficiência atribuída.'
+                : 'Falha na execução ou na gravação',
+            leading: Icon(_labLastSuccess == true ? Icons.check_circle_rounded : Icons.error_outline_rounded,
+              color: _labLastSuccess == true ? ForensicColors.forestGreenPrimary : Colors.red),
             child: SelectableText(
               _labOutput,
               style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
@@ -872,16 +891,16 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
           buffer.writeln('Integridade: ${integrity.matches ? "100% ÍNTEGRO (Sem Adulteração)" : "ADULTERADO"}');
           break;
         case LabDomain.telephony:
-          const sampleCdr = '''call_id,timestamp,caller_msisdn,callee_msisdn,duration_sec,cell_tower_id,latitude,longitude
-C1,2026-11-16T10:00:00Z,+5531988880001,+5531977770002,120,ERB_BH_CENTRO_1,-19.92,-43.94
-C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93,-43.93''';
-          final cdrs = TelephonyExecutor.parseCdrCsv(sampleCdr);
+          final csv = _telephonyCsvController.text.trim();
+          if (csv.isEmpty) throw const FormatException('CSV vazio');
+          final cdrs = TelephonyExecutor.parseCdrCsv(csv);
           final erbSummary = TelephonyExecutor.aggregateErbTowers(cdrs);
-          buffer.writeln('[TELEFONIA FORENSE]');
-          buffer.writeln('Total CDRs analisados: ${cdrs.length}');
+          buffer.writeln('[TELEFONIA FORENSE — DADOS DE TREINO]');
+          buffer.writeln('Total de registros analisados: ${cdrs.length}');
           erbSummary.forEach((tower, sum) {
-            buffer.writeln('Torre $tower: ${sum.totalHits} chamadas, ${sum.totalDurationSec}s duração total');
+            buffer.writeln('ERB $tower: ${sum.totalHits} chamadas, ${sum.totalDurationSec}s');
           });
+          buffer.writeln('Uma ERB não determina a localização exata do aparelho.');
           break;
         case LabDomain.mathematics:
           final bayes = MathematicsExecutor.computeBayesianProbability(
@@ -932,40 +951,64 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
           break;
       }
 
-      final labId = 'lab_${domain.value.toLowerCase()}';
-      try {
-        await widget.db.customStatement(
-          'INSERT OR IGNORE INTO curriculums (id, name, version, description) VALUES ("c_demo", "Demo", "1.0", "Desc");',
-        );
-        await widget.db.customStatement(
-          'INSERT OR IGNORE INTO volumes (id, curriculum_id, volume_number, title, discipline, description, total_chapters) VALUES ("v_demo", "c_demo", 1, "V1", "Forensics", "Desc", 1);',
-        );
-        await widget.db.customStatement(
-          'INSERT OR IGNORE INTO chapters (id, volume_id, chapter_number, title, order_index) VALUES ("ch_demo", "v_demo", 1, "C1", 1);',
-        );
-        await widget.db.customStatement(
-          'INSERT OR IGNORE INTO laboratories (id, chapter_id, domain, title, environment_type, instructions_markdown, verification_rubric_json) VALUES ("$labId", "ch_demo", "${domain.value}", "Lab ${domain.displayName}", "Standard", "Instruções", "[]");',
-        );
-      } catch (_) {}
-
-      await widget.db.laboratoryDao.recordLaboratoryRun(
-        LaboratoryRunsCompanion.insert(
-          id: 'run_${domain.value}_${DateTime.now().millisecondsSinceEpoch}',
+      final labId = 'lab_demo_${domain.value.toLowerCase()}';
+      await widget.db.transaction(() async {
+        await widget.db.curriculumDao.insertCurriculum(CurriculumsCompanion.insert(
+          id: 'academia_treinos',
+          name: 'Academia Forense — treinos locais',
+          version: '1',
+          description: 'Exercícios didáticos sem valor avaliativo',
+        ));
+        await widget.db.curriculumDao.insertVolume(VolumesCompanion.insert(
+          id: 'academia_treinos_volume',
+          curriculumId: 'academia_treinos',
+          volumeNumber: 0,
+          title: 'Exercícios locais',
+          discipline: 'Treinos',
+          description: 'Demonstrações sem aprovação acadêmica',
+          totalChapters: 1,
+        ));
+        await widget.db.curriculumDao.insertChapter(ChaptersCompanion.insert(
+          id: 'academia_treinos_capitulo',
+          volumeId: 'academia_treinos_volume',
+          chapterNumber: 0,
+          title: 'Exemplos didáticos',
+          orderIndex: 0,
+        ));
+        await widget.db.laboratoryDao.insertLaboratory(LaboratoriesCompanion.insert(
+          id: labId,
+          chapterId: 'academia_treinos_capitulo',
+          domain: domain.value,
+          title: 'Treino — ${domain.displayName}',
+          environmentType: 'Simulação local',
+          instructionsMarkdown: 'Dados de treino, sem avaliação',
+          verificationRubricJson: '{}',
+        ));
+        await widget.db.laboratoryDao.recordLaboratoryRun(LaboratoryRunsCompanion.insert(
+          id: 'run_${domain.value}_${DateTime.now().microsecondsSinceEpoch}',
           laboratoryId: labId,
           executedAt: drift.Value(DateTime.now()),
-          commandsExecutedJson: jsonEncode(['run_sample_${domain.value}']),
-          isPassed: true,
-          metricsJson: drift.Value(jsonEncode({'domain': domain.value, 'status': 'PASS'})),
-        ),
-      );
+          commandsExecutedJson: jsonEncode(['treino_${domain.value}']),
+          isPassed: false,
+          metricsJson: drift.Value(jsonEncode({
+            'domain': domain.value,
+            'evaluated': false,
+            'type': 'didactic_example',
+          })),
+        ));
+      });
 
       buffer.writeln('✓ Execução registrada no banco de dados relacional (Drift).');
+      if (!mounted) return;
       setState(() {
+        _labLastSuccess = true;
         _labOutput = buffer.toString();
         _isExecutingLab = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
+        _labLastSuccess = false;
         _labOutput = 'Erro na execução: $e';
         _isExecutingLab = false;
       });
