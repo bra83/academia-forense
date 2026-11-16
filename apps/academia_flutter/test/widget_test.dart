@@ -26,6 +26,17 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  Future<void> awaitChapterList(WidgetTester tester) async {
+    for (var attempt = 0; attempt < 50; attempt++) {
+      await tester.runAsync(() => Future<void>.delayed(
+        const Duration(milliseconds: 10),
+      ));
+      await tester.pump(const Duration(milliseconds: 50));
+      if (find.text('Abrir capítulo').evaluate().isNotEmpty) return;
+    }
+    fail('O catálogo não ficou acessível na Biblioteca.');
+  }
+
   test('Catálogo local não fabrica capítulos ausentes nem confunde revisão', () async {
     final chapters = await StudyCatalog.loadBundledPreviews();
     expect(chapters.length, 26);
@@ -41,7 +52,8 @@ void main() {
     expect(find.text('Academia Forense'), findsWidgets);
     expect(find.byType(NavigationBar), findsOneWidget);
     await tester.tap(find.text('Biblioteca'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await awaitChapterList(tester);
     expect(find.text('Biblioteca Forense'), findsOneWidget);
     expect(find.textContaining('26 PDFs foram referenciados'), findsOneWidget);
     expect(find.textContaining('Cap. 01'), findsWidgets);
@@ -79,7 +91,8 @@ void main() {
   testWidgets('Leitor de capítulos abre o conteúdo local sem fingir PDF integral', (tester) async {
     await start(tester);
     await tester.tap(find.byIcon(Icons.menu_book_outlined));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await awaitChapterList(tester);
     await tester.tap(find.text('Abrir capítulo').first);
     await tester.pumpAndSettle();
     expect(find.text('Dos dados às evidências'), findsWidgets);
