@@ -5,14 +5,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:design_system/design_system.dart';
 import 'package:persistence_core/persistence_core.dart';
-import 'package:content_core/content_core.dart';
-import 'package:learning_core/learning_core.dart';
-import 'package:assessment_core/assessment_core.dart';
+import 'chapters/study_catalog.dart';
+import 'chapters/chapter_reader_screen.dart';
 import 'package:laboratory_core/laboratory_core.dart';
 import 'package:case_study_core/case_study_core.dart';
 import 'package:ai_gateway/ai_gateway.dart';
 import 'package:audio_core/audio_core.dart';
-import 'package:drive_sync/drive_sync.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,11 +79,8 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
   int _currentIndex = 0;
 
   // Lesson & Assessment state (Tab 1)
-  late final LessonEngine _lessonEngine = LessonEngine(lessonId: 'forense.vol01.ch01');
-  bool _showActiveLesson = false;
   PedagogicalMode _tutorMode = PedagogicalMode.explicar;
   String _tutorResponse = '';
-  EvaluationResult? _lastEvaluationResult;
 
   // Voice & TTS state (§11, §12, §13)
   AudioEngine _selectedAudioEngine = AudioEngine.kokoroLocal;
@@ -96,9 +91,10 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
   String _ttsStatusMessage = '';
 
   // Library & Dual Reader state (Tab 2)
-  ReaderMode _readerMode = ReaderMode.markdownStudy;
-  String _syncStatusMessage = '';
-  bool _showErrataPanel = false;
+  List<StudyChapter> _chapters = <StudyChapter>[];
+  bool _catalogLoading = true;
+  String _catalogError = '';
+  String _chapterSearch = '';
 
   // Laboratory & Case Study state (Tab 3)
   LabDomain _selectedDomain = LabDomain.telephony;
@@ -131,6 +127,7 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
     super.initState();
     _loadGeminiSettings();
     _loadRealMetrics();
+    _loadLocalCatalog();
   }
 
   @override
@@ -267,6 +264,76 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
     }
   }
 
+
+  Future<void> _loadLocalCatalog() async {
+    try {
+      final chapters = await StudyCatalog.loadBundledPreviews();
+      await widget.db.transaction(() async {
+        await widget.db.curriculumDao.insertCurriculum(
+          CurriculumsCompanion.insert(
+            id: 'academia_enciclopedia',
+            name: 'Enciclopédia de Ciências Forenses',
+            version: '2026',
+            description: 'Catálogo de referências dos PDFs originais',
+          ),
+        );
+        for (final volumeNumber in <int>[1, 2, 3]) {
+          await widget.db.curriculumDao.insertVolume(
+            VolumesCompanion.insert(
+              id: 'academia_volume_' + volumeNumber.toString(),
+              curriculumId: 'academia_enciclopedia',
+              volumeNumber: volumeNumber,
+              title: volumeNumber == 1 ? 'Fundamentos'
+                  : volumeNumber == 2 ? 'Computação, Python, SQL e Matemática'
+                  : 'Estatística e Ciência de Dados Forense',
+              discipline: 'Ciências Forenses',
+              description: 'Documento original disponível no Google Drive',
+              totalChapters: chapters.where((c) => c.volume == volumeNumber).length,
+            ),
+          );
+        }
+        for (final chapter in chapters) {
+          await widget.db.curriculumDao.insertChapter(
+            ChaptersCompanion.insert(
+              id: chapter.id,
+              volumeId: 'academia_volume_' + chapter.volume.toString(),
+              chapterNumber: chapter.number,
+              title: chapter.title,
+              editorialStatus: drift.Value(chapter.editorialStatus),
+              orderIndex: chapter.number,
+            ),
+          );
+        }
+      });
+      if (!mounted) return;
+      setState(() {
+        _chapters = chapters;
+        _catalogLoading = false;
+        _catalogError = '';
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _catalogLoading = false;
+        _catalogError = 'Não foi possível preparar o catálogo ou o banco local: ' +
+            e.runtimeType.toString();
+      });
+    }
+  }
+
+  Future<void> _openChapter(StudyChapter chapter) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => ChapterReaderScreen(
+          chapter: chapter,
+          database: widget.db,
+          onSessionSaved: _loadRealMetrics,
+        ),
+      ),
+    );
+    _loadRealMetrics();
+  }
+
   Widget _buildTabContent(int index) {
     switch (index) {
       case 0:
@@ -380,7 +447,6 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
   }
 
   Widget _buildEstudarTab() {
-    final currentStep = _lessonEngine.currentStep;
     final sampleParagraphs = [
       '1.1 Dos dados às evidências: Na ciência forense, observação não é automaticamente inferência. Todo vestígio digital exige preservação da cadeia de custódia documentada conforme arts. 158-A a 158-F do CPP e diretrizes SWGDE 18-F-002-2.0 (20/11/2025).',
       '1.2 Verificação de integridade: A função criptográfica SHA-256 produz um resumo de 64 dígitos hexadecimais determinístico. Qualquer modificação de 1 bit altera radicalmente o hash calculado.',
@@ -396,53 +462,37 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
           style: ForensicTypography.body,
         ),
         const SizedBox(height: 16),
+
         ForensicCard(
-          title: 'Capítulo 01: Dos dados às evidências',
-          subtitle: 'Status: Aprovado • Revisão REV2 • Dos dados às evidências',
+          title: _chapters.isNotEmpty
+              ? 'Capítulo 01: ' + _chapters.first.title
+              : 'Catálogo dos capítulos',
+          subtitle: 'Leia o PDF original; os JSONs locais contêm apenas prévias incompletas.',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Passo atual (${_lessonEngine.currentStepNumber}/10): ${currentStep.title} • Avanço: ${_lessonEngine.progressPercentage.toStringAsFixed(0)}%',
-                style: ForensicTypography.body,
+              if (_catalogLoading)
+                const LinearProgressIndicator()
+              else if (_catalogError.isNotEmpty)
+                Text(_catalogError, style: ForensicTypography.caption)
+              else
+                Text(_chapters.length.toString() +
+                    ' referências de capítulos carregadas. Progresso e avaliação só serão '
+                    'registrados quando houver ações reais de estudo.',
+                    style: ForensicTypography.body),
+              const SizedBox(height: 12),
+              ForensicPrimaryButton(
+                onPressed: _chapters.isEmpty ? null : () => _openChapter(_chapters.first),
+                label: 'Abrir Capítulo 01',
               ),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 12,
-                runSpacing: 8,
-                children: [
-                  ForensicPrimaryButton(
-                    onPressed: () {
-                      setState(() {
-                        _showActiveLesson = true;
-                        // Abrir uma lição não comprova proficiência.
-                      });
-                    },
-                    label: 'Acessar Lição',
-                  ),
-                  ForensicSecondaryButton(
-                    onPressed: _runObjectiveEvaluation,
-                    label: 'Situação da avaliação',
-                  ),
-                ],
+              const SizedBox(height: 8),
+              ForensicSecondaryButton(
+                onPressed: _runObjectiveEvaluation,
+                label: 'Situação da avaliação',
               ),
-              if (_showActiveLesson) ...[
-                const SizedBox(height: 12),
-                Text(
-                  'Material em validação. A etapa ainda não tem o texto integral do capítulo; consulte o PDF original na Biblioteca.',
-                  style: ForensicTypography.caption,
-                ),
-              ],
               if (_assessmentStatus.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(_assessmentStatus, style: ForensicTypography.body),
-              ],
-              if (_lastEvaluationResult != null) ...[
-                const SizedBox(height: 12),
-                Text(
-                  'Resultado da Avaliação: ${_lastEvaluationResult!.status} (${_lastEvaluationResult!.scorePercent.toStringAsFixed(1)}%)',
-                  style: ForensicTypography.bodyMedium,
-                ),
+                const SizedBox(height: 8),
+                Text(_assessmentStatus, style: ForensicTypography.caption),
               ],
             ],
           ),
@@ -583,7 +633,6 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
   Future<void> _runObjectiveEvaluation() async {
     setState(() {
       _assessmentStatus = 'Avaliação indisponível: questões não auditadas contra os documentos originais. Não será atribuída nota automática.';
-      _lastEvaluationResult = null;
     });
   }
 
@@ -640,100 +689,76 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
     }
   }
 
+
   Widget _buildBibliotecaTab() {
-    final preservation = Volume1PrintPreservation();
+    final query = _chapterSearch.trim().toLowerCase();
+    final filtered = _chapters.where((c) =>
+        c.title.toLowerCase().contains(query) ||
+        c.number.toString().contains(query) ||
+        c.edition.toLowerCase().contains(query)).toList();
+
     return ListView(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(20),
       children: [
         const Text('Biblioteca Forense', style: ForensicTypography.screenTitle),
         const SizedBox(height: 8),
-        const Text(
-          '9 Volumes enciclopédicos e 113 capítulos de formação técnica.',
-          style: ForensicTypography.body,
+        const Text('26 PDFs foram referenciados no pacote. '
+            'Os capítulos 27 a 113 não foram entregues. '
+            'O texto offline é uma prévia curta NÃO validada e não substitui os PDFs.',
+            style: ForensicTypography.body),
+        const SizedBox(height: 16),
+        TextField(
+          decoration: const InputDecoration(
+            labelText: 'Pesquisar capítulo, número ou revisão',
+            prefixIcon: Icon(Icons.search),
+            border: OutlineInputBorder(),
+          ),
+          onChanged: (value) => setState(() => _chapterSearch = value),
         ),
         const SizedBox(height: 16),
-        ForensicCard(
-          title: 'Volume I: Fundamentos Periciais',
-          subtitle: '10 Capítulos • ${Volume1PrintPreservation.totalPrintedPages} Páginas Impressas (Cap 1–4 REV2, Cap 5–10 REV1)',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Histórico, criminalística geral, cadeia de custódia e introdução à computação pericial.',
-                style: ForensicTypography.body,
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
+        if (_catalogLoading)
+          const Center(child: CircularProgressIndicator())
+        else if (_catalogError.isNotEmpty)
+          Column(children: [
+            Text(_catalogError, style: ForensicTypography.body),
+            ForensicSecondaryButton(
+              onPressed: () { setState(() => _catalogLoading = true); _loadLocalCatalog(); },
+              label: 'Tentar carregar novamente',
+            ),
+          ])
+        else ...[
+          Text(filtered.length.toString() + ' capítulos encontrados',
+              style: ForensicTypography.caption),
+          const SizedBox(height: 12),
+          for (final chapter in filtered) ...[
+            ForensicCard(
+              title: 'Cap. ' + chapter.number.toString().padLeft(2, '0') +
+                  ' — ' + chapter.title,
+              subtitle: 'Vol. ' + chapter.volume.toString() +
+                  ' • ' + chapter.edition + ' • ' + chapter.editorialStatus,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ChoiceChip(
-                    label: const Text('Modo Estudo Responsivo'),
-                    selected: _readerMode == ReaderMode.markdownStudy,
-                    onSelected: (_) => setState(() => _readerMode = ReaderMode.markdownStudy),
-                  ),
-                  ChoiceChip(
-                    label: const Text('Modo Original PDF'),
-                    selected: _readerMode == ReaderMode.pdfVerbatim,
-                    onSelected: (_) => setState(() => _readerMode = ReaderMode.pdfVerbatim),
-                  ),
-                  ForensicSecondaryButton(
-                    onPressed: () {
-                      setState(() => _showErrataPanel = !_showErrataPanel);
-                    },
-                    label: _showErrataPanel ? 'Ocultar Erratas' : 'Ver Erratas Digitais (A1–A4)',
+                  Text('Prévia: ' + chapter.sections.length.toString() +
+                      ' seções incompletas. PDF integral pelo Google Drive.',
+                      style: ForensicTypography.caption),
+                  const SizedBox(height: 12),
+                  ForensicPrimaryButton(
+                    onPressed: () => _openChapter(chapter),
+                    label: 'Abrir capítulo',
                   ),
                 ],
               ),
-              if (_showErrataPanel) ...[
-                const SizedBox(height: 12),
-                Text(
-                  'Erratas Digitais do Volume I (${preservation.runtimeType}):\n'
-                  '• Cap. 1, p. 25 (REV2): Atualizar SWGDE 18-F-002-2.0 para versão final de 20/11/2025 e incluir SWGDE 12-F-006-2.0.\n'
-                  '• Cap. 2, p. 13 (REV2): Adicionar SWGDE 18-F-003-2.0 (21/08/2025) para coleta em smartphones.\n'
-                  '• Cap. 3, p. 8 (REV2): Padronizar escrita UTF-8 sem BOM entre PowerShell 5.1 e 7.',
-                  style: ForensicTypography.caption,
-                ),
-              ],
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-        ForensicCard(
-          title: 'Volumes II e III — Acervo Importado do Google Drive',
-          subtitle: 'Capítulos 11 a 26 verificados por hash SHA-256 • Capítulos 27 a 113 Previstos',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '• Volume II (Cap. 11–23, 131 pág. A4): Computação, PowerShell, Linux, Redes, Matemática, Python, NumPy/Pandas e SQL.\n'
-                '• Volume III (Cap. 24–26, 28 pág. A4): Estatística Descritiva, Probabilidade e Simulação Monte Carlo.',
-                style: ForensicTypography.body,
-              ),
-              const SizedBox(height: 12),
-              ForensicPrimaryButton(
-                onPressed: _triggerIncrementalSync,
-                label: 'Sincronizar Conteúdo',
-                icon: const Icon(Icons.sync_rounded, size: 18),
-              ),
-              if (_syncStatusMessage.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(_syncStatusMessage, style: ForensicTypography.caption),
-              ],
-            ],
-          ),
-        ),
+            ),
+            const SizedBox(height: 12),
+          ],
+        ],
+        const SizedBox(height: 12),
+        const Text('Sincronização automática com Google Drive requer autenticação '
+            'OAuth e importação real de PDFs. Essa função ainda não está implementada.',
+            style: ForensicTypography.caption),
       ],
     );
-  }
-
-  Future<void> _triggerIncrementalSync() async {
-    const provider = GoogleDriveContentProvider(authToken: null);
-    final res = await provider.sync();
-    setState(() {
-      _syncStatusMessage =
-          'Estado Google Drive OAuth: ${res.status.name} (${res.reason ?? "OK"}). Catálogo local com 26 capítulos do Drive preservado.';
-    });
   }
 
   Widget _buildLaboratorioTab() {
