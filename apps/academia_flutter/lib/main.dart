@@ -11,7 +11,6 @@ import 'package:assessment_core/assessment_core.dart';
 import 'package:laboratory_core/laboratory_core.dart';
 import 'package:case_study_core/case_study_core.dart';
 import 'package:ai_gateway/ai_gateway.dart';
-import 'package:rag_core/rag_core.dart';
 import 'package:audio_core/audio_core.dart';
 import 'package:drive_sync/drive_sync.dart';
 

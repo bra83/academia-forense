@@ -56,14 +56,30 @@ jobs:
           flutter config --enable-linux-desktop
           flutter build linux --release
 
+      - name: Publish Linux Desktop artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: academia-forense-linux
+          path: apps/academia_flutter/build/linux/x64/release/bundle/
+          if-no-files-found: error
+
       - name: Build Android APK (release)
         run: |
           cd apps/academia_flutter
           flutter build apk --release --split-per-abi
 
+      - name: Publish Android APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: academia-forense-android-apks
+          path: apps/academia_flutter/build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: error
+
   windows-ci:
     name: Test & Build (Windows Desktop)
-    runs-on: windows-latest
+    runs-on: windows-2022
+    env:
+      CMAKE_GENERATOR: "Visual Studio 17 2022"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -96,3 +112,10 @@ jobs:
           cd apps/academia_flutter
           flutter config --enable-windows-desktop
           flutter build windows --release
+
+      - name: Publish Windows Desktop artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: academia-forense-windows
+          path: apps/academia_flutter/build/windows/x64/runner/Release/
+          if-no-files-found: error
