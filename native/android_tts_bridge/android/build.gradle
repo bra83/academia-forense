@@ -25,6 +25,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace 'com.academia_forense.tts_bridge'
     compileSdkVersion 34
 
     compileOptions {
