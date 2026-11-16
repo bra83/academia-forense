@@ -150,7 +150,7 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
     _telephonyCsvController.dispose();
     if (_kokoroProgress != null) unawaited(_kokoroProgress!.cancel());
     if (_kokoroErrors != null) unawaited(_kokoroErrors!.cancel());
-    unawaited(_kokoro.dispose());
+    unawaited(_kokoro.dispose().catchError((Object _) {}));
     super.dispose();
   }
 
@@ -1146,7 +1146,7 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
             children: [
               const Text(
                 'O aplicativo ainda não dispõe de exportação de um arquivo PDF real para o dispositivo. '
-                'O resumo antigo era apenas exibido na tela, e um hash SHA-256 não equivale a assinatura digital.'
+                'O resumo antigo era apenas exibido na tela, e um hash SHA-256 não equivale a assinatura digital.',
                 style: ForensicTypography.body,
               ),
               const SizedBox(height: 16),
