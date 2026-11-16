@@ -93,7 +93,7 @@ void main() {
     // Run Gemini RAG Tutor
     await tester.tap(find.text('Consultar Tutor com Citação Verificável'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('[FONTE:'), findsWidgets);
+    expect(find.textContaining('Digite uma pergunta'), findsWidgets);
   });
 
   testWidgets('Biblioteca tab switches Dual-Mode Reader, shows errata, and triggers Drive sync', (WidgetTester tester) async {

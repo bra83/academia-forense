@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:design_system/design_system.dart';
 import 'package:persistence_core/persistence_core.dart';
@@ -110,6 +111,132 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
   String _portfolioExportStatus = '';
   String _maskedApiKey = 'Nenhuma chave configurada';
   String _aiConnectivityStatus = 'Aguardando verificação';
+  final FlutterSecureStorage _geminiStorage = const FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
+  final TextEditingController _geminiKeyController = TextEditingController();
+  final TextEditingController _tutorQuestionController = TextEditingController();
+  List<GeminiModelInfo> _tutorModels = <GeminiModelInfo>[];
+  String? _selectedTutorModel;
+  bool _geminiBusy = false;
+  bool _tutorBusy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadGeminiSettings();
+  }
+
+  @override
+  void dispose() {
+    _geminiKeyController.dispose();
+    _tutorQuestionController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadGeminiSettings() async {
+    try {
+      final key = await _geminiStorage.read(key: 'gemini_api_key');
+      final model = await _geminiStorage.read(key: 'gemini_tutor_model');
+      if (!mounted) return;
+      setState(() {
+        _maskedApiKey = key == null || key.isEmpty
+            ? 'Nenhuma chave configurada'
+            : SecureVaultContract.maskKey(key);
+        _selectedTutorModel = model;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() => _aiConnectivityStatus =
+            'Armazenamento seguro indisponível neste ambiente.');
+      }
+    }
+  }
+
+  Future<void> _saveGeminiKey() async {
+    final key = _geminiKeyController.text.trim();
+    if (key.length < 20) {
+      setState(() => _aiConnectivityStatus = 'Informe uma chave Gemini válida.');
+      return;
+    }
+    try {
+      await _geminiStorage.write(key: 'gemini_api_key', value: key);
+      _geminiKeyController.clear();
+      if (!mounted) return;
+      setState(() {
+        _maskedApiKey = SecureVaultContract.maskKey(key);
+        _aiConnectivityStatus = 'Chave salva no armazenamento seguro. Teste a conexão.';
+        _tutorModels = [];
+        _selectedTutorModel = null;
+      });
+      await _geminiStorage.delete(key: 'gemini_tutor_model');
+    } catch (_) {
+      if (mounted) {
+        setState(() => _aiConnectivityStatus =
+            'Não foi possível salvar a chave no armazenamento seguro.');
+      }
+    }
+  }
+
+  Future<void> _testGeminiKey() async {
+    if (_geminiBusy) return;
+    setState(() {
+      _geminiBusy = true;
+      _aiConnectivityStatus = 'Consultando modelos disponíveis...';
+    });
+    try {
+      final key = await _geminiStorage.read(key: 'gemini_api_key');
+      if (key == null || key.isEmpty) {
+        throw StateError('Salve uma chave Gemini primeiro.');
+      }
+      final discovery = GeminiModelDiscoveryService();
+      final catalog = await discovery.discoverModels(apiKey: key);
+      final textModels = catalog.textTutorModels
+          .where((model) => !model.isAudioModel).toList();
+      if (!mounted) return;
+      final previous = _selectedTutorModel;
+      final selected = textModels.any((m) => m.name == previous)
+          ? previous
+          : (textModels.isNotEmpty ? textModels.first.name : null);
+      setState(() {
+        _tutorModels = textModels;
+        _selectedTutorModel = selected;
+        _aiConnectivityStatus = textModels.isEmpty
+            ? 'Conexão ativa; nenhum modelo de texto compatível retornado.'
+            : 'Conexão confirmada: ${textModels.length} modelos de texto.';
+      });
+      if (selected != null) {
+        await _geminiStorage.write(key: 'gemini_tutor_model', value: selected);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _aiConnectivityStatus =
+            'Falha ao consultar Gemini: ${e.runtimeType}. Confira a chave, a cota e a conexão.');
+      }
+    } finally {
+      if (mounted) setState(() => _geminiBusy = false);
+    }
+  }
+
+  Future<void> _removeGeminiKey() async {
+    try {
+      await _geminiStorage.delete(key: 'gemini_api_key');
+      await _geminiStorage.delete(key: 'gemini_tutor_model');
+      if (!mounted) return;
+      setState(() {
+        _geminiKeyController.clear();
+        _maskedApiKey = 'Nenhuma chave configurada';
+        _selectedTutorModel = null;
+        _tutorModels = [];
+        _aiConnectivityStatus = 'Chave removida.';
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() => _aiConnectivityStatus =
+            'Não foi possível remover a chave.');
+      }
+    }
+  }
 
   Widget _buildTabContent(int index) {
     switch (index) {
@@ -394,8 +521,20 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
                 ),
               ),
               const SizedBox(height: 12),
+              TextField(
+                controller: _tutorQuestionController,
+                minLines: 2,
+                maxLines: 5,
+                decoration: const InputDecoration(
+                  labelText: 'Sua pergunta ao professor',
+                  hintText: 'Ex.: qual é a diferença entre um dado e uma evidência?',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
               ForensicPrimaryButton(
-                onPressed: _consultTutorRag,
+                onPressed: _tutorBusy ? null : _consultTutorRag,
+                isLoading: _tutorBusy,
                 label: 'Consultar Tutor com Citação Verificável',
               ),
               if (_tutorResponse.isNotEmpty) ...[
@@ -419,14 +558,57 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
     });
   }
 
-  void _consultTutorRag() {
-    const rawResponse =
-        '[FONTE: Volume I, Capítulo 1 (REV2), p. 15–25] Segundo a norma SWGDE 18-F-002-2.0 (20/11/2025) e o art. 158-A do CPP, a preservação da evidência digital exige cálculo de hash SHA-256 reprodutível.\n'
-        '[INFERÊNCIA DO TUTOR] Ao comparar saídas entre Windows PowerShell 5.1 e PowerShell 7, parametrize explicitamente UTF-8 sem BOM para evitar divergência hexadecimal.';
-    RagCitationEngine.validateResponseTags(rawResponse);
+  Future<void> _consultTutorRag() async {
+    if (_tutorBusy) return;
+    final question = _tutorQuestionController.text.trim();
+    if (question.isEmpty) {
+      setState(() => _tutorResponse = 'Digite uma pergunta para consultar o professor.');
+      return;
+    }
     setState(() {
-      _tutorResponse = '[Modo: ${_tutorMode.value}]\n$rawResponse';
+      _tutorBusy = true;
+      _tutorResponse = 'Consultando Gemini...';
     });
+    try {
+      final key = await _geminiStorage.read(key: 'gemini_api_key');
+      if (key == null || key.isEmpty) {
+        if (mounted) {
+          setState(() => _tutorResponse =
+              'Configure sua chave Gemini em Meu Espaço antes de consultar o tutor.');
+        }
+        return;
+      }
+      final model = _selectedTutorModel;
+      if (model == null || model.isEmpty) {
+        if (mounted) {
+          setState(() => _tutorResponse =
+              'Em Meu Espaço, teste a chave Gemini e selecione um modelo.');
+        }
+        return;
+      }
+      final gateway = GeminiGatewayClient(secureVault: InMemorySecureVault());
+      final response = await gateway.queryTutor(
+        apiKey: key,
+        modelId: model,
+        mode: _tutorMode,
+        userQuery: question,
+        contextChunks: const <RagDocumentChunkRef>[],
+        chapterTitle: 'Ciências Forenses',
+      );
+      if (mounted) {
+        setState(() => _tutorResponse =
+            'Resposta Gemini — ${_tutorMode.value}\n'
+            'Atenção: consulta ainda sem fontes RAG verificadas.\n\n'
+            '$response');
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _tutorResponse =
+            'A consulta falhou (${e.runtimeType}). Verifique rede, chave e modelo. Sua pergunta continua disponível.');
+      }
+    } finally {
+      if (mounted) setState(() => _tutorBusy = false);
+    }
   }
 
   Widget _buildBibliotecaTab() {
@@ -838,19 +1020,72 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Armazenamento protegido via Android Keystore / Windows DPAPI. Modelos descobertos dinamicamente via ai.google.dev/api/models.',
+                'Sua chave é cadastrada exclusivamente aqui, no aparelho. Não existe uma chave fixa no código do aplicativo.',
                 style: ForensicTypography.body,
               ),
               const SizedBox(height: 12),
-              ForensicSecondaryButton(
-                onPressed: () {
-                  setState(() {
-                    _maskedApiKey = SecureVaultContract.maskKey('AIzaSyForensicKeyExample9876');
-                    _aiConnectivityStatus = 'Chave BYOK mascarada e pronta para descoberta dinâmica de modelos';
-                  });
-                },
-                label: 'Validar Cofre de Credenciais',
+              TextField(
+                controller: _geminiKeyController,
+                obscureText: true,
+                autocorrect: false,
+                enableSuggestions: false,
+                keyboardType: TextInputType.visiblePassword,
+                decoration: const InputDecoration(
+                  labelText: 'Chave da API Gemini',
+                  hintText: 'Cole sua chave aqui',
+                  border: OutlineInputBorder(),
+                ),
               ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ForensicPrimaryButton(
+                    onPressed: _geminiBusy ? null : _saveGeminiKey,
+                    label: 'Salvar chave',
+                  ),
+                  ForensicSecondaryButton(
+                    onPressed: _geminiBusy ? null : _testGeminiKey,
+                    isLoading: _geminiBusy,
+                    label: 'Testar API e modelos',
+                  ),
+                  ForensicSecondaryButton(
+                    onPressed: _geminiBusy ? null : _removeGeminiKey,
+                    label: 'Excluir chave',
+                  ),
+                ],
+              ),
+              if (_tutorModels.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  value: _tutorModels.any((m) => m.name == _selectedTutorModel)
+                      ? _selectedTutorModel : null,
+                  isExpanded: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Modelo Gemini para o professor',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _tutorModels.map((model) => DropdownMenuItem<String>(
+                    value: model.name,
+                    child: Text(model.displayName ?? model.shortId,
+                        overflow: TextOverflow.ellipsis),
+                  )).toList(),
+                  onChanged: (value) async {
+                    if (value == null) return;
+                    setState(() => _selectedTutorModel = value);
+                    try {
+                      await _geminiStorage.write(
+                        key: 'gemini_tutor_model', value: value);
+                    } catch (_) {
+                      if (mounted) {
+                        setState(() => _aiConnectivityStatus =
+                            'Não foi possível persistir o modelo selecionado.');
+                      }
+                    }
+                  },
+                ),
+              ],
             ],
           ),
         ),
