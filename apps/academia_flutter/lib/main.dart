@@ -108,11 +108,14 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
 
   // Portfolio & Settings state (Tab 4)
   String _portfolioExportStatus = '';
+  int _completedAssessments = 0;
+  int _verifiedLabs = 0;
+  double _studyHours = 0;
+  bool? _labLastSuccess;
+  String _assessmentStatus = '';
   String _maskedApiKey = 'Nenhuma chave configurada';
   String _aiConnectivityStatus = 'Aguardando verificação';
-  final FlutterSecureStorage _geminiStorage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  final FlutterSecureStorage _geminiStorage = const FlutterSecureStorage();
   final TextEditingController _geminiKeyController = TextEditingController();
   final TextEditingController _tutorQuestionController = TextEditingController();
   List<GeminiModelInfo> _tutorModels = <GeminiModelInfo>[];
@@ -124,6 +127,7 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
   void initState() {
     super.initState();
     _loadGeminiSettings();
+    _loadRealMetrics();
   }
 
   @override
@@ -160,11 +164,13 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
     }
     try {
       await _geminiStorage.write(key: 'gemini_api_key', value: key);
+      final verified = await _geminiStorage.read(key: 'gemini_api_key');
+      if (verified != key) throw StateError('Chave não persistiu no cofre seguro.');
       _geminiKeyController.clear();
       if (!mounted) return;
       setState(() {
         _maskedApiKey = SecureVaultContract.maskKey(key);
-        _aiConnectivityStatus = 'Chave salva no armazenamento seguro. Teste a conexão.';
+        _aiConnectivityStatus = 'Chave salva e conferida por releitura. Teste a conexão.';
         _tutorModels = [];
         _selectedTutorModel = null;
       });
@@ -237,6 +243,26 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
     }
   }
 
+  Future<void> _loadRealMetrics() async {
+    try {
+      final assessments = await widget.db.customSelect(
+        'SELECT COUNT(*) AS total FROM assessment_attempts WHERE passed = 1',
+      ).getSingle();
+      final labs = await widget.db.customSelect(
+        "SELECT COUNT(*) AS total FROM laboratory_runs WHERE is_passed = 1 AND laboratory_id NOT LIKE 'lab_demo_%'",
+      ).getSingle();
+      final sessions = await widget.db.userProgressDao.getRecentStudySessions(limit: 10000);
+      if (!mounted) return;
+      setState(() {
+        _completedAssessments = assessments.read<int>('total');
+        _verifiedLabs = labs.read<int>('total');
+        _studyHours = sessions.fold<int>(0, (v, e) => v + e.durationSeconds) / 3600.0;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _assessmentStatus = 'Não foi possível ler as métricas locais.');
+    }
+  }
+
   Widget _buildTabContent(int index) {
     switch (index) {
       case 0:
@@ -292,16 +318,15 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
               const SizedBox(height: 12),
               ClipRRect(
                 borderRadius: BorderRadius.circular(4),
-                child: const LinearProgressIndicator(
-                  value: 0.65,
+                child: LinearProgressIndicator(
+                  value: (_studyHours / 13).clamp(0.0, 1.0),
                   minHeight: 8,
                   backgroundColor: ForensicColors.borders,
                   valueColor: AlwaysStoppedAnimation<Color>(ForensicColors.forestGreenPrimary),
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                '8h 27min cumpridas nesta semana (65%)',
+              Text('${_studyHours.toStringAsFixed(1)} horas registradas. Meta: 13h por semana.',
                 style: ForensicTypography.caption,
               ),
             ],
@@ -368,7 +393,7 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
         ),
         const SizedBox(height: 16),
         ForensicCard(
-          title: 'Capítulo 01: Arquitetura de Sistemas Digitais',
+          title: 'Capítulo 01: Dos dados às evidências',
           subtitle: 'Status: Aprovado • Revisão REV2 • Dos dados às evidências',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,23 +411,27 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
                     onPressed: () {
                       setState(() {
                         _showActiveLesson = true;
-                        _lessonEngine.completeCurrentStep();
+                        // Abrir uma lição não comprova proficiência.
                       });
                     },
                     label: 'Acessar Lição',
                   ),
                   ForensicSecondaryButton(
                     onPressed: _runObjectiveEvaluation,
-                    label: 'Avaliar (Corte 80%)',
+                    label: 'Situação da avaliação',
                   ),
                 ],
               ),
               if (_showActiveLesson) ...[
                 const SizedBox(height: 12),
                 Text(
-                  'Etapa ativa: ${_lessonEngine.currentStep.title}\n${_lessonEngine.currentStep.content}',
+                  'Material em validação. A etapa ainda não tem o texto integral do capítulo; consulte o PDF original na Biblioteca.',
                   style: ForensicTypography.caption,
                 ),
+              ],
+              if (_assessmentStatus.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(_assessmentStatus, style: ForensicTypography.body),
               ],
               if (_lastEvaluationResult != null) ...[
                 const SizedBox(height: 12),
@@ -548,12 +577,9 @@ class _ForensicHomeScreenState extends State<ForensicHomeScreen> {
   }
 
   Future<void> _runObjectiveEvaluation() async {
-    final result = AssessmentEvaluator.evaluateObjective(
-      userAnswers: const [0, 1, 2, 3, 0],
-      answerKey: const [0, 1, 2, 3, 0],
-    );
     setState(() {
-      _lastEvaluationResult = result;
+      _assessmentStatus = 'Avaliação indisponível: questões não auditadas contra os documentos originais. Não será atribuída nota automática.';
+      _lastEvaluationResult = null;
     });
   }
 
@@ -957,19 +983,19 @@ C2,2026-11-16T10:30:00Z,+5531988880001,+5531966660003,45,ERB_BH_SAVASSI_2,-19.93
           style: ForensicTypography.body,
         ),
         const SizedBox(height: 16),
-        const ForensicCard(
+        ForensicCard(
           title: 'Matriz de Competências',
           subtitle: 'Meta de proficiência: 80%',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Computação Forense: 88% • Telefonia: 82% • Multimídia: 79%',
+                'Sem proficiência mensurada: nenhuma avaliação validada foi concluída.',
                 style: ForensicTypography.body,
               ),
               SizedBox(height: 8),
               Text(
-                'Laboratórios Concluídos: 7/7 • Casos Resolvidos: 3 • Horas Dedicadas: 18.5h',
+                'Avaliações aprovadas: ${_completedAssessments} • Laboratórios avaliados: ${_verifiedLabs} • Estudo: ${_studyHours.toStringAsFixed(1)}h',
                 style: ForensicTypography.caption,
               ),
             ],
