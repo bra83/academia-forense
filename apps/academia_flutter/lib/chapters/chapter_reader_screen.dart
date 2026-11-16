@@ -123,7 +123,7 @@ class _ChapterReaderScreenState extends State<ChapterReaderScreen> {
           else
             for (final section in chapter.sections) ...[
               const SizedBox(height: 16),
-              Text(section.title, style: ForensicTypography.cardTitle),
+              Text(section.title, style: ForensicTypography.subTitle),
               const SizedBox(height: 8),
               SelectableText(section.text, style: ForensicTypography.body),
               const Divider(height: 32),
