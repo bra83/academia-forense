@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol02.ch15",
+  "type": "chapter",
+  "volume": 2,
+  "chapter": 15,
+  "title": "Formatos, codificações e dados estruturados",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Em revisão",
+  "source": {
+    "provider": "google_drive",
+    "fileId": "1-7ZCUOD3zvUQ197WChYSkrnqi9lCixoJ",
+    "revision": "ED1",
+    "sha256": "1c42e2088ab257f7a68b4d5738f65a62ab359ab0cdf2c67dc7f12e6f86efd61d"
+  },
+  "sections": [
+    {
+      "sectionId": "ch15-sec-01",
+      "title": "15.1 Fundamentos e Conceitos (Formatos, codificações e dados estruturados)",
+      "orderIndex": 0,
+      "markdownContent": "# Formatos, codificações e dados estruturados\n\nArquivo oficial no Google Drive: `Enciclopedia_Forense_VolII_Capitulo_15_ED1.pdf` (9 páginas A4, SHA-256 `61bffb6ce75e351c0dc96e4fd6f567fb24a7b02272bbf89617b51be102eca8f5`).\n\nENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME II\n\nFormatos, codificações e dados\n\nCapítulo 15 · Unicode, UTF-8, CSV, JSON, XML e interpretação sem perda\n\nDo conhecimento zero à linguagem profissional · Ilustrações originais · Laboratórios seguros · Exemplos\n\nresolvidos · Exercícios comentados\n\nCAPÍTULO 15 · EDIÇÃO 1\n\n13 DE NOVEMBRO DE 2026 · A4 · PDF PESQUISÁVEL\n\nENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME II\n\nCapítulo 15 — Formatos, codificações e dados estruturados\n\nCapítulo 15 — Formatos, codificações e dados",
+      "anchorKey": "ch15_sec01_anchor"
+    },
+    {
+      "sectionId": "ch15-sec-02",
+      "title": "15.2 Procedimentos, Limitações e Verificação",
+      "orderIndex": 1,
+      "markdownContent": "Objetivo profissional. Ler arquivos de texto e tabelas sem transformar silenciosamente informações\n\nessenciais, como identificadores, horários, zeros à esquerda, caracteres acentuados e números decimais.\n\nO foco não é dominar uma biblioteca: é compreender o que cada representação conserva, transforma ou\n\nDuas camadas. Para começar: um arquivo é uma sequência de bytes; o programa precisa interpretar essa\n\nsequência segundo regras. Tecnicamente: uma codificação de caracteres, um formato de serialização e um\n\nesquema de dados são níveis distintos, cada qual com pressupostos e validações próprias.\n\n15.1. A diferença entre byte, caractere, valor e significado\n\nQuando vemos a palavra café na tela, a aplicação apresenta caracteres. No arquivo, há bytes. Em UTF-8,\n\na letra é pré-composta (U+00E9) é codificada pela sequência hexadecimal C3 A9, enquanto c, a e f normalmente ocupam 63 61 66. A palavra escrita dessa forma ocupa 5 bytes em UTF-8, não quatro. Atenção: existe também a sequência de e mais acento combinante; pode parecer visualmente igual, mas ter\n\nrepresentação diferente.",
+      "anchorKey": "ch15_sec02_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Diferenciar dados brutos, vestígios digitais, indícios e evidências periciais.",
+    "Calcular a entropia de Shannon em artefatos binários para identificar contramedidas anti-forenses.",
+    "Aplicar o Princípio de Troca de Locard na coleta e fixação de vestígios computacionais."
+  ],
+  "prerequisites": [],
+  "glossary": [
+    {
+      "term": "Vestígio Digital",
+      "definition": "Qualquer dado em formato binário capaz de atestar uma conduta criminosa ou fato sob apuração judicial."
+    },
+    {
+      "term": "Entropia de Shannon",
+      "definition": "Medida estatística de incerteza ou densidade de informação em uma sequência de bytes."
+    },
+    {
+      "term": "Princípio de Locard",
+      "definition": "Postulado segundo o qual o agente necessariamente traz e deixa vestígios no local do fato."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch01-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 1",
+      "assetPath": "assets/figures/ch01_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch01-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 1",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH01-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 1. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch01-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Dos Dados às Evidências Digitais.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch01-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 1?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch01-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Dos Dados às Evidências Digitais",
+      "instructions": "Execute a análise de entropia no arquivo suspeito disk_sample.dd e determine se a partição 2 contém volume TrueCrypt oculto.",
+      "expectedResult": "Entropia superior a 7.98 bits/byte nos setores 2048 a 8192, indicando contêiner cifrado."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch01",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch01-01",
+        "prompt": "Acerca de Dos Dados às Evidências Digitais, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch01-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 1?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

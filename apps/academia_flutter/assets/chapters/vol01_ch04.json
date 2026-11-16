@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch04",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 4,
+  "title": "Cronologias forenses: telefonia, vídeo e incerteza",
+  "language": "pt-BR",
+  "edition": "REV2",
+  "editorialStatus": "Publicado",
+  "source": {
+    "provider": "fixture",
+    "fileId": "14fyAEaaI0lcCvFiAFyncRap1S9Ftt-It",
+    "revision": "2.0",
+    "sha256": "d7d454066586764554e7c0ac73a3c723698aa212257ad205155cdb70a648961b"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "4.1 Windows Prefetch, Shimcache e Amcache",
+      "orderIndex": 0,
+      "markdownContent": "O subsistema Prefetch () registra evidência de execução de programas com data e hora de execução e contagem de execuções.\n\nO Shimcache (AppCompatCache) e o Amcache () fornecem histórico perene de binários presentes na máquina, incluindo SHA-1 dos executáveis.\n\n### Trecho extraído do PDF oficial (Enciclopedia_Forense_Vol1_Cap4_REV2_IMPRESSAO.pdf — 14 páginas, SHA-256: `9180b0d402515281...`)\n> ENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME I\n> Relógios, CDRs, câmeras, compatibilidade e limites da\n> Formação desde o zero · Linguagem profissional explicada · Diagramas autorais · Estudos reais\n> documentados · Laboratórios · Exercícios resolvidos",
+      "anchorKey": "sec01_prefetch_anchor"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "4.2 Registro do Windows e Chaves de Persistência",
+      "orderIndex": 1,
+      "markdownContent": "As colmeias , , ,  e  armazenam credenciais, configurações de rede, dispositivos USB conectados () e itens de inicialização automática ( e ).",
+      "anchorKey": "sec02_registry_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Correlacionar artefatos de execução Prefetch, Amcache e Shimcache.",
+    "Analisar a colmeia SYSTEM para extrair histórico completo de dispositivos USB inseridos.",
+    "Identificar persistência de malwares em chaves Run, Serviços e Tarefas Agendadas."
+  ],
+  "prerequisites": [
+    "Conhecimentos fundamentais de informática e raciocínio lógico"
+  ],
+  "glossary": [
+    {
+      "term": "Prefetch",
+      "definition": "Mecanismo de aceleração do Windows que registra vestígios inequívocos de execução de programas."
+    },
+    {
+      "term": "Amcache.hve",
+      "definition": "Arquivo de registro do Windows que cataloga informações de integridade de binários e drivers instalados."
+    },
+    {
+      "term": "USBSTOR",
+      "definition": "Chave de registro que preserva o número de série e modelo de pendrives e discos removíveis conectados."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch04-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 4",
+      "assetPath": "assets/figures/ch04_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch04-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 4",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH04-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 4. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch04-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Artefatos do Sistema Operacional Windows.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch04-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 4?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch04-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Artefatos do Sistema Operacional Windows",
+      "instructions": "Analise a colmeia SYSTEM e a pasta Prefetch para reconstruir a linha do tempo de inserção do pendrive do suspeito e execução do utilitário sdelete.exe.",
+      "expectedResult": "Dispositivo Kingston DT100G2 conectado às 14:22:10 e sdelete.exe executado 4 vezes a partir das 14:23:05."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch04",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch04-01",
+        "prompt": "Acerca de Artefatos do Sistema Operacional Windows, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch04-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 4?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

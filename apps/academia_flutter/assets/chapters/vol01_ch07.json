@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch07",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 7,
+  "title": "Medição, precisão e incerteza em evidências",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Publicado",
+  "source": {
+    "provider": "fixture",
+    "fileId": "1vFl2eb8UHRM9EJCxIIf1sk9eWP65PUO1",
+    "revision": "1.0",
+    "sha256": "f01b3cb34e2767cc956b724a04df0d1c1fd50991acf20fe7bfdfc57ce402cd50"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "7.1 Níveis de Extração: Manual, Lógica, File System e Física",
+      "orderIndex": 0,
+      "markdownContent": "A perícia em smartphones Android e iOS classifica os procedimentos de extração em quatro patamares técnicos de complexidade e profundidade probatória:\n\n- Extração Manual: Captura de tela e fotos da interface\n- Extração Lógica: Backup ADB / iTunes com dados de usuário visíveis\n- Extração File System (AFU/BFU): Acesso à árvore de diretórios com sandbox\n- Extração Física: Dump binário de chip eMMC/UFS via EDL ou JTAG\n\n### Trecho extraído do PDF oficial (Enciclopedia_Forense_VolI_Capitulo_07_REV1_IMPRESSAO.pdf — 10 páginas, SHA-256: `cf1cc71828087ece...`)\n> ENCICLOPÉDIA DE CIÊNCIAS FORENSES • VOLUME I\n> Medição, precisão e incerteza em\n> Relógios, intervalos, modelos e sensibilidade\n> Explicação desde o zero • Linguagem profissional lado a lado • Diagramas originais • Casos reais",
+      "anchorKey": "sec01_mobile_extractions_anchor"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "7.2 Estados Criptográficos BFU vs AFU",
+      "orderIndex": 1,
+      "markdownContent": "O estado Before First Unlock (BFU) mantém a chave mestra derivada do PIN do usuário protegida no Secure Enclave / Titan M. No estado After First Unlock (AFU), chaves residem na memória RAM, permitindo extração de chaves de bancos de dados SQLite de aplicativos mensageiros.",
+      "anchorKey": "sec02_bfu_afu_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Classificar métodos de extração em dispositivos móveis segundo invasividade e validade probatória.",
+    "Diferenciar os estados criptográficos BFU (Before First Unlock) e AFU (After First Unlock).",
+    "Extrair e decodificar bancos de dados SQLite de aplicativos de mensagens instantâneas."
+  ],
+  "prerequisites": [
+    "Conhecimentos fundamentais de informática e raciocínio lógico"
+  ],
+  "glossary": [
+    {
+      "term": "BFU",
+      "definition": "Before First Unlock: estado do smartphone após religamento e antes da digitação do PIN do proprietário."
+    },
+    {
+      "term": "AFU",
+      "definition": "After First Unlock: estado após o primeiro desbloqueio, com chaves de criptografia carregadas em memória."
+    },
+    {
+      "term": "EDL",
+      "definition": "Emergency Download Mode: protocolo de baixo nível de processadores Qualcomm para flash e extração física."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch07-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 7",
+      "assetPath": "assets/figures/ch07_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch07-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 7",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH07-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 7. Edição REV1, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch07-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Dispositivos Móveis e Extração de Dados.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch07-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 7?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch07-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Dispositivos Móveis e Extração de Dados",
+      "instructions": "Acesse o banco de dados msgstore.db extraído em estado AFU e recupere mensagens apagadas da tabela de mensagens.",
+      "expectedResult": "Três mensagens contendo planejamento de extorsão recuperadas dos registros não indexados (deleted records)."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch07",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch07-01",
+        "prompt": "Acerca de Dispositivos Móveis e Extração de Dados, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch07-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 7?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

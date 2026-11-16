@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch02",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 2,
+  "title": "Preservação, aquisição e cadeia de custódia",
+  "language": "pt-BR",
+  "edition": "REV2",
+  "editorialStatus": "Publicado",
+  "source": {
+    "provider": "fixture",
+    "fileId": "1OpBygNb47I829GFSTxVejr_-zojklrQt",
+    "revision": "2.0",
+    "sha256": "d23df4b650f2f964376c1899fc0db2bc2f506b1e267cc3e268f6211ff3869491"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "2.1 As 10 Etapas da Cadeia de Custódia (Lei 13.964/2019)",
+      "orderIndex": 0,
+      "markdownContent": "O art. 158-B do Código de Processo Penal discrimina taxativamente as dez fases legais:\n\n1. Reconhecimento\n2. Isolamento\n3. Fixação\n4. Coleta\n5. Acondicionamento\n6. Transporte\n7. Recebimento\n8. Processamento\n9. Armazenamento\n10. Descarte\n\nA quebra de qualquer fase sem documentação fundamentada pode acarretar nulidade por contaminação de prova.\n\n### Trecho extraído do PDF oficial (Enciclopedia_Forense_Vol1_Cap2_REV2_IMPRESSAO.pdf — 15 páginas, SHA-256: `63d15d0a704083bd...`)\n> ENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME I\n> Da origem do vestígio ao relatório auditável\n> Formação desde o zero · Linguagem profissional explicada · Diagramas autorais · Estudos reais\n> documentados · Laboratórios · Exercícios resolvidos",
+      "anchorKey": "sec01_custodia_anchor"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "2.2 Lacres Físicos, Numeração e Rastreabilidade",
+      "orderIndex": 1,
+      "markdownContent": "Todo invólucro deve conter lacre plástico de segurança numerado com código de barras e contra-lacre rastreável. A abertura para exames laboratoriais deve ser registrada em termo de abertura de invólucro pericial.",
+      "anchorKey": "sec02_lacres_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Dominar formalmente as 10 etapas da cadeia de custódia segundo o CPP.",
+    "Elaborar termo de apreensão, fixação e lacração em conformidade com a ABNT ISO/IEC 27037.",
+    "Identificar nulidades processuais decorrentes de vício em cadeia de custódia."
+  ],
+  "prerequisites": [
+    "Conhecimentos fundamentais de informática e raciocínio lógico"
+  ],
+  "glossary": [
+    {
+      "term": "Cadeia de Custódia",
+      "definition": "Histórico cronológico e ininterrupto da posse e guarda do vestígio desde a identificação até o descarte."
+    },
+    {
+      "term": "Lacre de Segurança",
+      "definition": "Dispositivo inviolável dotado de numeração única utilizado para selar invólucros periciais."
+    },
+    {
+      "term": "Fixação",
+      "definition": "Descrição detalhada do vestígio conforme se encontra no local de crime ou no corpo de delito."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch02-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 2",
+      "assetPath": "assets/figures/ch02_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch02-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 2",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH02-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 2. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch02-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Cadeia de Custódia e Integridade Probatória.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch02-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 2?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch02-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Cadeia de Custódia e Integridade Probatória",
+      "instructions": "Inspecione o Termo de Encaminhamento de Vestígio e identifique se houve inconsistência na numeração do lacre entre a apreensão e a recepção no IC.",
+      "expectedResult": "Inconsistência apontada: Lacre LAC-4891 apreendido, mas recebido LAC-4899 sem justificativa de rompimento no relatório."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch02",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch02-01",
+        "prompt": "Acerca de Cadeia de Custódia e Integridade Probatória, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch02-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 2?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

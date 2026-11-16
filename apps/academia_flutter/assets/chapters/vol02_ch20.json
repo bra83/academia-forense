@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol02.ch20",
+  "type": "chapter",
+  "volume": 2,
+  "chapter": 20,
+  "title": "NumPy e pandas para evidências tabulares",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Em revisão",
+  "source": {
+    "provider": "google_drive",
+    "fileId": "16APeHZ04rQO2LJZOXOtZLdfB3Hk2jBts",
+    "revision": "ED1",
+    "sha256": "37b8099a633f3192a21e475c67b4999161efbbf1b2854942758e0a99ac19daf1"
+  },
+  "sections": [
+    {
+      "sectionId": "ch20-sec-01",
+      "title": "20.1 Fundamentos e Conceitos (NumPy e pandas para evidências tabulares)",
+      "orderIndex": 0,
+      "markdownContent": "# NumPy e pandas para evidências tabulares\n\nArquivo oficial no Google Drive: `Enciclopedia_Forense_VolII_Capitulo_20_ED1.pdf` (10 páginas A4, SHA-256 `cf1837010fcabe0adefeb3dbe1143a2ebb09288f71cb258427c07fea43055ecf`).\n\nNumPy e pandas para evidências tabulares\n\nCapítulo 20 · Matrizes, tabelas, ausências, junções e análise auditável\n\nEnciclopédia de Ciências Forenses · Volume II\n\n14 de novembro de 2026 · Edição didática 1\n\nENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME II\n\nOrientação ao estudante\n\nPonto de partida: este capítulo supõe apenas que você já viu variáveis, funções, listas e arquivos CSV nos Capítulos 18 e 19. Não se espera conhecimento prévio de bibliotecas científicas. Os exemplos utilizam arquivos inteiramente sintéticos, identificados como laboratório\n\nFAROL-27. Eles não representam registros dos casos Watts ou Hae Min Lee, nem prova de\n\nqualquer acontecimento real.\n\nCompetência final: ler uma tabela sem destruir identificadores, identificar ausências e possíveis duplicações, integrar uma tabela de eventos a outra de fontes, verificar a cardinalidade da",
+      "anchorKey": "ch20_sec01_anchor"
+    },
+    {
+      "sectionId": "ch20-sec-02",
+      "title": "20.2 Procedimentos, Limitações e Verificação",
+      "orderIndex": 1,
+      "markdownContent": "junção e exportar resultados com documentação de proveniência. Você deverá explicar por\n\nque uma coincidência temporal não comprova identidade.\n\nExplicação para iniciantes\n\nConjunto de valores numéricos organizado em\n\ndimensões, implementado pelo NumPy.\n\nAplicar uma operação ao conjunto de valores sem\n\nescrever um laço explícito para cada elemento.\n\nTabela do pandas, formada por linhas rotuladas e\n\nTipo de armazenamento/interpretação dos\n\nFormas distintas de representar dados ausentes,",
+      "anchorKey": "ch20_sec02_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Diferenciar dados brutos, vestígios digitais, indícios e evidências periciais.",
+    "Calcular a entropia de Shannon em artefatos binários para identificar contramedidas anti-forenses.",
+    "Aplicar o Princípio de Troca de Locard na coleta e fixação de vestígios computacionais."
+  ],
+  "prerequisites": [],
+  "glossary": [
+    {
+      "term": "Vestígio Digital",
+      "definition": "Qualquer dado em formato binário capaz de atestar uma conduta criminosa ou fato sob apuração judicial."
+    },
+    {
+      "term": "Entropia de Shannon",
+      "definition": "Medida estatística de incerteza ou densidade de informação em uma sequência de bytes."
+    },
+    {
+      "term": "Princípio de Locard",
+      "definition": "Postulado segundo o qual o agente necessariamente traz e deixa vestígios no local do fato."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch01-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 1",
+      "assetPath": "assets/figures/ch01_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch01-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 1",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH01-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 1. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch01-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Dos Dados às Evidências Digitais.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch01-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 1?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch01-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Dos Dados às Evidências Digitais",
+      "instructions": "Execute a análise de entropia no arquivo suspeito disk_sample.dd e determine se a partição 2 contém volume TrueCrypt oculto.",
+      "expectedResult": "Entropia superior a 7.98 bits/byte nos setores 2048 a 8192, indicando contêiner cifrado."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch01",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch01-01",
+        "prompt": "Acerca de Dos Dados às Evidências Digitais, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch01-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 1?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

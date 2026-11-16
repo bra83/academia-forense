@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch05",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 5,
+  "title": "Perguntas periciais, proposições e hipóteses concorrentes",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Publicado",
+  "source": {
+    "provider": "fixture",
+    "fileId": "1xXM0h9wO_wvPe25Pgg2LTLNQsNNqyta1",
+    "revision": "1.0",
+    "sha256": "a00f4490056a7b41c7d4646e66f9a4c9eed130b88d9e1d5f1ff6fcf998a40cbd"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "5.1 Aquisição Live e Ordem de Volatilidade (RFC 3227)",
+      "orderIndex": 0,
+      "markdownContent": "A RFC 3227 estabelece que o perito deve coletar primeiro as fontes de informação mais efêmeras:\n\n1. Registradores da CPU e memória cache\n2. Memória física (RAM)\n3. Estado de conexões de rede e processos ativos\n4. Mídias de armazenamento secundário (HD/SSD)\n\n### Trecho extraído do PDF oficial (Enciclopedia_Forense_VolI_Capitulo_05_REV1_IMPRESSAO.pdf — 11 páginas, SHA-256: `55bee71877eefc6e...`)\n> ENCICLOPÉDIA DE CIÊNCIAS FORENSES • VOLUME I\n> Perguntas periciais, proposições e\n> Do pedido de exame à pergunta testável\n> Explicação desde o zero • Linguagem profissional lado a lado • Diagramas originais • Casos reais",
+      "anchorKey": "sec01_volatilidade_anchor"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "5.2 Análise de Estruturas com Framework Volatility",
+      "orderIndex": 1,
+      "markdownContent": "Através do dump de memória, investigam-se árvores de processos (), injeções de DLL (), chaves de criptografia em memória e sockets abertos em tempo real.",
+      "anchorKey": "sec02_volatility_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Executar triagem forense respeitando a ordem de volatilidade da RFC 3227.",
+    "Adquirir dump de memória física sem reiniciar ou desligar o computador periciado.",
+    "Identificar conexões de rede ativas e processos ocultados por rootkits na RAM."
+  ],
+  "prerequisites": [
+    "Conhecimentos fundamentais de informática e raciocínio lógico"
+  ],
+  "glossary": [
+    {
+      "term": "RFC 3227",
+      "definition": "Diretriz de boas práticas da Internet para coleta e arquivamento de evidências computacionais."
+    },
+    {
+      "term": "Memória Volátil",
+      "definition": "Meio de armazenamento que perde seus dados com o corte do suprimento elétrico."
+    },
+    {
+      "term": "DKOM",
+      "definition": "Direct Kernel Object Manipulation, técnica de rootkit para desconectar processos da lista ativa de EPROCESS."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch05-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 5",
+      "assetPath": "assets/figures/ch05_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch05-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 5",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH05-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 5. Edição REV1, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch05-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Memória RAM e Análise Volátil.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch05-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 5?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch05-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Memória RAM e Análise Volátil",
+      "instructions": "Execute o Volatility 3 no dump ram_capture.raw e liste conexões TCP ativas criadas pelo processo svchost.exe anômalo.",
+      "expectedResult": "Conexão reversa identificada para IP 198.51.100.44 na porta 4444 originada do PID 2840."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch05",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch05-01",
+        "prompt": "Acerca de Memória RAM e Análise Volátil, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch05-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 5?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

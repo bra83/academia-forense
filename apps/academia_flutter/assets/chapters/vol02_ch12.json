@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol02.ch12",
+  "type": "chapter",
+  "volume": 2,
+  "chapter": 12,
+  "title": "Windows e PowerShell para iniciantes",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Em revisão",
+  "source": {
+    "provider": "google_drive",
+    "fileId": "1fD2F40xqkUvS_nb8BXXaEZxNAR-yvibs",
+    "revision": "ED1",
+    "sha256": "bdfc6682113d1b3624f5ac04b7a32f52b09bffb1f921222d3f204643c8662e7e"
+  },
+  "sections": [
+    {
+      "sectionId": "ch12-sec-01",
+      "title": "12.1 Fundamentos e Conceitos (Windows e PowerShell para iniciantes)",
+      "orderIndex": 0,
+      "markdownContent": "# Windows e PowerShell para iniciantes\n\nArquivo oficial no Google Drive: `Enciclopedia_Forense_VolII_Capitulo_12_ED1.pdf` (10 páginas A4, SHA-256 `e519818e40a1a29811d73b524f837eab2e8a29bd66ae26eee97bc15fd2e97b4c`).\n\nENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME II\n\nWindows e PowerShell para\n\nCapítulo 12 · Primeiros comandos, hashes, cópias e rastreabilidade\n\nDo conhecimento zero à linguagem profissional · Figuras originais · Laboratórios seguros · Exemplos\n\nresolvidos · Exercícios comentados\n\nCAPÍTULO 12 · EDIÇÃO 1\n\n13 DE NOVEMBRO DE 2026 · A4 · PDF PESQUISÁVEL\n\nENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME II\n\n12. Windows e PowerShell para iniciantes\n\n12. Windows e PowerShell para iniciantes",
+      "anchorKey": "ch12_sec01_anchor"
+    },
+    {
+      "sectionId": "ch12-sec-02",
+      "title": "12.2 Procedimentos, Limitações e Verificação",
+      "orderIndex": 1,
+      "markdownContent": "Volume II — Computação, Python, SQL e Matemática\n\nNível: iniciante; cada comando é explicado antes de sua utilização.\n\nPré-requisitos: capítulo 11 e conceitos de integridade do Volume I.\n\nMeta: produzir inventários de arquivos sintéticos e verificar cópias de modo documentado, sem\n\nexecutar comandos destrutivos.\n\nResultados de aprendizagem\n\nNo final, você deverá conseguir abrir um terminal, descobrir sua versão do PowerShell, entender um\n\ncaminho de arquivo, distinguir objetos de texto na saída de comandos, listar arquivos de um diretório\n\nsob seu controle, criar uma pasta segura de laboratório, obter hashes SHA-256 e elaborar um registro de\n\nexecução. Você aprenderá também o que esses procedimentos não provam.",
+      "anchorKey": "ch12_sec02_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Diferenciar dados brutos, vestígios digitais, indícios e evidências periciais.",
+    "Calcular a entropia de Shannon em artefatos binários para identificar contramedidas anti-forenses.",
+    "Aplicar o Princípio de Troca de Locard na coleta e fixação de vestígios computacionais."
+  ],
+  "prerequisites": [],
+  "glossary": [
+    {
+      "term": "Vestígio Digital",
+      "definition": "Qualquer dado em formato binário capaz de atestar uma conduta criminosa ou fato sob apuração judicial."
+    },
+    {
+      "term": "Entropia de Shannon",
+      "definition": "Medida estatística de incerteza ou densidade de informação em uma sequência de bytes."
+    },
+    {
+      "term": "Princípio de Locard",
+      "definition": "Postulado segundo o qual o agente necessariamente traz e deixa vestígios no local do fato."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch01-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 1",
+      "assetPath": "assets/figures/ch01_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch01-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 1",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH01-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 1. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch01-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Dos Dados às Evidências Digitais.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch01-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 1?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch01-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Dos Dados às Evidências Digitais",
+      "instructions": "Execute a análise de entropia no arquivo suspeito disk_sample.dd e determine se a partição 2 contém volume TrueCrypt oculto.",
+      "expectedResult": "Entropia superior a 7.98 bits/byte nos setores 2048 a 8192, indicando contêiner cifrado."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch01",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch01-01",
+        "prompt": "Acerca de Dos Dados às Evidências Digitais, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch01-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 1?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

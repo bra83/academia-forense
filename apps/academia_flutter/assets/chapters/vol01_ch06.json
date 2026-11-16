@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol01.ch06",
+  "type": "chapter",
+  "volume": 1,
+  "chapter": 6,
+  "title": "Classificação, hierarquia e crítica das fontes",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Publicado",
+  "source": {
+    "provider": "fixture",
+    "fileId": "1nGcniIhhUikyiahsq9mw94GNNOtzTB_e",
+    "revision": "1.0",
+    "sha256": "0460f265df4ebe7cd266301e74781baaf93ccccdb1c15d8ea3a04ce684af4fab"
+  },
+  "sections": [
+    {
+      "sectionId": "sec-01",
+      "title": "6.1 Captura de Pacotes PCAP e Tráfego Promíscuo",
+      "orderIndex": 0,
+      "markdownContent": "A interceptação telemática e a análise de tráfego de rede requerem a preservação de arquivos PCAP/PCAPNG com carimbos de tempo em microssegundos.\n\n68Throughput = \frac{\\sum Packets \times PacketSize}{\\Delta t}68\n\nExaminam-se handshakes TCP SYN/ACK, túneis DNS suspeitos e transferências anômalas via TLS.\n\n### Trecho extraído do PDF oficial (Enciclopedia_Forense_VolI_Capitulo_06_REV1_IMPRESSAO.pdf — 11 páginas, SHA-256: `15580cd0789c7984...`)\n> ENCICLOPÉDIA DE CIÊNCIAS FORENSES • VOLUME I\n> Classificação, hierarquia e crítica\n> Originais, derivados, dependências e lacunas\n> Explicação desde o zero • Linguagem profissional lado a lado • Diagramas originais • Casos reais",
+      "anchorKey": "sec01_pcap_anchor"
+    },
+    {
+      "sectionId": "sec-02",
+      "title": "6.2 Reconstituição de Sessões e Análise de Fluxos NetFlow",
+      "orderIndex": 1,
+      "markdownContent": "A correlação de fluxos IPFIX/NetFlow possibilita traçar comunicações mesmo quando o conteúdo dos pacotes está cifrado por protocolos seguros.",
+      "anchorKey": "sec02_netflow_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Inspecionar capturas PCAP decodificando camadas do modelo TCP/IP.",
+    "Detectar túneis de exfiltração de dados via requisições DNS anômalas.",
+    "Reconstruir sessões HTTP e streams TCP a partir de arquivos pcap brutos."
+  ],
+  "prerequisites": [
+    "Conhecimentos fundamentais de informática e raciocínio lógico"
+  ],
+  "glossary": [
+    {
+      "term": "PCAP",
+      "definition": "Formato padrão para arquivos de captura de pacotes de redes de dados."
+    },
+    {
+      "term": "Exfiltração DNS",
+      "definition": "Técnica de evasão que codifica dados confidenciais em subdomínios de consultas DNS."
+    },
+    {
+      "term": "NetFlow",
+      "definition": "Protocolo de agregação estatística de fluxos de tráfego de rede sem preservação de carga útil."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch06-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 6",
+      "assetPath": "assets/figures/ch06_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch06-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 6",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH06-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 6. Edição REV1, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch06-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Redes e Tráfego de Pacotes Forense.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch06-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 6?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch06-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Redes e Tráfego de Pacotes Forense",
+      "instructions": "Analise a captura capture_investigation.pcap e decodifique as consultas DNS para descobrir o arquivo exfiltrado.",
+      "expectedResult": "Fragmentos em base32 reconstruídos, revelando a lista de senhas senhas_banco.csv transferida para c2.evil.com."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch06",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch06-01",
+        "prompt": "Acerca de Redes e Tráfego de Pacotes Forense, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch06-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 6?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}

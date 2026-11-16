@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "1.0",
+  "contentId": "forense.vol02.ch21",
+  "type": "chapter",
+  "volume": 2,
+  "chapter": 21,
+  "title": "Bancos de dados e SQL I",
+  "language": "pt-BR",
+  "edition": "REV1",
+  "editorialStatus": "Em revisão",
+  "source": {
+    "provider": "google_drive",
+    "fileId": "11pzMdjeu6TXBM_ym5CxG0i8Vcct-Kxrc",
+    "revision": "ED1",
+    "sha256": "ec0260467fed385a6a9b4a11e9a9e025417d1a761decb9953aaff3dcc9229e10"
+  },
+  "sections": [
+    {
+      "sectionId": "ch21-sec-01",
+      "title": "21.1 Fundamentos e Conceitos (Bancos de dados e SQL I)",
+      "orderIndex": 0,
+      "markdownContent": "# Bancos de dados e SQL I\n\nArquivo oficial no Google Drive: `Enciclopedia_Forense_VolII_Capitulo_21_ED1.pdf` (10 páginas A4, SHA-256 `588ea665e69c8e4bb17605f8c25a1d6f929f2e791b16b5d8d658108f03a290fb`).\n\nBancos de dados e SQL I\n\nCapítulo 21 · Tabelas, chaves, relações, consultas e contagens verificáveis\n\nEnciclopédia de Ciências Forenses · Volume II\n\n14 de novembro de 2026 · Edição didática 1\n\nENCICLOPÉDIA DE CIÊNCIAS FORENSES · VOLUME II\n\nGuia de aprendizagem e limites do laboratório\n\nUma planilha é prática quando o conjunto é pequeno. Mas investigações podem reunir milhares de registros de origem diferente: telefonia, vídeos, autenticações de sistemas, notas\n\nfiscais, mensagens, eventos de rede e relatórios. Um banco de dados ajuda a manter relações\n\ne executar consultas repetíveis. Ele não transforma dados recebidos em prova confiável\n\nNeste capítulo você aprenderá a pensar em tabelas e relacionamentos, criar uma base SQLite",
+      "anchorKey": "ch21_sec01_anchor"
+    },
+    {
+      "sectionId": "ch21-sec-02",
+      "title": "21.2 Procedimentos, Limitações e Verificação",
+      "orderIndex": 1,
+      "markdownContent": "a partir de CSVs fictícios, realizar consultas progressivas e verificar que resultados não foram\n\ninflados. Os arquivos recebidos não são alterados pelo laboratório. O arquivo .sqlite gerado\n\né um artefato derivado e deve ser identificado como tal.\n\nSignificado acessível\n\nConjunto estruturado de informações mantidas\n\nSoftware que armazena, consulta e controla o\n\nEstrutura com colunas definidas e linhas de\n\nUma ocorrência registrada na tabela.\n\nPropriedade definida para cada linha.\n\nCampo que identifica uma linha sem repetição.",
+      "anchorKey": "ch21_sec02_anchor"
+    }
+  ],
+  "learningObjectives": [
+    "Diferenciar dados brutos, vestígios digitais, indícios e evidências periciais.",
+    "Calcular a entropia de Shannon em artefatos binários para identificar contramedidas anti-forenses.",
+    "Aplicar o Princípio de Troca de Locard na coleta e fixação de vestígios computacionais."
+  ],
+  "prerequisites": [],
+  "glossary": [
+    {
+      "term": "Vestígio Digital",
+      "definition": "Qualquer dado em formato binário capaz de atestar uma conduta criminosa ou fato sob apuração judicial."
+    },
+    {
+      "term": "Entropia de Shannon",
+      "definition": "Medida estatística de incerteza ou densidade de informação em uma sequência de bytes."
+    },
+    {
+      "term": "Princípio de Locard",
+      "definition": "Postulado segundo o qual o agente necessariamente traz e deixa vestígios no local do fato."
+    }
+  ],
+  "figures": [
+    {
+      "figureId": "fig-ch01-01",
+      "caption": "Diagrama ilustrativo do fluxo pericial para o capítulo 1",
+      "assetPath": "assets/figures/ch01_diagram.png"
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-ch01-01",
+      "caption": "Parâmetros e métricas de referência do capítulo 1",
+      "columns": [
+        "Parâmetro",
+        "Valor Padrão",
+        "Faixa Aceitável"
+      ],
+      "data": [
+        [
+          "Precisão Metodológica",
+          "100%",
+          ">= 99.5%"
+        ],
+        [
+          "Confiabilidade Probatória",
+          "Alta",
+          "Alta / Irrefutável"
+        ]
+      ]
+    }
+  ],
+  "references": [
+    {
+      "citationKey": "REF-CH01-2024",
+      "formattedText": "FORENSE, Academia. Tratado de Ciências Forenses: Capítulo 1. Edição REV2, 2024.",
+      "year": 2024
+    }
+  ],
+  "exercises": [
+    {
+      "exerciseId": "ex-ch01-01",
+      "prompt": "Explique a importância do rigor técnico abordado no tópico Dos Dados às Evidências Digitais.",
+      "exerciseType": "discursive",
+      "solution": "Garantir a idoneidade do vestígio e a sustentabilidade da conclusão pericial em juízo."
+    },
+    {
+      "exerciseId": "ex-ch01-02",
+      "prompt": "Qual parâmetro é determinante para validação do procedimento pericial no capítulo 1?",
+      "exerciseType": "objective",
+      "solution": "Cadeia de custódia ininterrupta e reprodutibilidade científica."
+    }
+  ],
+  "laboratories": [
+    {
+      "labId": "lab-ch01-01",
+      "domain": "digital_forensics",
+      "title": "Prática Laboratorial Aplicada: Dos Dados às Evidências Digitais",
+      "instructions": "Execute a análise de entropia no arquivo suspeito disk_sample.dd e determine se a partição 2 contém volume TrueCrypt oculto.",
+      "expectedResult": "Entropia superior a 7.98 bits/byte nos setores 2048 a 8192, indicando contêiner cifrado."
+    }
+  ],
+  "assessment": {
+    "assessmentId": "eval-vol01-ch01",
+    "passingScorePercent": 80.0,
+    "questions": [
+      {
+        "questionId": "q-ch01-01",
+        "prompt": "Acerca de Dos Dados às Evidências Digitais, assinale a alternativa correta:",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-01",
+            "text": "O procedimento deve seguir estrito rigor científico e cadeia de custódia documental.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-02",
+            "text": "A avaliação subjetiva do investigador substitui o cálculo formal de hash.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia o entendimento do rigor técnico e legal da prova pericial."
+      },
+      {
+        "questionId": "q-ch01-02",
+        "prompt": "Qual das alternativas representa um postulado técnico do capítulo 1?",
+        "type": "multiple_choice",
+        "points": 50.0,
+        "options": [
+          {
+            "optionId": "opt-03",
+            "text": "Todo vestígio deve ser fixado e documentado antes de qualquer processamento.",
+            "isCorrect": true
+          },
+          {
+            "optionId": "opt-04",
+            "text": "A preservação física da mídia original pode ser descartada após cópia simples.",
+            "isCorrect": false
+          }
+        ],
+        "rubric": "Avalia a fixação de vestígios e integridade de mídias."
+      }
+    ]
+  },
+  "audio": {
+    "enabled": true,
+    "language": "pt-BR",
+    "voicePreferred": "pt-BR-Kokoro-Braseiro"
+  }
+}
