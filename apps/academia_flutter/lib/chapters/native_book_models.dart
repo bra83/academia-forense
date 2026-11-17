@@ -73,7 +73,11 @@ class SourceBookLibrary {
           .toList(growable:false));
     }
     final name=chapter.toString().padLeft(2,'0');
-    final source=await rootBundle.loadString('assets/books/chapter'+name+'.json');
+    // Decode locally instead of spawning an isolate for chapters above 50KB.
+    // It also keeps native-reader widget tests deterministic.
+    final asset=await rootBundle.load('assets/books/chapter'+name+'.json');
+    final source=utf8.decode(asset.buffer.asUint8List(
+      asset.offsetInBytes,asset.lengthInBytes));
     final parsed=jsonDecode(source) as Map<String,dynamic>;
     if(parsed['chapter']!=chapter)throw FormatException(
       'Fonte do livro divergente: capítulo $chapter');
