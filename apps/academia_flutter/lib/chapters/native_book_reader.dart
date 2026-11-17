@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../services/offline_library.dart';
 import '../services/voice_reader_v2.dart';
 import 'native_book_models.dart';
+import 'book_html.dart';
 import 'native_book_tools.dart';
 import 'reader_typography.dart';
 import 'study_catalog.dart';
@@ -33,6 +36,10 @@ class NativeBookReader extends StatefulWidget {
 class _NativeBookReaderState extends State<NativeBookReader> {
   static const forest=Color(0xFF174B3B);
   final _scroll=ScrollController();
+  WebViewController? _htmlController;
+  bool _htmlReading=Platform.isAndroid;
+  String _htmlQuote='',_htmlBlock='';
+  int _htmlStart=-1,_htmlEnd=-1;
   BookChapter? _book;
   bool _loading=true;
   int _chapter=1,_page=0;
@@ -41,8 +48,8 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   List<Map<String,dynamic>> _highlights=[];
   Set<int> _bookmarks={};
   int? _selectionStart,_selectionEnd;
-  bool get _hasSelection=>_selectionStart!=null && _selectionEnd!=null &&
-    _selectionEnd!>_selectionStart!;
+  bool get _hasSelection=>(_selectionStart!=null && _selectionEnd!=null &&
+    _selectionEnd!>_selectionStart!) || (_htmlReading && _htmlQuote.isNotEmpty);
   String get _pageText{
     final book=_book;
     if(book==null || _page>=book.screens.length)return '';
@@ -65,7 +72,11 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   void initState(){
     super.initState();
     _chapter=widget.initialChapter;
-    _load(_chapter);
+    if(Platform.isAndroid){
+      _prepareHtml();
+    } else {
+      _load(_chapter);
+    }
   }
   @override
   void dispose(){
@@ -73,11 +84,59 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     super.dispose();
   }
 
+  Future<void> _prepareHtml() async {
+    try {
+      final controller=WebViewController();
+      await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+      await controller.addJavaScriptChannel('BookBridge',
+        onMessageReceived:(event){
+          if(!mounted)return;
+          try {
+            final data=jsonDecode(event.message) as Map<String,dynamic>;
+            if(data['type']!='selection')return;
+            final quote=(data['quote']??'').toString().trim();
+            if(quote.isEmpty)return;
+            setState((){
+              _htmlQuote=quote;
+              _htmlBlock=(data['block']??'').toString();
+              _htmlStart=(data['start'] as num?)?.toInt()??-1;
+              _htmlEnd=(data['end'] as num?)?.toInt()??-1;
+            });
+          } catch (_) {
+            // Malformed JavaScript messages must not alter saved selections.
+          }
+        });
+      await controller.setNavigationDelegate(NavigationDelegate(
+        onNavigationRequest:(_)=>NavigationDecision.prevent));
+      _htmlController=controller;
+    } catch (e) {
+      _htmlReading=false;
+      _htmlController=null;
+    }
+    if(mounted)await _load(_chapter);
+  }
+
+  Future<void> _renderHtml() async {
+    final controller=_htmlController;
+    if(!_htmlReading || controller==null || _book==null)return;
+    try {
+      await controller.loadHtmlString(SourceHtmlConverter.pageHtml(
+        _pageText,fontSize:_font,chapter:_chapter,screen:_page,
+        highlights:_highlights));
+    } catch (e) {
+      if(mounted){
+        setState(()=>_htmlReading=false);
+        _notify('HTML indisponível. Leitor de texto mantido.');
+      }
+    }
+  }
+
   Future<void> _load(int chapter) async {
     setState((){
       _chapter=chapter;_loading=true;_error='';
       _book=null;_selectionStart=null;_selectionEnd=null;
       _highlights=[];_bookmarks={};
+      _htmlQuote='';_htmlBlock='';_htmlStart=-1;_htmlEnd=-1;
     });
     try {
       final book=await const SourceBookLibrary().load(chapter,widget.library);
@@ -110,6 +169,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
           .whereType<int>().toSet();
         _highlights=loaded;
       });
+      await _renderHtml();
     } catch(e) {
       if(mounted)setState((){
         _loading=false;_error='Não foi possível carregar o livro: $e';
@@ -122,8 +182,10 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     if(book==null || index<0 || index>=book.screens.length)return;
     setState((){
       _page=index;_selectionStart=null;_selectionEnd=null;
+      _htmlQuote='';_htmlBlock='';_htmlStart=-1;_htmlEnd=-1;
     });
     if(_scroll.hasClients)_scroll.jumpTo(0);
+    await _renderHtml();
     try {
       final prefs=await SharedPreferences.getInstance();
       final ok=await prefs.setInt('source_reader_page_$_chapter',index);
@@ -140,6 +202,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
 
   Future<void> _changeFont(double value) async {
     setState(()=>_font=value.clamp(14.0,26.0));
+    await _renderHtml();
     try {
       final prefs=await SharedPreferences.getInstance();
       await prefs.setDouble('source_reader_font',_font);
@@ -177,16 +240,19 @@ class _NativeBookReaderState extends State<NativeBookReader> {
       throw StateError('A gravação do trecho não foi confirmada.');
     }
     if(mounted)setState(()=>_highlights=next);
+    await _renderHtml();
   }
 
   Future<void> _markSelection() async {
     if(!_hasSelection)return;
-    final start=_selectionStart!;
-    final end=_selectionEnd!;
+    final html=_htmlReading && _htmlQuote.trim().isNotEmpty;
     final body=_pageText;
-    if(start<0 || end>body.length || end<=start)return;
-    final quote=body.substring(start,end).trim();
+    final quote=html ? _htmlQuote.trim() :
+      body.substring(_selectionStart!,_selectionEnd!).trim();
     if(quote.isEmpty)return;
+    final start=html?body.indexOf(quote):_selectionStart!;
+    final end=start<0?-1:(html?start+quote.length:_selectionEnd!);
+    if(!html && (start<0 || end>body.length || end<=start))return;
     final noteInput=TextEditingController();
     final message=await showDialog<String>(
       context:context,builder:(ctx)=>AlertDialog(
@@ -215,6 +281,10 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     final next=List<Map<String,dynamic>>.from(_highlights)
       ..add(<String,dynamic>{
         'page':_page,'start':start,'end':end,'text':quote,
+        if(html)...{
+          'htmlBlock':_htmlBlock,'htmlStart':_htmlStart,
+          'htmlEnd':_htmlEnd,
+        },
         'note':message.trim(),
         'savedAt':DateTime.now().toIso8601String(),
       });
@@ -223,6 +293,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
       _notify('Trecho marcado e anotação gravados.');
       if(mounted)setState((){
         _selectionStart=null;_selectionEnd=null;
+        _htmlQuote='';_htmlBlock='';
       });
     } catch(e) {
       _notify('Trecho não salvo: $e');
@@ -335,8 +406,9 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   void _openTutor({String? question}) {
     final body=_pageText;
     if(body.isEmpty)return;
-    final selected=_hasSelection?
-      body.substring(_selectionStart!,_selectionEnd!):null;
+    final selected=_htmlReading && _htmlQuote.isNotEmpty?_htmlQuote:
+      (_selectionStart!=null && _selectionEnd!=null?
+        body.substring(_selectionStart!,_selectionEnd!):null);
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder:(_)=>BookTutorScreen(
         chapter:_chapter,title:_title,pageLabel:_label,
@@ -353,8 +425,9 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   void _openVoice(){
     final body=_pageText;
     if(body.isEmpty)return;
-    final selected=_hasSelection?
-      body.substring(_selectionStart!,_selectionEnd!):'';
+    final selected=_htmlReading && _htmlQuote.isNotEmpty?_htmlQuote:
+      (_selectionStart!=null && _selectionEnd!=null?
+        body.substring(_selectionStart!,_selectionEnd!):'');
     final reading=selected.isNotEmpty?selected:body;
     showModalBottomSheet<void>(
       context:context,isScrollControlled:true,
@@ -425,6 +498,13 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                 value:(_page+1)/book.screens.length,minHeight:5),
               const SizedBox(height:6),
               Row(children:[
+                IconButton(tooltip:'Alternar HTML e texto',
+                  onPressed:()=>setState((){
+                    _htmlReading=!_htmlReading;
+                    if(_htmlReading)_renderHtml();
+                  }),
+                  icon:Icon(_htmlReading?Icons.article_outlined:
+                    Icons.html)),
                 IconButton(tooltip:'Diminuir fonte',
                   onPressed:_font<=14?null:()=>_changeFont(_font-1),
                   icon:const Icon(Icons.text_decrease)),
@@ -445,27 +525,29 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                     icon:const Icon(Icons.border_color_outlined,size:17),
                     label:const Text('Salvar trecho selecionado'))),
             ])),
-          Expanded(child:Scrollbar(
-            controller:_scroll,
-            child:SingleChildScrollView(
-              key:ValueKey('reading_$_chapter'+'_$_page'),
+          Expanded(child:_htmlReading && _htmlController!=null?
+            WebViewWidget(controller:_htmlController!):
+            Scrollbar(
               controller:_scroll,
-              padding:const EdgeInsets.fromLTRB(18,16,18,34),
-              child:Column(
-                crossAxisAlignment:CrossAxisAlignment.start,children:[
-                  SelectableText.rich(TextSpan(children:_spans(_pageText)),
-                    onSelectionChanged:_selectionChanged,
-                    textAlign:TextAlign.start,
-                    style:TextStyle(
-                      fontSize:_font,height:1.68,
-                      color:Theme.of(context).colorScheme.onSurface)),
-                  const SizedBox(height:14),
-                  if(!book.exactPdfPages)const Text(
-                    'Texto extraído do PDF e ajustado à tela. As telas '
-                    'não correspondem às páginas impressas; confira '
-                    'figuras, fórmulas e tabelas no PDF original.',
-                    style:TextStyle(fontSize:12,height:1.45)),
-                ])))),
+              child:SingleChildScrollView(
+                key:ValueKey('reading_$_chapter'+'_$_page'),
+                controller:_scroll,
+                padding:const EdgeInsets.fromLTRB(18,16,18,34),
+                child:Column(
+                  crossAxisAlignment:CrossAxisAlignment.start,children:[
+                    SelectableText.rich(TextSpan(children:_spans(_pageText)),
+                      onSelectionChanged:_selectionChanged,
+                      textAlign:TextAlign.justify,
+                      style:TextStyle(
+                        fontSize:_font,height:1.68,
+                        color:Theme.of(context).colorScheme.onSurface)),
+                    const SizedBox(height:14),
+                    if(!book.exactPdfPages)const Text(
+                      'Texto extraído do PDF e ajustado à tela. As telas '
+                      'não correspondem às páginas impressas; confira '
+                      'figuras, fórmulas e tabelas no PDF original.',
+                      style:TextStyle(fontSize:12,height:1.45)),
+                  ])))),
           Padding(padding:const EdgeInsets.symmetric(
             horizontal:10,vertical:5),
             child:Wrap(
