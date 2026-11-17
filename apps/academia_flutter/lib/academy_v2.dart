@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:ai_gateway/ai_gateway.dart';
@@ -7,6 +8,7 @@ import 'package:persistence_core/persistence_core.dart';
 import 'package:laboratory_core/laboratory_core.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'chapters/study_catalog.dart';
+import 'chapters/guided_lesson_screen.dart';
 import 'chapters/study_reader_v2.dart';
 import 'chapters/quiz_v2.dart';
 import 'services/offline_library.dart';
@@ -32,6 +34,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   int _tab=0;
   int _selectedChapter=1;
   int _assessments=0, _labs=0, _cases=0;
+  int _guidedLessonsComplete=0;
   double _hoursWeek=0;
   bool _loading=true, _importing=false, _testing=false, _asking=false, _labBusy=false, _reportBusy=false;
   bool _keyPresent=false;
@@ -90,6 +93,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         _loading=false;
       });
       await _refreshMetrics();
+      await _refreshGuidedLessons();
     }catch(e){
       if(mounted)setState(() {
         _loading=false;_status='Erro ao inicializar a Academia: '+e.toString();
@@ -143,6 +147,35 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         _hoursWeek=hours;_assessments=countA;_labs=countL;_cases=countC;
       });
     }catch(e){if(mounted)setState(()=>_status='Métricas indisponíveis: '+e.runtimeType.toString());}
+  }
+
+  Future<void> _refreshGuidedLessons() async {
+    try {
+      final prefs=await SharedPreferences.getInstance();
+      var done=0;
+      for(var i=1;i<=26;i++){
+        if(prefs.getBool('academia_lesson_correct_${i}')??false)done++;
+      }
+      if(mounted)setState(()=>_guidedLessonsComplete=done);
+    } catch (_) {
+      // Never manufacture completion data when persistent storage fails.
+    }
+  }
+
+  Future<void> _openGuidedLesson(int number) async {
+    final matches=_catalog.where((entry)=>entry.number==number);
+    if(matches.isEmpty)return;
+    final chapter=matches.first;
+    await Navigator.of(context).push(MaterialPageRoute<void>(
+      builder:(_)=>GuidedLessonScreen(
+        chapterNumber:number,
+        chapterTitle:chapter.title,
+        library:_library,
+        onProgress:_refreshGuidedLessons,
+        onOpenPdf:()=>_readChapter(number),
+      ),
+    ));
+    await _refreshGuidedLessons();
   }
 
   Future<void> _import() async {
@@ -467,7 +500,34 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     ]));
 
   Widget _home() => ListView(padding:const EdgeInsets.all(16),children:[
-    _topTitle('Academia Forense','Formação progressiva baseada no seu acervo original.'),
+    _topTitle('Academia Forense','Aulas explicadas, simulações, decisões e avaliação — sem depender de um leitor de PDF.'),
+    _infoCard('Sua academia interativa',Column(
+      crossAxisAlignment:CrossAxisAlignment.start,children:[
+        Text('26 aulas temáticas com explicação, diagrama visual, '
+          'atividade prática e questão comentada.',
+          style:Theme.of(context).textTheme.bodyLarge),
+        const SizedBox(height:12),
+        Text('Lições aplicadas e registradas: $_guidedLessonsComplete de 26'),
+        const SizedBox(height:8),
+        LinearProgressIndicator(value:_guidedLessonsComplete/26,
+          minHeight:10,borderRadius:BorderRadius.circular(8)),
+        const SizedBox(height:10),
+        Wrap(spacing:8,runSpacing:8,children:[
+          FilledButton.icon(
+            onPressed:_catalog.isEmpty?null:()=>_openGuidedLesson(1),
+            icon:const Icon(Icons.play_arrow),
+            label:const Text('Começar aula 01')),
+          OutlinedButton.icon(
+            onPressed:()=>setState(()=>_tab=1),
+            icon:const Icon(Icons.view_module_outlined),
+            label:const Text('Escolher aula')),
+        ]),
+        const SizedBox(height:12),
+        const Text('A primeira aula inclui laboratório real de SHA-256. '
+          'O capítulo 4 simula desvio de relógios; os capítulos 17 e 25 '
+          'incluem gráficos de probabilidade. Outras aulas têm '
+          'investigações guiadas com decisões justificadas.'),
+      ]),icon:Icons.auto_stories_outlined),
     if(_status.isNotEmpty) Text(_status),
     _infoCard('Seu estudo nesta semana',Column(
       crossAxisAlignment:CrossAxisAlignment.start,children:[
@@ -501,7 +561,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     final title=selected.isEmpty?'Capítulo':selected.first.title;
     final chapter=_library.chapter(_selectedChapter);
     return ListView(padding:const EdgeInsets.all(16),children:[
-      _topTitle('Plano de Estudos','PDF original, exercícios, professor Gemini e leitura por voz.'),
+      _topTitle('Aulas e práticas','Aprenda interativamente. O PDF é somente material de apoio e referência.'),
       if(_catalog.isNotEmpty) _infoCard('Selecione o capítulo',Column(children:[
         DropdownButtonFormField<int>(
           value:_selectedChapter,
@@ -518,12 +578,15 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         Text(title),
         const SizedBox(height:10),
         Wrap(spacing:8,runSpacing:8,children:[
-          FilledButton.icon(onPressed:()=>_readChapter(_selectedChapter),
-            icon:const Icon(Icons.picture_as_pdf),label:const Text('Ler PDF e fazer anotações')),
+          FilledButton.icon(onPressed:()=>_openGuidedLesson(_selectedChapter),
+            icon:const Icon(Icons.school_outlined),label:const Text('Iniciar aula interativa')),
+          OutlinedButton.icon(onPressed:()=>_readChapter(_selectedChapter),
+            icon:const Icon(Icons.picture_as_pdf_outlined),label:const Text('Conferir fonte original')),
           OutlinedButton.icon(onPressed:_openQuiz,icon:const Icon(Icons.quiz_outlined),
-            label:const Text('Avaliação real (5 questões)')),
+            label:const Text('Avaliação formativa com Gemini')),
         ]),
-        if(chapter==null)const Text('PDF não importado. Na Biblioteca, importe o pacote original.'),
+        if(chapter==null)const Text('A aula interativa funciona sem PDF importado. '
+          'Importe os originais pela Biblioteca para estudar e confirmar fontes.'),
       ])),
       _infoCard('Professor particular Gemini',Column(
         crossAxisAlignment:CrossAxisAlignment.start,children:[
@@ -546,19 +609,11 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
             child:Padding(padding:const EdgeInsets.all(12),
               child:SelectableText(_tutorAnswer))),
         ]),icon:Icons.psychology_outlined),
-      if(chapter!=null)
-        FutureBuilder<List<OriginalPage>>(
-          key:ValueKey('audio-'+_selectedChapter.toString()+(_speechModel??'')),
-          future:_library.pages(_selectedChapter),
-          builder:(context,snapshot){
-            if(!snapshot.hasData)return const SizedBox.shrink();
-            final pages=snapshot.data!;
-            if(pages.isEmpty)return const Text('Para voz, importe as páginas integrais do pacote.');
-            return VoiceReaderV2(
-              key:ValueKey('voice-'+_selectedChapter.toString()+(_speechModel??'')),
-              readText:pages.first.text,
-              getApiKey:_getKey,speechModel:_speechModel);
-          }),
+      _infoCard('Depois da aula',const Text(
+        'Use o laboratório para analisar dados editáveis e o professor Gemini '
+        'para tirar dúvidas referenciadas. A leitura por voz fica disponível '
+        'na página que você abrir no PDF original.'),
+        icon:Icons.tips_and_updates_outlined),
     ]);
   }
 
@@ -566,7 +621,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     final found=_catalog.where((c)=>c.title.toLowerCase().contains(_filter.toLowerCase()) ||
       c.number.toString().contains(_filter)).toList();
     return ListView(padding:const EdgeInsets.all(16),children:[
-      _topTitle('Biblioteca original','26 capítulos existentes em 292 páginas. '
+      _topTitle('Biblioteca de referência','26 capítulos existentes em 292 páginas. '
         'Conteúdo integral mediante importação; capítulos 27–113 não publicados.'),
       _infoCard('Importar PDFs do Drive ou do dispositivo',Column(
         crossAxisAlignment:CrossAxisAlignment.start,children:[
@@ -588,12 +643,12 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       const SizedBox(height:12),
       for(final c in found) Card(child:ListTile(
         title:Text('Cap. '+c.number.toString().padLeft(2,'0')+' — '+c.title),
-        subtitle:Text('Vol. '+c.volume.toString()+' • '+c.edition+
-          ' • '+(_library.chapter(c.number)==null?'PDF não importado':'PDF original disponível offline')),
+        subtitle:Text('Toque para estudar interativamente · Vol. '+c.volume.toString()+' • '+c.edition+
+          ' • '+(_library.chapter(c.number)==null?'PDF de apoio não importado':'PDF original disponível offline')),
         isThreeLine:true,
         trailing:Icon(_library.chapter(c.number)==null
           ?Icons.cloud_outlined:Icons.check_circle,color:const Color(0xFF20533F)),
-        onTap:()=>_library.chapter(c.number)==null?_openSource(c):_readChapter(c.number),
+        onTap:()=>_openGuidedLesson(c.number),
       )),
       const SizedBox(height:16),
       _infoCard('Buscar no conteúdo das 292 páginas',Column(children:[
@@ -685,6 +740,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     _infoCard('Matriz de competências',Column(
       crossAxisAlignment:CrossAxisAlignment.start,children:[
         const Text('Proficiência profissional: ainda não aferida.'),
+        Text('Lições interativas respondidas corretamente: $_guidedLessonsComplete de 26'),
         Text('Avaliações formativas acima do corte: '+_assessments.toString()),
         Text('Exercícios executados: '+_labs.toString()),
         Text('Casos registrados: '+_cases.toString()),
