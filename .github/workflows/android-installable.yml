@@ -1,0 +1,40 @@
+name: Android Installable (Independent Build)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'native/**'
+      - '.github/workflows/android-installable.yml'
+  workflow_dispatch:
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: stable
+          cache: true
+      - name: Resolve app dependencies
+        run: |
+          cd apps/academia_flutter
+          flutter pub get
+      - name: Compile Android APK ARM64
+        run: |
+          cd apps/academia_flutter
+          flutter build apk --release --target-platform android-arm64
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Academia-Forense-A57-Release
+          path: apps/academia_flutter/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
