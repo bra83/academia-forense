@@ -8,6 +8,7 @@ import '../services/offline_library.dart';
 import '../services/voice_reader_v2.dart';
 import 'native_book_models.dart';
 import 'native_book_tools.dart';
+import 'reader_typography.dart';
 import 'study_catalog.dart';
 
 /// Full-text, adjustable, paginated reading of the actual 26 source chapters.
@@ -228,23 +229,14 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     }
   }
 
-  List<TextSpan> _spans(String text){
+  List<TextSpan> _spans(String text) {
     final marks=_highlights.where((m)=>m['page']==_page)
-      .toList()..sort((a,b)=>(a['start'] as int)
-        .compareTo(b['start'] as int));
-    final spans=<TextSpan>[];
-    var position=0;
-    for(final mark in marks){
-      final start=(mark['start'] as int).clamp(0,text.length);
-      final end=(mark['end'] as int).clamp(start,text.length);
-      if(start<position || start>=end)continue;
-      if(start>position)spans.add(TextSpan(text:text.substring(position,start)));
-      spans.add(TextSpan(text:text.substring(start,end),
-        style:const TextStyle(backgroundColor:Color(0xFFFFE39A))));
-      position=end;
-    }
-    if(position<text.length)spans.add(TextSpan(text:text.substring(position)));
-    return spans;
+      .map((m)=>ReaderMark(m['start'] as int,m['end'] as int))
+      .toList(growable:false);
+    return SourceTypography.spans(
+      text,fontSize:_font,
+      color:Theme.of(context).colorScheme.onSurface,
+      highlights:marks);
   }
 
   void _selectionChanged(TextSelection selection,SelectionChangedCause? cause) {

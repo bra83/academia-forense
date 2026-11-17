@@ -15,20 +15,20 @@ class SourceTypography {
   const SourceTypography._();
 
   static final RegExp _section = RegExp(
-    r'^\\d{1,3}\\.\\d{1,2}(?:\\.\\d+)?\\s*[—–.:-]?\\s*\\S');
+    r'^\d{1,3}\.\d{1,2}(?:\.\d+)?\s*[—–.:-]?\s*\S');
   static final RegExp _chapter = RegExp(
-    r'^(?:CAP[IÍ]TULO\\s+)?\\d{1,3}\\.\\s+[A-Za-zÀ-ÿ]');
+    r'^(?:CAP[IÍ]TULO\s+)?\d{1,3}\.\s+[A-Za-zÀ-ÿ]');
   static final RegExp _kicker = RegExp(
-    r'^(?:REGRA|ATEN[CÇ][AÃ]O|NOTA|AVISO|IMPORTANTE|LIMITE|PASSO|PROCEDIMENTO|OBJETIVOS|CONCLUS[AÃ]O|EXERC[IÍ]CIO|LABORAT[OÓ]RIO|CHECKLIST)\\b',
+    r'^(?:REGRA|ATEN[CÇ][AÃ]O|NOTA|AVISO|IMPORTANTE|LIMITE|PASSO|PROCEDIMENTO|OBJETIVOS|CONCLUS[AÃ]O|EXERC[IÍ]CIO|LABORAT[OÓ]RIO|CHECKLIST)\b',
     caseSensitive:false);
   static final RegExp _caption = RegExp(
-    r'^(?:Figura|Tabela|Quadro|Gr[aá]fico|Fonte:)\\s*\\d*',
+    r'^(?:Figura|Tabela|Quadro|Gr[aá]fico|Fonte:)\s*\d*',
     caseSensitive:false);
   static final RegExp _heading = RegExp(
-    r'^(?:Como usar esta enciclop[eé]dia|O que este cap[ií]tulo|O que voc[eê] ser[aá] capaz|Objetivos e pr[eé]-requisitos|Terminologia que voc[eê] precisa|Exemplo inteiramente explicado|Exemplo resolvido|Exemplo guiado|Gloss[aá]rio|Gabarito|Respostas comentadas|Refer[eê]ncias|Pr[oó]ximos passos|Arquitetura dos volumes|As quatro escalas|Popula[cç][aã]o, amostra|M[eé]dia ponderada|Experimento de sensibilidade|Cadeia de cust[oó]dia)\\b',
+    r'^(?:Como usar esta enciclop[eé]dia|O que este cap[ií]tulo|O que voc[eê] ser[aá] capaz|Objetivos e pr[eé]-requisitos|Terminologia que voc[eê] precisa|Exemplo inteiramente explicado|Exemplo resolvido|Exemplo guiado|Gloss[aá]rio|Gabarito|Respostas comentadas|Refer[eê]ncias|Pr[oó]ximos passos|Arquitetura dos volumes|As quatro escalas|Popula[cç][aã]o, amostra|M[eé]dia ponderada|Experimento de sensibilidade|Cadeia de cust[oó]dia)\b',
     caseSensitive:false);
   static final RegExp _inlineLabel = RegExp(
-    r'^(?:Em linguagem (?:cotidiana|profissional)|Exemplo (?:guiado|resolvido(?: \\d+)?|forense|sint[eé]tico)|Defini[cç][aã]o t[eé]cnica(?: - [^:]+)?|Objetivo central|N[ií]vel|Pr[eé]-requisitos|Regra de seguran[cç]a|Popula[cç][aã]o estat[ií]stica|Amostra|Conjunto dispon[ií]vel|Unidade de observa[cç][aã]o|Amplitude total|Vari[aâ]ncia amostral|Fonte|Metadado|Artefato digital|Proveni[eê]ncia):',
+    r'^(?:Em linguagem (?:cotidiana|profissional)|Exemplo (?:guiado|resolvido(?: \d+)?|forense|sint[eé]tico)|Defini[cç][aã]o t[eé]cnica(?: - [^:]+)?|Objetivo central|N[ií]vel|Pr[eé]-requisitos|Regra de seguran[cç]a|Popula[cç][aã]o estat[ií]stica|Amostra|Conjunto dispon[ií]vel|Unidade de observa[cç][aã]o|Amplitude total|Vari[aâ]ncia amostral|Fonte|Metadado|Artefato digital|Proveni[eê]ncia):',
     caseSensitive:false);
 
   static ReaderLineKind classify(String raw) {
@@ -105,7 +105,7 @@ class SourceTypography {
     final spans=<TextSpan>[];
     var lineStart=0;
     while(lineStart<source.length){
-      final n=source.indexOf('\\n',lineStart);
+      final n=source.indexOf('\n',lineStart);
       final end=n<0?source.length:n+1;
       final raw=source.substring(lineStart,end);
       final role=classify(raw);
@@ -114,8 +114,8 @@ class SourceTypography {
       final boundaries=<int>{lineStart,end};
       final active=<ReaderMark>[];
       for(final mark in highlights){
-        final a=mark.start.clamp(lineStart,end);
-        final b=mark.end.clamp(lineStart,end);
+        final a=mark.start.clamp(lineStart,end).toInt();
+        final b=mark.end.clamp(lineStart,end).toInt();
         if(b>a) {
           boundaries.add(a);boundaries.add(b);active.add(mark);
         }
