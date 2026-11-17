@@ -1,122 +1,57 @@
-name: Academia Forense Multiplatform CI
+name: Academia Forense — Android Quality Gate
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  ubuntu-ci:
-    name: Lint, Test & Build (Ubuntu)
+  android-verified:
+    name: Android ARM64 • analyze, test and APK
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: zulu
           java-version: '17'
 
-      - name: Set up Flutter
+      - name: Flutter 3.29.3
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.29.3'
-          channel: 'stable'
+          channel: stable
           cache: true
 
-      - name: Install Linux build dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libsqlite3-dev libsecret-1-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
-
-      - name: Install dependencies in packages
+      - name: Resolve packages
         run: |
           cd packages/design_system && flutter pub get
           cd ../persistence_core && flutter pub get
           cd ../../apps/academia_flutter && flutter pub get
 
-      - name: Analyze code
+      - name: Analyze application and dependencies
         run: |
           cd packages/design_system && flutter analyze --no-fatal-infos
           cd ../persistence_core && flutter analyze --no-fatal-infos
           cd ../../apps/academia_flutter && flutter analyze --no-fatal-infos
 
-      - name: Run unit & widget tests
+      - name: Run learning engine and UI regression tests
         run: |
           cd packages/design_system && flutter test
           cd ../persistence_core && flutter test
           cd ../../apps/academia_flutter && flutter test
 
-      - name: Build Android APK (release)
+      - name: Compile Android Galaxy A57 (ARM64)
         run: |
           cd apps/academia_flutter
-          flutter build apk --release --split-per-abi
+          flutter build apk --release --target-platform android-arm64
 
-      - name: Publish Android APK artifacts
+      - name: Publish Android APK only after all gates pass
         uses: actions/upload-artifact@v4
         with:
-          name: academia-forense-android-apks
-          path: apps/academia_flutter/build/app/outputs/flutter-apk/*.apk
-          if-no-files-found: error
-
-      - name: Build Linux Desktop (release)
-        run: |
-          cd apps/academia_flutter
-          flutter config --enable-linux-desktop
-          flutter build linux --release
-
-      - name: Publish Linux Desktop artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: academia-forense-linux
-          path: apps/academia_flutter/build/linux/x64/release/bundle/
-          if-no-files-found: error
-
-
-  windows-ci:
-    name: Test & Build (Windows Desktop)
-    runs-on: windows-2022
-    env:
-      CMAKE_GENERATOR: "Visual Studio 17 2022"
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.29.3'
-          channel: 'stable'
-          cache: true
-
-      - name: Install dependencies
-        run: |
-          cd packages/design_system
-          flutter pub get
-          cd ../persistence_core
-          flutter pub get
-          cd ../../apps/academia_flutter
-          flutter pub get
-
-      - name: Run tests on Windows
-        run: |
-          cd packages/persistence_core
-          flutter test
-          cd ../design_system
-          flutter test
-
-      - name: Build Windows Desktop (release)
-        run: |
-          cd apps/academia_flutter
-          flutter config --enable-windows-desktop
-          flutter build windows --release
-
-      - name: Publish Windows Desktop artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: academia-forense-windows
-          path: apps/academia_flutter/build/windows/x64/runner/Release/
+          name: Academia-Forense-A57-Android-Verified
+          path: apps/academia_flutter/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
