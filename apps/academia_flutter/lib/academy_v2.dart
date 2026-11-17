@@ -169,7 +169,8 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     }
     await Navigator.of(context).push(MaterialPageRoute(
       builder:(_)=>StudyReaderV2(
-        chapter:saved,library:_library,database:db,onDone:_refreshMetrics)));
+        chapter:saved,library:_library,database:db,onDone:_refreshMetrics,
+        getApiKey:_getKey,speechModel:_speechModel)));
     await _refreshMetrics();
   }
 

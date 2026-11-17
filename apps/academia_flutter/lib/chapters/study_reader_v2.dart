@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:persistence_core/persistence_core.dart';
 import '../services/offline_library.dart';
+import '../services/voice_reader_v2.dart';
 
 class StudyReaderV2 extends StatefulWidget {
   const StudyReaderV2({super.key,required this.chapter,required this.library,
-    required this.database,this.onDone});
+    required this.database,this.onDone,this.getApiKey,this.speechModel});
   final OfflineChapter chapter;
   final OfflineLibrary library;
   final AppDatabase database;
   final VoidCallback? onDone;
+  final Future<String?> Function()? getApiKey;
+  final String? speechModel;
   @override
   State<StudyReaderV2> createState() => _StudyReaderV2State();
 }
@@ -162,6 +165,27 @@ class _StudyReaderV2State extends State<StudyReaderV2> {
         page.first.text, style: const TextStyle(fontSize:17,height:1.65)));
   }
 
+  Widget _voicePanel() {
+    final pageContent = _pages.where((p) => p.number == _page).toList();
+    if (pageContent.isEmpty) return const SizedBox.shrink();
+    final getKey = widget.getApiKey;
+    if (getKey == null) return const SizedBox.shrink();
+    return ExpansionTile(
+      key: ValueKey('speech-section-${_page}'),
+      initiallyExpanded: false,
+      title: Text('Ouvir página $_page com Kokoro ou Gemini'),
+      leading: const Icon(Icons.record_voice_over_outlined),
+      children: [
+        VoiceReaderV2(
+          key: ValueKey('speech-reader-${_page}'),
+          readText: pageContent.first.text,
+          getApiKey: getKey,
+          speechModel: widget.speechModel,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final windows = Theme.of(context).platform == TargetPlatform.windows;
@@ -197,6 +221,7 @@ class _StudyReaderV2State extends State<StudyReaderV2> {
             ]),
           ),
         ),
+        _voicePanel(),
         Expanded(child:_studyMode ? _pageText()
           : windows ? PdfView(controller:_pdf!,
               onPageChanged:_recordPage,
