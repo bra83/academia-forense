@@ -104,13 +104,13 @@ class SourceExerciseSections {
     // headings (e.g. "PÁGINA 724.13 — Exercícios graduais").
     // Find the last real section title even when it is not line-leading.
     final exercisePattern=RegExp(
-      r'Exercícios\\s+(?:graduais|graduados|e\\s+avaliação|práticos|de\\s+revisão)',
+      r'Exercícios\s+(?:graduais|graduados|e\s+avaliação|práticos|de\s+revisão)',
       caseSensitive:false);
     final keyPattern=RegExp(
-      r'(?:Gabarito\\s+comentado|Respostas\\s+comentadas|Correção\\s+comentada)',
+      r'(?:Gabarito\s+comentado|Respostas\s+comentadas|Correção\s+comentada)',
       caseSensitive:false);
     final stopPattern=RegExp(
-      r'(?:Glossário\\s+(?:essencial|técnico)|Referências\\s+bibliográficas|Próximos\\s+passos)',
+      r'(?:Glossário\s+(?:essencial|técnico)|Referências\s+bibliográficas|Próximos\s+passos)',
       caseSensitive:false);
     final exerciseMatches=exercisePattern.allMatches(source).toList();
     final keyMatches=keyPattern.allMatches(source).toList();
