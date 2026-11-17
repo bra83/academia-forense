@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show EnginePhase;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:academia_flutter/chapters/lesson_blueprints.dart';
@@ -44,30 +45,30 @@ void main() {
     await tester.pumpWidget(MaterialApp(home:GuidedLessonScreen(
       chapterNumber:1,chapterTitle:'Dos dados às evidências',library:lib,
     )));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
     expect(find.text('Um registro não é uma conclusão'),findsOneWidget);
     expect(find.text('Ver exemplo visual'),findsOneWidget);
     await tester.ensureVisible(find.text('Ver exemplo visual'));
     await tester.tap(find.text('Ver exemplo visual'));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
     expect(find.text('O percurso de uma análise'),findsOneWidget);
     await tester.ensureVisible(find.text('Experimentar na prática'));
     await tester.tap(find.text('Experimentar na prática'));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
     expect(find.text('Laboratório com resultado observável'),findsOneWidget);
     final field=find.byType(TextField).first;
     await tester.enterText(field,'REGISTRO 001 | evento 14:33');
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
     expect(find.textContaining('hashes diferentes'),findsOneWidget);
     await tester.ensureVisible(find.text('Aplicar o que aprendi'));
     await tester.tap(find.text('Aplicar o que aprendi'));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
     expect(find.text('Você consegue justificar a conclusão?'),findsOneWidget);
     await tester.ensureVisible(find.byType(RadioListTile<int>).first);
     await tester.tap(find.byType(RadioListTile<int>).first);
     await tester.ensureVisible(find.text('Conferir minha resposta'));
     await tester.tap(find.text('Conferir minha resposta'));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
     expect(find.textContaining('prática realizada'),findsWidgets);
     final prefs=await SharedPreferences.getInstance();
     expect(prefs.getBool('academia_lesson_correct_1'),isTrue);
