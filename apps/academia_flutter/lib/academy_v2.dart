@@ -14,14 +14,15 @@ import 'services/voice_reader_v2.dart';
 import 'services/report_v2.dart';
 
 class AcademiaV2Screen extends StatefulWidget {
-  const AcademiaV2Screen({super.key, required this.database});
+  const AcademiaV2Screen({super.key, required this.database,this.privateLibrary});
   final AppDatabase database;
+  final OfflineLibrary? privateLibrary;
   @override
   State<AcademiaV2Screen> createState() => _AcademiaV2ScreenState();
 }
 
 class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
-  final OfflineLibrary _library=OfflineLibrary();
+  late final OfflineLibrary _library;
   final FlutterSecureStorage _vault=const FlutterSecureStorage();
   final _keyInput=TextEditingController();
   final _question=TextEditingController();
@@ -51,6 +52,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   @override
   void initState(){
     super.initState();
+    _library=widget.privateLibrary??OfflineLibrary();
     _labInput.text=_sampleCdr;
     _initialize();
   }
@@ -71,9 +73,14 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       await _library.initialize();
       final catalog=await StudyCatalog.loadBundledPreviews();
       await _seedCatalog(catalog);
-      final key=await _vault.read(key:'gemini_api_key');
-      final model=await _vault.read(key:'gemini_tutor_model');
-      final speech=await _vault.read(key:'gemini_speech_model');
+      String? key, model, speech;
+      try {
+        key=await _vault.read(key:'gemini_api_key');
+        model=await _vault.read(key:'gemini_tutor_model');
+        speech=await _vault.read(key:'gemini_speech_model');
+      } catch (_) {
+        _keyStatus='Cofre de credenciais não disponível neste ambiente.';
+      }
       if(!mounted)return;
       setState(() {
         _catalog=catalog;_textModel=model;_speechModel=speech;
