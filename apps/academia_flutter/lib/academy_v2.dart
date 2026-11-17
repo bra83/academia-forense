@@ -9,6 +9,7 @@ import 'package:laboratory_core/laboratory_core.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'chapters/study_catalog.dart';
 import 'chapters/guided_lesson_screen.dart';
+import 'chapters/native_book_reader.dart';
 import 'chapters/study_reader_v2.dart';
 import 'chapters/quiz_v2.dart';
 import 'services/offline_library.dart';
@@ -159,6 +160,22 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     } catch (_) {
       // Never manufacture completion data when persistent storage fails.
     }
+  }
+
+  Future<void> _openNativeBook(int number) async {
+    if(_catalog.isEmpty)return;
+    await Navigator.of(context).push(MaterialPageRoute<void>(
+      builder:(_)=>NativeBookReader(
+        initialChapter:number,
+        catalog:_catalog,
+        library:_library,
+        getApiKey:_getKey,
+        textModel:_textModel,
+        speechModel:_speechModel,
+        onOpenPdf:_readChapter,
+      ),
+    ));
+    await _refreshMetrics();
   }
 
   Future<void> _openGuidedLesson(int number) async {
@@ -499,11 +516,12 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     ]));
 
   Widget _home() => ListView(padding:const EdgeInsets.all(16),children:[
-    _topTitle('Academia Forense','Aulas explicadas, simulações, decisões e avaliação — sem depender de um leitor de PDF.'),
-    _infoCard('Sua academia interativa',Column(
+    _topTitle('Academia Forense','Sua Enciclopédia completa em texto ajustável, com voz, marcações e tutor Gemini.'),
+    _infoCard('Ler e estudar a Enciclopédia',Column(
       crossAxisAlignment:CrossAxisAlignment.start,children:[
-        Text('26 aulas temáticas com explicação, diagrama visual, '
-          'atividade prática e questão comentada.',
+        Text('Texto integral dos 26 PDFs em leitura paginada, tamanho de fonte '
+          'ajustável, trechos marcados, anotações, leitura de voz, '
+          'Gemini contextual e exercícios dos capítulos.',
           style:Theme.of(context).textTheme.bodyLarge),
         const SizedBox(height:12),
         Text('Lições aplicadas e registradas: $_guidedLessonsComplete de 26'),
@@ -513,19 +531,18 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         const SizedBox(height:10),
         Wrap(spacing:8,runSpacing:8,children:[
           FilledButton.icon(
-            onPressed:_catalog.isEmpty?null:()=>_openGuidedLesson(1),
+            onPressed:_catalog.isEmpty?null:()=>_openNativeBook(1),
             icon:const Icon(Icons.play_arrow),
-            label:const Text('Começar aula 01')),
+            label:const Text('Abrir Capítulo 01')),
           OutlinedButton.icon(
             onPressed:()=>setState(()=>_tab=1),
             icon:const Icon(Icons.view_module_outlined),
             label:const Text('Escolher aula')),
         ]),
         const SizedBox(height:12),
-        const Text('A primeira aula inclui laboratório real de SHA-256. '
-          'O capítulo 4 simula desvio de relógios; os capítulos 17 e 25 '
-          'incluem gráficos de probabilidade. Outras aulas têm '
-          'investigações guiadas com decisões justificadas.'),
+        const Text('O livro completo é o conteúdo principal. '
+          'Os laboratórios complementares permanecem disponíveis '
+          'separadamente para você praticar.'),
       ]),icon:Icons.auto_stories_outlined),
     if(_status.isNotEmpty) Text(_status),
     _infoCard('Seu estudo nesta semana',Column(
@@ -560,7 +577,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     final title=selected.isEmpty?'Capítulo':selected.first.title;
     final chapter=_library.chapter(_selectedChapter);
     return ListView(padding:const EdgeInsets.all(16),children:[
-      _topTitle('Aulas e práticas','Aprenda interativamente. O PDF é somente material de apoio e referência.'),
+      _topTitle('Enciclopédia para estudar','Leia o texto original, marque trechos e converse com o professor.'),
       if(_catalog.isNotEmpty) _infoCard('Selecione o capítulo',Column(children:[
         DropdownButtonFormField<int>(
           value:_selectedChapter,
@@ -577,15 +594,18 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         Text(title),
         const SizedBox(height:10),
         Wrap(spacing:8,runSpacing:8,children:[
-          FilledButton.icon(onPressed:()=>_openGuidedLesson(_selectedChapter),
-            icon:const Icon(Icons.school_outlined),label:const Text('Iniciar aula interativa')),
+          FilledButton.icon(onPressed:()=>_openNativeBook(_selectedChapter),
+            icon:const Icon(Icons.auto_stories_outlined),label:const Text('Ler capítulo completo')),
+          OutlinedButton.icon(onPressed:()=>_openGuidedLesson(_selectedChapter),
+            icon:const Icon(Icons.science_outlined),label:const Text('Práticas complementares')),
           OutlinedButton.icon(onPressed:()=>_readChapter(_selectedChapter),
-            icon:const Icon(Icons.picture_as_pdf_outlined),label:const Text('Conferir fonte original')),
+            icon:const Icon(Icons.picture_as_pdf_outlined),label:const Text('PDF com figuras')),
           OutlinedButton.icon(onPressed:_openQuiz,icon:const Icon(Icons.quiz_outlined),
-            label:const Text('Avaliação formativa com Gemini')),
+            label:const Text('Quiz com Gemini')),
         ]),
-        if(chapter==null)const Text('A aula interativa funciona sem PDF importado. '
-          'Importe os originais pela Biblioteca para estudar e confirmar fontes.'),
+        if(chapter==null)const Text('O texto integral já vem no app. '
+          'Importar o ZIP é opcional para ter as páginas originais '
+          'e consultar o PDF offline.'),
       ])),
       _infoCard('Professor particular Gemini',Column(
         crossAxisAlignment:CrossAxisAlignment.start,children:[
@@ -642,7 +662,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       const SizedBox(height:12),
       for(final c in found) Card(child:ListTile(
         title:Text('Cap. '+c.number.toString().padLeft(2,'0')+' — '+c.title),
-        subtitle:Text('Toque para estudar interativamente · Vol. '+c.volume.toString()+' • '+c.edition+
+        subtitle:Text('Toque para ler o texto integral · Vol. '+c.volume.toString()+' • '+c.edition+
           ' • '+(_library.chapter(c.number)==null?'PDF de apoio não importado':'PDF original disponível offline')),
         isThreeLine:true,
         trailing:Row(mainAxisSize:MainAxisSize.min,children:[
@@ -654,7 +674,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
             icon:const Icon(Icons.open_in_new,size:18),
             onPressed:()=>_openSource(c)),
         ]),
-        onTap:()=>_openGuidedLesson(c.number),
+        onTap:()=>_openNativeBook(c.number),
       )),
       const SizedBox(height:16),
       _infoCard('Buscar no conteúdo das 292 páginas',Column(children:[
