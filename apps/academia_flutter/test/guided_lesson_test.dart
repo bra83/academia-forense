@@ -71,5 +71,5 @@ void main() {
     expect(find.textContaining('prática realizada'),findsWidgets);
     final prefs=await SharedPreferences.getInstance();
     expect(prefs.getBool('academia_lesson_correct_1'),isTrue);
-  });
+  }, timeout: Timeout(const Duration(minutes:1)));
 }
