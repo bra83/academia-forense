@@ -49,7 +49,7 @@ void main(){
       expect(library.chapter(1),isNotNull);
       manifest['chapters']=[{'chapter':1,'title':'Corrompido',
         'pdf':'pdfs/cap_01.pdf','pages':'pages/cap_01.json',
-        'pageCount':1,'sha256':'0'*64}];
+        'pageCount':1,'sha256':List.filled(64,'0').join()}];
       expect(()=>library.importPack(ZipEncoder().encode(pack())!),
         throwsA(isA<FormatException>()));
       // On failed import, the verified old copy remains available.
