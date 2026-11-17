@@ -31,6 +31,18 @@ void main() {
       'Probabilidade depende da taxa de base');
   });
 
+  Future<void> tapOnScreen(WidgetTester tester, Finder finder) async {
+    // Scrollable.ensureVisible schedules a layout update; pump before tapping.
+    await tester.ensureVisible(finder);
+    await tester.pump();
+    await tester.tap(finder);
+    await tester.pumpAndSettle(
+      const Duration(milliseconds:100),
+      EnginePhase.sendSemanticsUpdate,
+      const Duration(seconds:5),
+    );
+  }
+
   testWidgets('Guided Android lesson is interactive, not a PDF reader',(tester) async {
     SharedPreferences.setMockInitialValues(<String,Object>{});
     // Avoid genuine dart:io futures inside the widget tester's fake-async zone.
@@ -46,27 +58,20 @@ void main() {
     await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
     expect(find.text('Um registro não é uma conclusão'),findsOneWidget);
     expect(find.text('Ver exemplo visual'),findsOneWidget);
-    await tester.ensureVisible(find.text('Ver exemplo visual'));
-    await tester.tap(find.text('Ver exemplo visual'));
-    await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
+    await tapOnScreen(tester,find.text('Ver exemplo visual'));
     expect(find.text('O percurso de uma análise'),findsOneWidget);
-    await tester.ensureVisible(find.text('Experimentar na prática'));
-    await tester.tap(find.text('Experimentar na prática'));
-    await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
+    await tapOnScreen(tester,find.text('Experimentar na prática'));
     expect(find.text('Laboratório com resultado observável'),findsOneWidget);
     final field=find.byType(TextField).first;
     await tester.enterText(field,'REGISTRO 001 | evento 14:33');
     await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
     expect(find.textContaining('hashes diferentes'),findsOneWidget);
-    await tester.ensureVisible(find.text('Aplicar o que aprendi'));
-    await tester.tap(find.text('Aplicar o que aprendi'));
-    await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
+    await tapOnScreen(tester,find.text('Aplicar o que aprendi'));
     expect(find.text('Você consegue justificar a conclusão?'),findsOneWidget);
     await tester.ensureVisible(find.byType(RadioListTile<int>).first);
+    await tester.pump();
     await tester.tap(find.byType(RadioListTile<int>).first);
-    await tester.ensureVisible(find.text('Conferir minha resposta'));
-    await tester.tap(find.text('Conferir minha resposta'));
-    await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
+    await tapOnScreen(tester,find.text('Conferir minha resposta'));
     expect(find.textContaining('prática realizada'),findsWidgets);
     final prefs=await SharedPreferences.getInstance();
     expect(prefs.getBool('academia_lesson_correct_1'),isTrue);
