@@ -446,10 +446,12 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                   onPressed:_bookmark,
                   icon:Icon(_bookmarks.contains(_page)?
                     Icons.bookmark:Icons.bookmark_outline)),
-                TextButton.icon(onPressed:_hasSelection?_markSelection:null,
-                  icon:const Icon(Icons.border_color_outlined,size:17),
-                  label:const Text('Marcar trecho')),
               ]),
+              if(_hasSelection)
+                Align(alignment:Alignment.centerRight,
+                  child:TextButton.icon(onPressed:_markSelection,
+                    icon:const Icon(Icons.border_color_outlined,size:17),
+                    label:const Text('Salvar trecho selecionado'))),
             ])),
           Expanded(child:Scrollbar(
             controller:_scroll,
@@ -473,22 +475,24 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                     style:TextStyle(fontSize:12,height:1.45)),
                 ])))),
           Padding(padding:const EdgeInsets.symmetric(
-            horizontal:10,vertical:5),child:Row(children:[
-              Expanded(child:OutlinedButton.icon(
-                onPressed:_openVoice,
-                icon:const Icon(Icons.record_voice_over),
-                label:const Text('Ouvir'))),
-              const SizedBox(width:8),
-              Expanded(child:FilledButton.icon(
-                onPressed:_openTutor,
-                icon:const Icon(Icons.psychology),
-                label:const Text('Gemini'))),
-              const SizedBox(width:8),
-              Expanded(child:OutlinedButton.icon(
-                onPressed:_openExercises,
-                icon:const Icon(Icons.edit_note),
-                label:const Text('Exercícios'))),
-            ])),
+            horizontal:10,vertical:5),
+            child:Wrap(
+              alignment:WrapAlignment.center,
+              spacing:8,runSpacing:4,
+              children:[
+                OutlinedButton.icon(
+                  onPressed:_openVoice,
+                  icon:const Icon(Icons.record_voice_over),
+                  label:const Text('Ouvir')),
+                FilledButton.icon(
+                  onPressed:_openTutor,
+                  icon:const Icon(Icons.psychology),
+                  label:const Text('Gemini')),
+                OutlinedButton.icon(
+                  onPressed:_openExercises,
+                  icon:const Icon(Icons.edit_note),
+                  label:const Text('Exercícios')),
+              ])),
           Padding(padding:const EdgeInsets.symmetric(horizontal:8),
             child:Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,
               children:[
