@@ -90,6 +90,8 @@ class _PracticeStationState extends State<PracticeStation> {
   }
   Widget _hash(){
     final digest=sha256.convert(utf8.encode(_source.text)).toString();
+    const original='EXEMPLO-001: evento às 14:32';
+    final originalDigest=sha256.convert(utf8.encode(original)).toString();
     return _intro('Oficina de integridade SHA-256',
       'Altere o conteúdo de um vestígio fictício. O resumo é recalculado '
       'a partir dos bytes UTF-8 presentes, sem aprovação por mera abertura.',
@@ -101,6 +103,11 @@ class _PracticeStationState extends State<PracticeStation> {
         const SizedBox(height:12),
         SelectableText('SHA-256: $digest',style:const TextStyle(
           fontFamily:'monospace',fontSize:12)),
+        const SizedBox(height:8),
+        Text(digest==originalDigest?
+          'Os bytes conferem com o texto original.':
+          'Os hashes diferentes indicam que os bytes mudaram.',
+          style:const TextStyle(fontSize:14,fontWeight:FontWeight.w700)),
         const SizedBox(height:15),
         FilledButton(onPressed:()=>_performed(
           'Resumo calculado para ${utf8.encode(_source.text).length} bytes: '

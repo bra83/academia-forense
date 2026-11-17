@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:academia_flutter/chapters/lesson_blueprints.dart';
+import 'package:academia_flutter/chapters/lesson_depth_view.dart';
 import 'package:academia_flutter/chapters/guided_lesson_screen.dart';
 import 'package:academia_flutter/services/offline_library.dart';
 
@@ -25,6 +26,17 @@ void main() {
       expect(lesson.flow.length,5);
       expect(lesson.feedback.trim().length,greaterThan(25));
     }
+    expect(deepLessons.length,26);
+    for(final plan in deepLessons.values){
+      expect(plan.sections.length,3);
+      expect(plan.visualLabels.length,plan.visualDetails.length);
+      expect(plan.sections.map((s)=>s.title).toSet().length,3);
+      for(final section in plan.sections){
+        expect(section.explanation.length,greaterThan(280));
+        expect(section.demonstration.length,greaterThan(80));
+      }
+    }
+    expect(deepLessons.values.map((x)=>x.kind).toSet().length,7);
     expect(blueprintForChapter(1).focus,
       'Um registro não é uma conclusão');
     expect(blueprintForChapter(25).focus,
@@ -66,13 +78,12 @@ void main() {
     await tester.enterText(field,'REGISTRO 001 | evento 14:33');
     await tester.pumpAndSettle(const Duration(milliseconds:100), EnginePhase.sendSemanticsUpdate, const Duration(seconds:5));
     expect(find.textContaining('hashes diferentes'),findsOneWidget);
+    await tapOnScreen(tester,find.text('Registrar resultado calculado'));
     await tapOnScreen(tester,find.text('Aplicar o que aprendi'));
     expect(find.text('Você consegue justificar a conclusão?'),findsOneWidget);
-    await tester.ensureVisible(find.byType(RadioListTile<int>).first);
-    await tester.pump();
-    await tester.tap(find.byType(RadioListTile<int>).first);
+    await tapOnScreen(tester,find.text(blueprintForChapter(1).choices.first));
     await tapOnScreen(tester,find.text('Conferir minha resposta'));
-    expect(find.textContaining('prática realizada'),findsWidgets);
+    expect(find.textContaining('progresso registrado'),findsWidgets);
     final prefs=await SharedPreferences.getInstance();
     expect(prefs.getBool('academia_lesson_correct_1'),isTrue);
   }, timeout: Timeout(const Duration(minutes:1)));
