@@ -100,19 +100,18 @@ class SourceExerciseSections {
 
   static SourceExerciseSections fromOriginal(String content) {
     final source=content.replaceAll('\r','');
+    // PDF text extraction often concatenates page footers and numbered
+    // headings (e.g. "PÁGINA 724.13 — Exercícios graduais").
+    // Find the last real section title even when it is not line-leading.
     final exercisePattern=RegExp(
-      r'(?:^|\n)[ \t]*(?:\d{1,2}(?:\.\d+)?[.\-–—]?\s*)?'
-      r'(?:Exercícios\s+(?:graduais|graduados|e\s+avaliação|práticos)'
-      r'|Exercícios\b|Questões\s+de\s+revisão\b)',
-      caseSensitive:false,multiLine:true);
+      r'Exercícios\\s+(?:graduais|graduados|e\\s+avaliação|práticos|de\\s+revisão)',
+      caseSensitive:false);
     final keyPattern=RegExp(
-      r'(?:^|\n)[ \t]*(?:\d{1,2}(?:\.\d+)?[.\-–—]?\s*)?'
-      r'(?:Gabarito\b|Respostas\s+comentadas\b|Correção\s+comentada\b)',
-      caseSensitive:false,multiLine:true);
+      r'(?:Gabarito\\s+comentado|Respostas\\s+comentadas|Correção\\s+comentada)',
+      caseSensitive:false);
     final stopPattern=RegExp(
-      r'(?:^|\n)[ \t]*(?:\d{1,2}(?:\.\d+)?[.\-–—]?\s*)?'
-      r'(?:Glossário\b|Referências\b|Bibliografia\b|Próximos\s+passos\b)',
-      caseSensitive:false,multiLine:true);
+      r'(?:Glossário\\s+(?:essencial|técnico)|Referências\\s+bibliográficas|Próximos\\s+passos)',
+      caseSensitive:false);
     final exerciseMatches=exercisePattern.allMatches(source).toList();
     final keyMatches=keyPattern.allMatches(source).toList();
     if(exerciseMatches.isEmpty){
