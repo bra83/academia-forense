@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/offline_library.dart';
 import 'lesson_blueprints.dart';
 import 'lesson_depth_view.dart';
+import 'lesson_depth_model.dart';
 import 'practice_stations.dart';
 
 /// Android-first guided learning. This route is a native lesson with exercises,
@@ -165,7 +166,7 @@ class _GuidedLessonScreenState extends State<GuidedLessonScreen> {
           borderRadius:BorderRadius.circular(15)),
         child:Text(_lesson.question,style:const TextStyle(
           color:Colors.white,fontSize:18.5,
-          fontWeight:FontWeight.w650,height:1.4))),
+          fontWeight:FontWeight.w600,height:1.4))),
       const SizedBox(height:18),
       for(var i=0;i<_lesson.choices.length;i++)
         Padding(padding:const EdgeInsets.only(bottom:10),

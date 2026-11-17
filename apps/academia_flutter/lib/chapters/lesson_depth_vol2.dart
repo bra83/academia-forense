@@ -30,7 +30,7 @@ const deepLessonsVolumeTwo=<int,LessonDeepPlan>{
  sections:[
  LessonDeepSection(title:'Terminal é interface de instruções',
  explanation:'PowerShell permite inspecionar o computador por comandos em vez de cliques. O interpretador compreende objetos e propriedades, não apenas linhas de texto. Comece verificando ambiente, pasta atual e comandos que não alteram arquivos. Caminhos absolutos e relativos dependem da posição atual. Evite privilégios de administrador e nunca execute instruções de procedência desconhecida num dispositivo com evidências reais.',
- demonstration:'Use $PSVersionTable.PSVersion.ToString() para verificar a versão; $HOME identifica a pasta inicial daquela sessão. O resultado concreto pode variar com a instalação.',
+ demonstration:'Use \$PSVersionTable.PSVersion.ToString() para verificar a versão; \$HOME identifica a pasta inicial daquela sessão. O resultado concreto pode variar com a instalação.',
  practicalQuestion:'Por que copiar literalmente um caminho de exemplo pode levar a inspecionar a pasta errada?'),
  LessonDeepSection(title:'Liste e compare sem sobrescrever',
  explanation:'Get-ChildItem lista objetos do diretório; Get-FileHash calcula o hash de um arquivo. Use uma pasta de treinamento e crie saída separada para o inventário. Guarde caminho, tamanho, data, resumo e versão do PowerShell. Uma comparação só é interpretável quando você sabe quais arquivos foram comparados e se alguma transformação mudou codificação ou metadados.',

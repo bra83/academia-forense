@@ -46,7 +46,7 @@ class _DeepLessonArticleState extends State<DeepLessonArticle> {
           const SizedBox(height:12),
           Text(content.challenge,
             style:const TextStyle(fontSize:19,height:1.32,
-              fontWeight:FontWeight.w650,color:Colors.white)),
+              fontWeight:FontWeight.w600,color:Colors.white)),
         ])),
       const SizedBox(height:22),
       for(var i=0;i<content.sections.length;i++)
@@ -277,7 +277,6 @@ class _TopicDiagramState extends State<TopicDiagram>{
           Expanded(flex:3,child:Text(plan.visualDetails[i],
             style:const TextStyle(fontSize:14,height:1.4))),
         ])),
-      ),
     ]);
   }
   Widget _timeline(LessonDeepPlan plan){
@@ -472,7 +471,7 @@ class _TopicDiagramState extends State<TopicDiagram>{
                 Text(labels[i],style:const TextStyle(
                   fontSize:12,fontWeight:FontWeight.w600)),
               ])),
-            )),
+            ),
         ])),
       const SizedBox(height:12),
       Text(switch(widget.chapter){

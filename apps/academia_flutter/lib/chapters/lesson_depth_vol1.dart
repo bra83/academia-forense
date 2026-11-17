@@ -1,40 +1,5 @@
 import 'lesson_depth_model.dart';
 
-/// Structured instructor-authored lessons, derived from the themes and
-/// instructional progression of the user's forensic encyclopedia. Examples
-/// are synthetic teaching extensions, never asserted as case evidence.
-enum LessonSceneKind { process, comparison, timeline, evidence, code, data, statistics }
-
-class LessonDeepSection {
-  const LessonDeepSection({
-    required this.title,
-    required this.explanation,
-    required this.demonstration,
-    required this.practicalQuestion,
-  });
-  final String title;
-  final String explanation;
-  final String demonstration;
-  final String practicalQuestion;
-}
-
-class LessonDeepPlan {
-  const LessonDeepPlan({
-    required this.kind,
-    required this.challenge,
-    required this.sections,
-    required this.visualLabels,
-    required this.visualDetails,
-    required this.nextInvestigation,
-  });
-  final LessonSceneKind kind;
-  final String challenge;
-  final List<LessonDeepSection> sections;
-  final List<String> visualLabels;
-  final List<String> visualDetails;
-  final String nextInvestigation;
-}
-
 const deepLessonsVolumeOne=<int,LessonDeepPlan>{
 1:LessonDeepPlan(
   kind:LessonSceneKind.evidence,
