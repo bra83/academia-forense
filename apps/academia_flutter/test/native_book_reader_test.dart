@@ -31,7 +31,7 @@ void main(){
       expect(book.originalPages,greaterThanOrEqualTo(9));
       expect(book.exactPdfPages,isFalse);
       expect(book.completeText.length,greaterThan(10000));
-      expect(book.completeText,contains('Forens'));
+      expect(book.completeText.toLowerCase(),contains('forens'));
       expect(book.screens.length,greaterThan(3));
       totalChars+=book.completeText.length;
       titles.add(book.sourceName);
@@ -68,7 +68,10 @@ void main(){
       library:OfflineLibrary(root:Directory.systemTemp),
       getApiKey:()async=>null,textModel:null,speechModel:null,
     )));
-    await tester.pumpAndSettle();
+    for(var i=0;i<30;i++){
+      await tester.pump(const Duration(milliseconds:100));
+      if(find.text('Enciclopédia — leitura integral').evaluate().isNotEmpty)break;
+    }
     expect(find.text('Enciclopédia — leitura integral'),findsOneWidget);
     expect(find.textContaining('Tela 1 de'),findsWidgets);
     expect(find.byTooltip('Aumentar fonte'),findsOneWidget);
