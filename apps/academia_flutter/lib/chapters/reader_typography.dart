@@ -45,8 +45,8 @@ class SourceTypography {
       return ReaderLineKind.section;
     }
     if(_caption.hasMatch(line))return ReaderLineKind.caption;
-    if(_kicker.hasMatch(line))return ReaderLineKind.kicker;
     if(_heading.hasMatch(line))return ReaderLineKind.heading;
+    if(_kicker.hasMatch(line))return ReaderLineKind.kicker;
     if(RegExp(r'^[A-ZÁÀÃÂÉÊÍÓÔÕÚÇ0-9 /·–—-]{8,}$').hasMatch(line) &&
         line.length<100) {
       return ReaderLineKind.kicker;
