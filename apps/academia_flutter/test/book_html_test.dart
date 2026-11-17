@@ -51,6 +51,6 @@ void main(){
     expect(html,contains('"block":"b1"'));
     expect(html,contains('"quote":"integridade"'));
     expect(html,contains('mark.saved'));
-    expect(html,contains('class="saved"'));
+    expect(html,contains("mark.className='saved'"));
   });
 }
