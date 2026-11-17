@@ -46,6 +46,14 @@ class SourceHtmlConverter {
         blocks.add(HtmlBlock('b${blocks.length}',type,line));
         continue;
       }
+      if(paragraph.isEmpty && blocks.isNotEmpty &&
+          blocks.last.kind=='h2' && line.length<65 &&
+          RegExp(r'^[a-zà-ÿ]').hasMatch(line) &&
+          !RegExp(r'[.!?]$').hasMatch(blocks.last.text)){
+        final prev=blocks.removeLast();
+        blocks.add(HtmlBlock(prev.id,'h2',prev.text+' '+line));
+        continue;
+      }
       if(paragraph.isEmpty){paragraph=line;continue;}
       if(RegExp(r'[.!?]["”»]?$').hasMatch(paragraph) &&
          RegExp(r'^[A-ZÁÀÃÂÉÊÍÓÔÕÚÇ]').hasMatch(line) &&
