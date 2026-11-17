@@ -185,7 +185,7 @@ class _AiStudyQuizState extends State<AiStudyQuiz> {
       if (_questions.isNotEmpty)
         FilledButton(
           onPressed:_busy || _completed || _answers.length!=_questions.length
-            ?null:_submit,label:const Text('Corrigir e gravar minhas respostas')),
+            ?null:_submit,child:const Text('Corrigir e gravar minhas respostas')),
       if (_score!=null) Text('Nota: '+(_score!*100).toStringAsFixed(1)+'%'),
       if (_status.isNotEmpty) Padding(padding:const EdgeInsets.all(12),
         child:Text(_status)),

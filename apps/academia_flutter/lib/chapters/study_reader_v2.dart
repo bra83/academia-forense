@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:drift/drift.dart' as drift;
 import 'package:pdfx/pdfx.dart';
 import 'package:persistence_core/persistence_core.dart';
 import '../services/offline_library.dart';
