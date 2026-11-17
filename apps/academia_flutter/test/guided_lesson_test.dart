@@ -33,14 +33,13 @@ void main() {
 
   testWidgets('Guided Android lesson is interactive, not a PDF reader',(tester) async {
     SharedPreferences.setMockInitialValues(<String,Object>{});
-    final dir=await Directory.systemTemp.createTemp('academia_lesson_');
-    addTearDown(()=>dir.delete(recursive:true));
+    // Avoid genuine dart:io futures inside the widget tester's fake-async zone.
+    // This classroom route needs only the empty-library lookup, no filesystem I/O.
     tester.view.physicalSize=const Size(480,1000);
     tester.view.devicePixelRatio=1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    final lib=OfflineLibrary(root:dir);
-    await lib.initialize();
+    final lib=OfflineLibrary(root:Directory.systemTemp);
     await tester.pumpWidget(MaterialApp(home:GuidedLessonScreen(
       chapterNumber:1,chapterTitle:'Dos dados às evidências',library:lib,
     )));
