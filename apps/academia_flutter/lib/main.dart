@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'academy_v2.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:design_system/design_system.dart';
@@ -61,7 +62,7 @@ class _AcademiaForenseAppState extends State<AcademiaForenseApp> {
         ),
         child: child!,
       ),
-      home: ForensicHomeScreen(db: _db),
+      home: AcademiaV2Screen(database: _db),
     );
   }
 }
