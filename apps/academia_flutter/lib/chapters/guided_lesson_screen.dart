@@ -112,8 +112,7 @@ class _GuidedLessonScreenState extends State<GuidedLessonScreen> {
         child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
           Row(children:[
             Icon(icon,color:_forest),const SizedBox(width:8),
-            Expanded(child:Text(label,style:Theme.of(context).textTheme.titleMedium?
-              .copyWith(fontWeight:FontWeight.w700))),
+            Expanded(child:Text(label,style:Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight:FontWeight.w700))),
           ]),
           const SizedBox(height:12),child,
         ])));
@@ -351,7 +350,7 @@ class _GuidedLessonScreenState extends State<GuidedLessonScreen> {
               onChanged:(v)=>setState(() {_selected=v;_checked=false;})),
           const SizedBox(height:12),
           FilledButton(
-            onPressed:_selected==null?_checkDisabled:_checkAnswer,
+            onPressed:_selected==null?null:_checkAnswer,
             child:const Text('Conferir minha resposta')),
           if(_checked) ...[
             const SizedBox(height:12),
@@ -388,7 +387,6 @@ class _GuidedLessonScreenState extends State<GuidedLessonScreen> {
           'Abrir documento original para aprofundar')),
     ]);
   }
-  void _checkDisabled(){}
   @override
   Widget build(BuildContext context){
     const stages=['Entender','Visualizar','Experimentar','Aplicar'];
