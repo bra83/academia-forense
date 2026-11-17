@@ -4,8 +4,6 @@ import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:persistence_core/persistence_core.dart';
-import 'package:academia_flutter/academy_v2.dart';
 import 'package:academia_flutter/services/offline_library.dart';
 import 'package:academia_flutter/chapters/study_catalog.dart';
 
