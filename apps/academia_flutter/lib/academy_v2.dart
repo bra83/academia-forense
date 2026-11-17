@@ -14,9 +14,11 @@ import 'services/voice_reader_v2.dart';
 import 'services/report_v2.dart';
 
 class AcademiaV2Screen extends StatefulWidget {
-  const AcademiaV2Screen({super.key, required this.database,this.privateLibrary});
+  const AcademiaV2Screen({super.key, required this.database,this.privateLibrary, this.fixtureMode = false});
   final AppDatabase database;
   final OfflineLibrary? privateLibrary;
+  /// Bypasses persistence and platform credentials only in deterministic widget tests.
+  final bool fixtureMode;
   @override
   State<AcademiaV2Screen> createState() => _AcademiaV2ScreenState();
 }
@@ -54,7 +56,11 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     super.initState();
     _library=widget.privateLibrary??OfflineLibrary();
     _labInput.text=_sampleCdr;
-    _initialize();
+    if (widget.fixtureMode) {
+      _loading=false;
+    } else {
+      _initialize();
+    }
   }
 
   @override

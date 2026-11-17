@@ -68,12 +68,8 @@ void main(){
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(MaterialApp(home:AcademiaV2Screen(
-      database:db,privateLibrary:OfflineLibrary(root:dir))));
-    for(var i=0;i<40;i++){
-      await tester.runAsync(()=>Future<void>.delayed(const Duration(milliseconds:25)));
-      await tester.pump(const Duration(milliseconds:50));
-      if(find.text('Biblioteca original').evaluate().isNotEmpty)break;
-    }
+      database:db,privateLibrary:OfflineLibrary(root:dir),fixtureMode:true)));
+    await tester.pumpAndSettle();
     expect(find.text('Biblioteca original'),findsOneWidget);
     expect(find.textContaining('documentos originais importados'),findsOneWidget);
     expect(find.textContaining('88%'),findsNothing);
