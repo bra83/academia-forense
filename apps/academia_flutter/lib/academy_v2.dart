@@ -12,7 +12,6 @@ import 'chapters/guided_lesson_screen.dart';
 import 'chapters/study_reader_v2.dart';
 import 'chapters/quiz_v2.dart';
 import 'services/offline_library.dart';
-import 'services/voice_reader_v2.dart';
 import 'services/report_v2.dart';
 
 class AcademiaV2Screen extends StatefulWidget {
@@ -646,8 +645,15 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         subtitle:Text('Toque para estudar interativamente · Vol. '+c.volume.toString()+' • '+c.edition+
           ' • '+(_library.chapter(c.number)==null?'PDF de apoio não importado':'PDF original disponível offline')),
         isThreeLine:true,
-        trailing:Icon(_library.chapter(c.number)==null
-          ?Icons.cloud_outlined:Icons.check_circle,color:const Color(0xFF20533F)),
+        trailing:Row(mainAxisSize:MainAxisSize.min,children:[
+          Icon(_library.chapter(c.number)==null
+            ?Icons.cloud_outlined:Icons.check_circle,
+            color:const Color(0xFF20533F)),
+          IconButton(
+            tooltip:'Abrir documento de referência no Drive',
+            icon:const Icon(Icons.open_in_new,size:18),
+            onPressed:()=>_openSource(c)),
+        ]),
         onTap:()=>_openGuidedLesson(c.number),
       )),
       const SizedBox(height:16),

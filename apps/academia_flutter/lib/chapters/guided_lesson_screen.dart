@@ -27,7 +27,6 @@ class _GuidedLessonScreenState extends State<GuidedLessonScreen> {
   static const _forest=Color(0xFF215642);
   late final LessonBlueprint _lesson;
   final _data=TextEditingController(text:'REGISTRO 001 | evento 14:32');
-  final _baseline='REGISTRO 001 | evento 14:32';
   int _stage=0;
   int? _selected;
   bool _checked=false;
