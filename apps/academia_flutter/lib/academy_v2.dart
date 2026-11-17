@@ -211,9 +211,12 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   Future<void> _readChapter(int number) async {
     final saved=_library.chapter(number);
     if(saved==null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content:Text('Primeiro importe o pacote original na Biblioteca.')));
-      setState(()=>_tab=2);
+      // A bundled native transcript never requires ZIP import. For figures
+      // and tables, open the original source PDF in Drive if not offline.
+      final matches=_catalog.where((entry)=>entry.number==number);
+      if(matches.isNotEmpty)await _openSource(matches.first);
+      else if(mounted)ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content:Text('Documento não localizado.')));
       return;
     }
     await Navigator.of(context).push(MaterialPageRoute(
