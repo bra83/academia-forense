@@ -63,11 +63,6 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     super.dispose();
   }
 
-  String _idFor(int number){
-    final vol=number<=10?1:number<=23?2:3;
-    return 'forense.vol'+vol.toString().padLeft(2,'0')+
-      '.ch'+number.toString().padLeft(2,'0');
-  }
   Future<void> _initialize() async {
     try {
       await _library.initialize();
