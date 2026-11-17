@@ -68,9 +68,17 @@ void main(){
       library:OfflineLibrary(root:Directory.systemTemp),
       getApiKey:()async=>null,textModel:null,speechModel:null,
     )));
-    for(var i=0;i<30;i++){
+    await tester.runAsync(() async {
+      await Future<void>.delayed(const Duration(milliseconds:120));
+    });
+    for(var i=0;i<40;i++){
       await tester.pump(const Duration(milliseconds:100));
       if(find.text('Enciclopédia — leitura integral').evaluate().isNotEmpty)break;
+    }
+    if(find.text('Enciclopédia — leitura integral').evaluate().isEmpty){
+      final visible=tester.widgetList<Text>(find.byType(Text))
+        .map((widget)=>widget.data).toList();
+      fail('Leitor não entrou na tela principal. Textos: $visible');
     }
     expect(find.text('Enciclopédia — leitura integral'),findsOneWidget);
     expect(find.textContaining('Tela 1 de'),findsWidgets);
