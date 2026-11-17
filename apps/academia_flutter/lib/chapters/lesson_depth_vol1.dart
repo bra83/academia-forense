@@ -1,3 +1,5 @@
+import 'lesson_depth_model.dart';
+
 /// Structured instructor-authored lessons, derived from the themes and
 /// instructional progression of the user's forensic encyclopedia. Examples
 /// are synthetic teaching extensions, never asserted as case evidence.
