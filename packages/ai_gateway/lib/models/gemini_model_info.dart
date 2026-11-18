@@ -27,6 +27,7 @@ class GeminiModelInfo {
   bool get isAudioModel =>
       supportedGenerationMethods.contains('generateSpeech') ||
       name.toLowerCase().contains('speech') ||
+      name.toLowerCase().contains('tts') ||
       (description != null && description!.toLowerCase().contains('speech generation'));
 
   factory GeminiModelInfo.fromJson(Map<String, dynamic> json) {

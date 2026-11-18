@@ -29,6 +29,8 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   late final OfflineLibrary _library;
   final FlutterSecureStorage _vault=const FlutterSecureStorage();
   final _keyInput=TextEditingController();
+  final _manualTextModel=TextEditingController();
+  final _manualTtsModel=TextEditingController();
   final _question=TextEditingController();
   final _labInput=TextEditingController();
   int _tab=0;
@@ -68,7 +70,8 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
 
   @override
   void dispose(){
-    _keyInput.dispose();_question.dispose();_labInput.dispose();
+    _keyInput.dispose();_manualTextModel.dispose();
+    _manualTtsModel.dispose();_question.dispose();_labInput.dispose();
     super.dispose();
   }
 
@@ -88,6 +91,8 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       if(!mounted)return;
       setState(() {
         _catalog=catalog;_textModel=model;_speechModel=speech;
+        _manualTextModel.text=model??'';
+        _manualTtsModel.text=speech??'';
         _keyPresent=key!=null && key.isNotEmpty;
         _keyStatus=_keyPresent?'Chave recuperada do armazenamento seguro.':'Sem chave configurada.';
         _loading=false;
@@ -282,6 +287,671 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         _keyStatus='Chave removida do armazenamento seguro.';
       });
     }catch(e){if(mounted)setState(()=>_keyStatus='Falha ao excluir: '+e.runtimeType.toString());}
+  }
+
+  static String? _normalizeModel(String text) {
+    final clean=text.trim().replaceFirst(RegExp(r'^models/'), '');
+    if(!RegExp(r'^[a-zA-Z0-9][a-zA-Z0-9._-]{2,99}
+    if(_testing)return;
+    setState(() {_testing=true;_keyStatus='Consultando lista oficial de modelos...';});
+    try{
+      final key=await _getKey();
+      if(key==null || key.isEmpty)throw StateError('Salve sua chave antes.');
+      final models=await GeminiModelDiscoveryService().discoverModels(apiKey:key);
+      final text=models.textTutorModels.where((m)=>!m.isAudioModel).toList();
+      final voice=models.audioSpeechModels.toList();
+      final selectedText=(_textModel?.isNotEmpty??false)?_textModel:
+        (text.isEmpty?null:text.first.name);
+      final selectedSpeech=(_speechModel?.isNotEmpty??false)?_speechModel:
+        (voice.isEmpty?null:voice.first.name);
+      if(!mounted)return;
+      setState(() {
+        _textModels=text;_speechModels=voice;
+        _textModel=selectedText;_speechModel=selectedSpeech;
+        _manualTextModel.text=selectedText??'';
+        _manualTtsModel.text=selectedSpeech??'';
+        _keyStatus='API respondeu: '+text.length.toString()+
+          ' modelos de texto, '+voice.length.toString()+' modelos de voz.';
+      });
+      if(selectedText!=null)await _vault.write(key:'gemini_tutor_model',value:selectedText);
+      if(selectedSpeech!=null)await _vault.write(key:'gemini_speech_model',value:selectedSpeech);
+    }catch(e){
+      if(mounted)setState(()=>_keyStatus='Conexão Gemini falhou: '+
+        e.runtimeType.toString()+'. Verifique chave, quota e internet.');
+    }finally{if(mounted)setState(()=>_testing=false);}
+  }
+
+  Future<void> _askTutor() async {
+    if(_asking)return;
+    final text=_question.text.trim();
+    if(text.isEmpty)return;
+    setState(() {_asking=true;_tutorStatus='Consultando as páginas do capítulo...';});
+    try {
+      final key=await _getKey();
+      if(key==null || key.isEmpty || _textModel==null) {
+        throw StateError('Configure a chave Gemini e selecione um modelo.');
+      }
+      final pages=await _library.relevantPages(_selectedChapter,text);
+      if(pages.isEmpty) {
+        throw StateError('Importe as páginas integrais antes de consultar o professor.');
+      }
+      final chapter=_catalog.firstWhere((c)=>c.number==_selectedChapter);
+      final chunks=pages.map((p)=>RagDocumentChunkRef(
+        chunkId:'cap'+_selectedChapter.toString()+'_p'+p.number.toString(),
+        text:p.text.length>5000?p.text.substring(0,5000):p.text,
+        editorialStatus:'Publicado',
+        volume:chapter.volume,chapter:chapter.number,page:p.number)).toList();
+      final reply=await GeminiGatewayClient(
+        secureVault:InMemorySecureVault()).queryTutor(
+          apiKey:key,modelId:_textModel!,mode:_mode,userQuery:text,
+          contextChunks:chunks,chapterTitle:chapter.title);
+      if(!mounted)return;
+      setState(() {
+        _tutorAnswer=reply;
+        _tutorStatus='Consulta fundamentada nas páginas: '+
+          pages.map((p)=>p.number.toString()).join(', ')+
+          '. Confirme as afirmações no documento original.';
+      });
+    }catch(e){
+      if(mounted)setState(()=>_tutorStatus=
+        'Consulta não concluída: '+e.runtimeType.toString()+
+        '. Nenhuma resposta simulada foi gerada.');
+    }finally{if(mounted)setState(()=>_asking=false);}
+  }
+
+  Future<void> _openQuiz() async {
+    final chapter=_library.chapter(_selectedChapter);
+    if(chapter==null){
+      setState(()=>_tab=2);return;
+    }
+    await Navigator.of(context).push(MaterialPageRoute(
+      builder:(_)=>AiStudyQuiz(chapter:chapter,library:_library,database:db,
+        apiKey:_getKey,model:_textModel,onSaved:_refreshMetrics)));
+    await _refreshMetrics();
+  }
+
+  Future<void> _searchFullText() async {
+    final q=_corpusSearch.trim().toLowerCase();
+    if(q.length<3){setState(()=>_matches=[]);return;}
+    final found=<({int chapter,int page,String excerpt})>[];
+    for(final chapter in _library.chapters){
+      final pages=await _library.pages(chapter.number);
+      for(final page in pages){
+        final i=page.text.toLowerCase().indexOf(q);
+        if(i<0)continue;
+        final from=i>45?i-45:0;
+        final to=(i+145).clamp(0,page.text.length);
+        found.add((chapter:chapter.number,page:page.number,
+          excerpt:page.text.substring(from,to).replaceAll('\n',' ')));
+        if(found.length>=30)break;
+      }
+      if(found.length>=30)break;
+    }
+    if(mounted)setState(()=>_matches=found);
+  }
+
+  void _setLabDomain(LabDomain d) {
+    setState(() {
+      _domain=d;_labOutput='';
+      _labInput.text=d==LabDomain.telephony?_sampleCdr:
+        d==LabDomain.linguistics?'Com certeza eu acho que estive no local.':
+        d==LabDomain.digitalForensics?'AMOSTRA DIDATICA PARA HASH':
+        d==LabDomain.mathematics?'0.01,0.99,0.95':
+        d==LabDomain.programming?'SELECT * FROM lab_data;':
+        d==LabDomain.informatics?'755':'44100,16,2,352800';
+    });
+  }
+
+  Future<void> _runLab() async {
+    if(_labBusy)return;
+    setState(() {_labBusy=true;_labOutput='Processando entradas informadas...';});
+    try{
+      final input=_labInput.text.trim();
+      if(input.isEmpty)throw const FormatException('Entrada vazia.');
+      final output=StringBuffer();
+      switch(_domain){
+        case LabDomain.telephony:
+          final rows=TelephonyExecutor.parseCdrCsv(input);
+          final groups=TelephonyExecutor.aggregateErbTowers(rows);
+          output.writeln('CDRs analisados: '+rows.length.toString());
+          groups.forEach((tower,stats)=>output.writeln(
+            'ERB '+tower+': '+stats.totalHits.toString()+' registros, '+
+            stats.totalDurationSec.toString()+' segundos.'));
+          output.writeln('A ERB não determina a localização precisa do aparelho.');
+          break;
+        case LabDomain.digitalForensics:
+          final hashes=DigitalForensicsExecutor.calculateHashes(utf8.encode(input));
+          output.writeln('SHA-256 da entrada: '+hashes.sha256);
+          output.writeln('MD5 (legado, não recomendado como prova única): '+hashes.md5);
+          break;
+        case LabDomain.linguistics:
+          final markers=LinguisticsExecutor.analyzeLexicalMarkers(input);
+          output.writeln('Marcadores discursivos: '+markers.length.toString());
+          for(final m in markers) {output.writeln(m.category+': '+m.token);}
+          output.writeln('Marcadores não são detectores de mentira.');
+          break;
+        case LabDomain.mathematics:
+          final values=input.split(',').map((x)=>double.parse(x.trim())).toList();
+          if(values.length!=3)throw const FormatException(
+            'Informe: priori,sensibilidade,especificidade');
+          final r=MathematicsExecutor.computeBayesianProbability(
+            prior:values[0],sensitivity:values[1],specificity:values[2]);
+          output.writeln('P(H|E): '+r.posterior.toStringAsFixed(6));
+          output.writeln('P(E): '+r.probabilityEvidence.toStringAsFixed(6));
+          break;
+        case LabDomain.programming:
+          final result=ProgrammingExecutor.executeSql(
+            setupStatements:[
+              'CREATE TABLE lab_data (id INT, val TEXT);',
+              "INSERT INTO lab_data VALUES (1,'Evidencia A'),(2,'Evidencia B');",
+            ],query:input);
+          output.writeln('Colunas: '+result.columnNames.join(', '));
+          for(final row in result.rows) {output.writeln(row.toString());}
+          break;
+        case LabDomain.informatics:
+          final perm=InformaticsExecutor.parsePermissions(input);
+          output.writeln('Permissões POSIX: '+perm.rwxString);
+          break;
+        case LabDomain.multimedia:
+          final parts=input.split(',').map((x)=>int.parse(x.trim())).toList();
+          if(parts.length!=4)throw const FormatException(
+            'Informe sampleRate,bitDepth,channels,bytes.');
+          final r=MultimediaExecutor.inspectAudioProperties(
+            sampleRateHz:parts[0],bitDepth:parts[1],channels:parts[2],
+            totalAudioBytes:parts[3]);
+          output.writeln('Duração calculada: '+r.durationSeconds.toString()+'s');
+          break;
+      }
+      final labId='academia_lab_'+_domain.value;
+      await db.transaction(() async {
+        await db.curriculumDao.insertCurriculum(CurriculumsCompanion.insert(
+          id:'academia_pratica',name:'Práticas locais',version:'1',
+          description:'Exercícios com dados informados pelo aluno'));
+        await db.curriculumDao.insertVolume(VolumesCompanion.insert(
+          id:'academia_pratica_v0',curriculumId:'academia_pratica',
+          volumeNumber:0,title:'Práticas',discipline:'Laboratórios didáticos',
+          description:'Treino, sem certificação de competência',totalChapters:1));
+        await db.curriculumDao.insertChapter(ChaptersCompanion.insert(
+          id:'academia_pratica_ch0',volumeId:'academia_pratica_v0',
+          chapterNumber:0,title:'Práticas avulsas',orderIndex:0));
+        await db.laboratoryDao.insertLaboratory(LaboratoriesCompanion.insert(
+          id:labId,chapterId:'academia_pratica_ch0',domain:_domain.value,
+          title:'Prática '+_domain.displayName,environmentType:'Cálculo local',
+          instructionsMarkdown:'Exercício executado com entrada fornecida',
+          verificationRubricJson:'{}'));
+        await db.laboratoryDao.recordLaboratoryRun(
+          LaboratoryRunsCompanion.insert(
+            id:'labrun_'+DateTime.now().microsecondsSinceEpoch.toString(),
+            laboratoryId:labId,isPassed:false,
+            commandsExecutedJson:jsonEncode({'input':input}),
+            metricsJson:drift.Value(jsonEncode({'result':output.toString(),
+              'evaluated':false,'didactic':true}))));
+      });
+      if(mounted)setState(()=>_labOutput=output.toString()+
+        '\nRegistrado com sucesso. Esta execução não é uma avaliação de proficiência.');
+      await _refreshMetrics();
+    }catch(e){
+      if(mounted)setState(()=>_labOutput='Falha real: '+e.toString()+
+        '\nNenhum sucesso foi contabilizado.');
+    }finally{if(mounted)setState(()=>_labBusy=false);}
+  }
+
+  Future<void> _exportReport() async {
+    if(_reportBusy)return;
+    setState(() {_reportBusy=true;_reportStatus='Gerando PDF a partir do banco de dados...';});
+    try{
+      final digest=await ForensicReportV2.export(db);
+      if(mounted)setState(()=>_reportStatus='PDF real enviado ao compartilhamento. SHA-256: '+digest+
+        '. O hash não é uma assinatura digital.');
+    }catch(e){
+      if(mounted)setState(()=>_reportStatus='Exportação falhou: '+e.toString());
+    }finally{if(mounted)setState(()=>_reportBusy=false);}
+  }
+
+  Widget _infoCard(String title,Widget child,{IconData icon=Icons.school}) =>
+    Card(child:Padding(padding:const EdgeInsets.all(18),
+      child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+        Row(children:[
+          Icon(icon,color:const Color(0xFF20533F)),
+          const SizedBox(width:8),
+          Expanded(child:Text(title,style:Theme.of(context).textTheme.titleLarge)),
+        ]),
+        const SizedBox(height:12),child,
+      ])));
+  Widget _topTitle(String title,String subtitle)=>Padding(
+    padding:const EdgeInsets.only(bottom:18),
+    child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+      Text(title,style:Theme.of(context).textTheme.headlineMedium?.copyWith(
+        fontWeight:FontWeight.bold,color:const Color(0xFF20533F))),
+      const SizedBox(height:8),
+      Text(subtitle,style:Theme.of(context).textTheme.bodyLarge),
+    ]));
+
+  Widget _home() => ListView(padding:const EdgeInsets.all(16),children:[
+    _topTitle('Academia Forense','Sua Enciclopédia completa em texto ajustável, com voz, marcações e tutor Gemini.'),
+    _infoCard('Ler e estudar a Enciclopédia',Column(
+      crossAxisAlignment:CrossAxisAlignment.start,children:[
+        Text('Texto integral dos 26 PDFs em leitura paginada, tamanho de fonte '
+          'ajustável, trechos marcados, anotações, leitura de voz, '
+          'Gemini contextual e exercícios dos capítulos.',
+          style:Theme.of(context).textTheme.bodyLarge),
+        const SizedBox(height:12),
+        Text('Lições aplicadas e registradas: $_guidedLessonsComplete de 26'),
+        const SizedBox(height:8),
+        LinearProgressIndicator(value:_guidedLessonsComplete/26,
+          minHeight:10,borderRadius:BorderRadius.circular(8)),
+        const SizedBox(height:10),
+        Wrap(spacing:8,runSpacing:8,children:[
+          FilledButton.icon(
+            onPressed:_catalog.isEmpty?null:()=>_openNativeBook(1),
+            icon:const Icon(Icons.play_arrow),
+            label:const Text('Abrir Capítulo 01')),
+          OutlinedButton.icon(
+            onPressed:()=>setState(()=>_tab=1),
+            icon:const Icon(Icons.view_module_outlined),
+            label:const Text('Escolher aula')),
+        ]),
+        const SizedBox(height:12),
+        const Text('O livro completo é o conteúdo principal. '
+          'Os laboratórios complementares permanecem disponíveis '
+          'separadamente para você praticar.'),
+      ]),icon:Icons.auto_stories_outlined),
+    if(_status.isNotEmpty) Text(_status),
+    _infoCard('Seu estudo nesta semana',Column(
+      crossAxisAlignment:CrossAxisAlignment.start,children:[
+        Text(_hoursWeek.toStringAsFixed(2)+' de 13 horas (tempo registrado)'),
+        const SizedBox(height:10),
+        LinearProgressIndicator(value:(_hoursWeek/13).clamp(0.0,1.0)),
+        const SizedBox(height:8),
+        const Text('As horas só são somadas após sessões de leitura reais.'),
+      ]),icon:Icons.timer_outlined),
+    _infoCard('Biblioteca original',Column(
+      crossAxisAlignment:CrossAxisAlignment.start,children:[
+        Text(_library.chapters.length.toString()+
+          ' documentos originais importados no dispositivo.'),
+        Text((_catalog.length-_library.chapters.where((c)=>c.number<=26).length)
+          .toString()+' capítulos do acervo ainda sem arquivo offline.'),
+        const SizedBox(height:12),
+        FilledButton.icon(onPressed:()=>setState(()=>_tab=2),
+          icon:const Icon(Icons.menu_book),label:const Text('Abrir Biblioteca')),
+      ]),icon:Icons.menu_book_outlined),
+    _infoCard('Resultados registrados',Column(
+      crossAxisAlignment:CrossAxisAlignment.start,children:[
+        Text('Avaliações formativas acima do corte: '+_assessments.toString()),
+        Text('Execuções laboratoriais salvas: '+_labs.toString()),
+        Text('Estudos de caso entregues: '+_cases.toString()),
+        const Text('Nenhuma proficiência ou diploma é atribuído sem avaliação real.'),
+      ]),icon:Icons.analytics_outlined),
+  ]);
+
+  Widget _study(){
+    final selected=_catalog.where((c)=>c.number==_selectedChapter).toList();
+    final title=selected.isEmpty?'Capítulo':selected.first.title;
+    final chapter=_library.chapter(_selectedChapter);
+    return ListView(padding:const EdgeInsets.all(16),children:[
+      _topTitle('Enciclopédia para estudar','Leia o texto original, marque trechos e converse com o professor.'),
+      if(_catalog.isNotEmpty) _infoCard('Selecione o capítulo',Column(children:[
+        DropdownButtonFormField<int>(
+          value:_selectedChapter,
+          decoration:const InputDecoration(border:OutlineInputBorder(),
+            labelText:'Capítulo'),
+          isExpanded:true,
+          items:_catalog.map((c)=>DropdownMenuItem(
+            value:c.number,child:Text(c.number.toString().padLeft(2,'0')+
+              ' · '+c.title,overflow:TextOverflow.ellipsis))).toList(),
+          onChanged:(n){if(n!=null)setState(() {
+            _selectedChapter=n;_tutorAnswer='';_tutorStatus='';
+          });}),
+        const SizedBox(height:10),
+        Text(title),
+        const SizedBox(height:10),
+        Wrap(spacing:8,runSpacing:8,children:[
+          FilledButton.icon(onPressed:()=>_openNativeBook(_selectedChapter),
+            icon:const Icon(Icons.auto_stories_outlined),label:const Text('Ler capítulo completo')),
+          OutlinedButton.icon(onPressed:()=>_openGuidedLesson(_selectedChapter),
+            icon:const Icon(Icons.science_outlined),label:const Text('Práticas complementares')),
+          OutlinedButton.icon(onPressed:()=>_readChapter(_selectedChapter),
+            icon:const Icon(Icons.picture_as_pdf_outlined),label:const Text('PDF com figuras')),
+          OutlinedButton.icon(onPressed:_openQuiz,icon:const Icon(Icons.quiz_outlined),
+            label:const Text('Quiz com Gemini')),
+        ]),
+        if(chapter==null)const Text('O texto integral já vem no app. '
+          'Importar o ZIP é opcional para ter as páginas originais '
+          'e consultar o PDF offline.'),
+      ])),
+      _infoCard('Professor particular Gemini',Column(
+        crossAxisAlignment:CrossAxisAlignment.start,children:[
+          DropdownButton<PedagogicalMode>(
+            value:_mode,isExpanded:true,
+            items:PedagogicalMode.values.map((m)=>DropdownMenuItem(
+              value:m,child:Text('Modo: '+m.value))).toList(),
+            onChanged:(m){if(m!=null)setState(()=>_mode=m);}),
+          TextField(controller:_question,minLines:2,maxLines:5,
+            decoration:const InputDecoration(
+              labelText:'Pergunte algo sobre o capítulo',
+              hintText:'Ex.: explique a cadeia de custódia com um exemplo.',
+              border:OutlineInputBorder())),
+          const SizedBox(height:8),
+          FilledButton.icon(onPressed:_asking?null:_askTutor,
+            icon:const Icon(Icons.send),label:Text(_asking?'Consultando...':'Perguntar com fontes')),
+          if(_tutorStatus.isNotEmpty)Text(_tutorStatus),
+          if(_tutorAnswer.isNotEmpty) Card(
+            color:const Color(0xFFF4F8F4),
+            child:Padding(padding:const EdgeInsets.all(12),
+              child:SelectableText(_tutorAnswer))),
+        ]),icon:Icons.psychology_outlined),
+      _infoCard('Depois da aula',const Text(
+        'Use o laboratório para analisar dados editáveis e o professor Gemini '
+        'para tirar dúvidas referenciadas. A leitura por voz fica disponível '
+        'na página que você abrir no PDF original.'),
+        icon:Icons.tips_and_updates_outlined),
+    ]);
+  }
+
+  Widget _libraryTab(){
+    final found=_catalog.where((c)=>c.title.toLowerCase().contains(_filter.toLowerCase()) ||
+      c.number.toString().contains(_filter)).toList();
+    return ListView(padding:const EdgeInsets.all(16),children:[
+      _topTitle('Biblioteca de referência','26 capítulos existentes em 292 páginas. '
+        'Conteúdo integral mediante importação; capítulos 27–113 não publicados.'),
+      _infoCard('Importar PDFs do Drive ou do dispositivo',Column(
+        crossAxisAlignment:CrossAxisAlignment.start,children:[
+          const Text('Baixe o pacote integral fornecido neste chat. '
+            'Toque no botão e selecione o ZIP no armazenamento ou no aplicativo Google Drive. '
+            'Os PDFs e o texto das páginas serão guardados no aparelho.'),
+          const SizedBox(height:12),
+          FilledButton.icon(onPressed:_importing?null:_import,
+            icon:const Icon(Icons.file_upload_outlined),
+            label:Text(_importing?'Importando...':'Importar pacote ZIP / PDFs')),
+          if(_importStatus.isNotEmpty)Text(_importStatus),
+          const SizedBox(height:8),
+          Text('Documentos originais disponíveis: '+_library.chapters.length.toString()),
+        ]),icon:Icons.folder_open),
+      TextField(onChanged:(v)=>setState(()=>_filter=v),
+        decoration:const InputDecoration(prefixIcon:Icon(Icons.search),
+          labelText:'Pesquisar título ou número do capítulo',
+          border:OutlineInputBorder())),
+      const SizedBox(height:12),
+      for(final c in found) Card(child:ListTile(
+        title:Text('Cap. '+c.number.toString().padLeft(2,'0')+' — '+c.title),
+        subtitle:Text('Toque para ler o texto integral · Vol. '+c.volume.toString()+' • '+c.edition+
+          ' • '+(_library.chapter(c.number)==null?'PDF de apoio não importado':'PDF original disponível offline')),
+        isThreeLine:true,
+        trailing:Row(mainAxisSize:MainAxisSize.min,children:[
+          Icon(_library.chapter(c.number)==null
+            ?Icons.cloud_outlined:Icons.check_circle,
+            color:const Color(0xFF20533F)),
+          IconButton(
+            tooltip:'Abrir documento de referência no Drive',
+            icon:const Icon(Icons.open_in_new,size:18),
+            onPressed:()=>_openSource(c)),
+        ]),
+        onTap:()=>_openNativeBook(c.number),
+      )),
+      const SizedBox(height:16),
+      _infoCard('Buscar no conteúdo das 292 páginas',Column(children:[
+        TextField(onChanged:(value)=>_corpusSearch=value,
+          decoration:const InputDecoration(
+            labelText:'Termo ou expressão nos PDFs importados',
+            border:OutlineInputBorder())),
+        const SizedBox(height:8),
+        FilledButton(onPressed:_searchFullText,
+          child:const Text('Pesquisar texto integral')),
+        for(final m in _matches) ListTile(
+          title:Text('Cap. '+m.chapter.toString()+' · página '+m.page.toString()),
+          subtitle:Text(m.excerpt,maxLines:3,overflow:TextOverflow.ellipsis),
+          onTap:()=>_readChapter(m.chapter)),
+        if(_matches.isEmpty)const Text('Nenhum resultado carregado.'),
+      ]),icon:Icons.manage_search),
+      const Text('Para arquivos novos, use novamente Importar. '
+        'O acesso pelo seletor de arquivos do Android pode ler arquivos do Google Drive; '
+        'sincronização automática sem autenticação OAuth não é afirmada.'),
+    ]);
+  }
+
+  Widget _caseExercise() {
+    const facts=[
+      'Um registro documentado mostra uma conexão às 20:15.',
+      'O titular certamente estava segurando o aparelho.',
+      'Uma terceira pessoa pode ter usado o dispositivo.',
+    ];
+    const correct=[0,1,2];
+    const types=['Fato documentado','Inferência','Hipótese alternativa'];
+    final score=_caseSelections.entries.where((e)=>correct[e.key]==e.value).length;
+    return _infoCard('Caso didático: fato, inferência ou hipótese',Column(
+      crossAxisAlignment:CrossAxisAlignment.start,children:[
+        const Text('Cenário totalmente sintético. Classifique as afirmações.'),
+        for(var i=0;i<facts.length;i++) Padding(
+          padding:const EdgeInsets.symmetric(vertical:8),
+          child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+            Text(facts[i]),
+            DropdownButtonFormField<int>(
+              value:_caseSelections[i],
+              hint:const Text('Escolha a categoria'),
+              items:List.generate(types.length,(j)=>DropdownMenuItem(
+                value:j,child:Text(types[j]))),
+              onChanged:(v){if(v!=null)setState(() {
+                _caseSelections[i]=v;_showCaseAnswer=false;
+              });}),
+          ])),
+        FilledButton(
+          onPressed:_caseSelections.length!=facts.length?null:()=>setState(()=>_showCaseAnswer=true),
+          child:const Text('Corrigir classificação')),
+        if(_showCaseAnswer)Text('Acertos: '+score.toString()+'/3. '
+          'A inferência não prova quem operava o aparelho. '
+          'Esta atividade não é um exame de proficiência.'),
+      ]),icon:Icons.account_tree_outlined);
+  }
+
+  Widget _labTab()=>ListView(padding:const EdgeInsets.all(16),children:[
+    _topTitle('Laboratórios Periciais','Exercícios com entradas reais editáveis e resultados calculados.'),
+    _infoCard('Executar prática',Column(
+      crossAxisAlignment:CrossAxisAlignment.start,children:[
+        DropdownButtonFormField<LabDomain>(
+          value:_domain,isExpanded:true,
+          decoration:const InputDecoration(labelText:'Área',border:OutlineInputBorder()),
+          items:LabDomain.values.map((d)=>DropdownMenuItem(
+            value:d,child:Text(d.displayName))).toList(),
+          onChanged:(d){if(d!=null)_setLabDomain(d);}),
+        const SizedBox(height:10),
+        TextField(controller:_labInput,minLines:2,maxLines:9,
+          decoration:const InputDecoration(
+            labelText:'Dados para processar (exemplo editável)',
+            border:OutlineInputBorder())),
+        const SizedBox(height:10),
+        FilledButton.icon(onPressed:_labBusy?null:_runLab,
+          icon:const Icon(Icons.play_arrow),
+          label:Text(_labBusy?'Executando...':'Executar e registrar')),
+        if(_labOutput.isNotEmpty) Container(
+          width:double.infinity,margin:const EdgeInsets.only(top:12),
+          padding:const EdgeInsets.all(12),
+          decoration:BoxDecoration(color:const Color(0xFFEAF0EB),
+            borderRadius:BorderRadius.circular(8)),
+          child:SelectableText(_labOutput,style:const TextStyle(
+            fontFamily:'monospace',fontSize:13))),
+      ]),icon:Icons.biotech_outlined),
+    _caseExercise(),
+  ]);
+
+  Widget _profile()=>ListView(padding:const EdgeInsets.all(16),children:[
+    _topTitle('Meu Espaço','Somente resultados persistidos e configurações verificáveis.'),
+    _infoCard('Matriz de competências',Column(
+      crossAxisAlignment:CrossAxisAlignment.start,children:[
+        const Text('Proficiência profissional: ainda não aferida.'),
+        Text('Lições interativas respondidas corretamente: $_guidedLessonsComplete de 26'),
+        Text('Avaliações formativas acima do corte: '+_assessments.toString()),
+        Text('Exercícios executados: '+_labs.toString()),
+        Text('Casos registrados: '+_cases.toString()),
+        Text('Estudo nesta semana: '+_hoursWeek.toStringAsFixed(2)+' h'),
+        const Text('Não há percentuais fictícios nem certificados automáticos.'),
+      ]),icon:Icons.analytics_outlined),
+    _infoCard('Chave Gemini e modelos',Column(
+      crossAxisAlignment:CrossAxisAlignment.start,children:[
+        Text(_keyStatus),
+        const SizedBox(height:8),
+        TextField(controller:_keyInput,obscureText:true,
+          enableSuggestions:false,autocorrect:false,
+          decoration:const InputDecoration(
+            labelText:'Cole sua chave pessoal da API Gemini',
+            border:OutlineInputBorder())),
+        const SizedBox(height:8),
+        Wrap(spacing:8,runSpacing:8,children:[
+          FilledButton(onPressed:_saveKey,child:const Text('Salvar chave')),
+          OutlinedButton(onPressed:_verifyKey,child:const Text('Conferir chave salva')),
+          OutlinedButton(onPressed:_testing?null:_testGemini,
+            child:Text(_testing?'Consultando...':'Testar API / modelos')),
+          TextButton(onPressed:_removeKey,child:const Text('Excluir chave')),
+        ]),
+        if(_keyPresent)const Text('Chave cadastrada no aparelho. O valor não é mostrado nem enviado ao GitHub.'),
+        const SizedBox(height:16),
+        const Text('IDs dos modelos — configuração manual',
+          style:TextStyle(fontSize:16,fontWeight:FontWeight.w700)),
+        const SizedBox(height:7),
+        TextField(controller:_manualTextModel,
+          autocorrect:false,
+          decoration:const InputDecoration(
+            labelText:'Gemini para texto (ID completo)',
+            hintText:'gemini-2.5-flash',
+            border:OutlineInputBorder())),
+        const SizedBox(height:7),
+        OutlinedButton.icon(
+          onPressed:()=>_saveManualModel(speech:false),
+          icon:const Icon(Icons.save_outlined),
+          label:const Text('Salvar modelo de texto')),
+        const SizedBox(height:12),
+        TextField(controller:_manualTtsModel,
+          autocorrect:false,
+          decoration:const InputDecoration(
+            labelText:'Gemini para TTS (ID completo)',
+            hintText:'gemini-2.5-flash-preview-tts',
+            border:OutlineInputBorder())),
+        const SizedBox(height:7),
+        OutlinedButton.icon(
+          onPressed:()=>_saveManualModel(speech:true),
+          icon:const Icon(Icons.save_outlined),
+          label:const Text('Salvar modelo TTS')),
+        const Text('Aceita IDs com ou sem models/. A seleção manual não '
+          'é substituída pela descoberta automática. É necessário '
+          'usar um modelo TTS que aceite AUDIO em generateContent.',
+          style:TextStyle(fontSize:12,height:1.45)),
+        if(_textModel!=null && _textModels.isEmpty)
+          Text('Modelo de professor salvo: '+_textModel!),
+        if(_speechModel!=null && _speechModels.isEmpty)
+          Text('Modelo de voz salvo: '+_speechModel!),
+        if(_textModels.isNotEmpty) DropdownButtonFormField<String>(
+          value:_textModels.any((m)=>m.name==_textModel)?_textModel:null,
+          isExpanded:true,
+          decoration:const InputDecoration(labelText:'Professor Gemini'),
+          items:_textModels.map((m)=>DropdownMenuItem(
+            value:m.name,child:Text(m.displayName??m.shortId))).toList(),
+          onChanged:(v) async {
+            if(v==null)return;
+            setState(()=>_textModel=v);
+            _manualTextModel.text=v;
+            await _vault.write(key:'gemini_tutor_model',value:v);
+          }),
+        if(_speechModels.isNotEmpty) DropdownButtonFormField<String>(
+          value:_speechModels.any((m)=>m.name==_speechModel)?_speechModel:null,
+          isExpanded:true,
+          decoration:const InputDecoration(labelText:'Modelo Gemini TTS — Charon'),
+          items:_speechModels.map((m)=>DropdownMenuItem(
+            value:m.name,child:Text(m.displayName??m.shortId))).toList(),
+          onChanged:(v) async {
+            if(v==null)return;
+            setState(()=>_speechModel=v);
+            _manualTtsModel.text=v;
+            await _vault.write(key:'gemini_speech_model',value:v);
+          }),
+      ]),icon:Icons.key_outlined),
+    _infoCard('Relatório PDF de atividades',Column(
+      crossAxisAlignment:CrossAxisAlignment.start,children:[
+        const Text('Exporta um PDF real com as suas sessões e execuções '
+          'gravadas. Um hash de integridade não é assinatura digital.'),
+        const SizedBox(height:8),
+        FilledButton.icon(onPressed:_reportBusy?null:_exportReport,
+          icon:const Icon(Icons.picture_as_pdf),
+          label:Text(_reportBusy?'Exportando...':'Compartilhar relatório PDF')),
+        if(_reportStatus.isNotEmpty)Text(_reportStatus),
+      ]),icon:Icons.picture_as_pdf_outlined),
+  ]);
+
+  static const titles=['Início','Estudar','Biblioteca','Laboratório','Meu Espaço'];
+  static const icons=[Icons.home_outlined,Icons.school_outlined,
+    Icons.menu_book_outlined,Icons.biotech_outlined,Icons.person_outline];
+  Widget _tabBody()=>switch(_tab){
+    0=>_home(),1=>_study(),2=>_libraryTab(),3=>_labTab(),_=>_profile()
+  };
+
+  @override
+  Widget build(BuildContext context){
+    final screen=MediaQuery.sizeOf(context);
+    final desktop=screen.width>=840;
+    if(_loading)return const Scaffold(body:Center(
+      child:Column(mainAxisSize:MainAxisSize.min,children:[
+        CircularProgressIndicator(),SizedBox(height:12),
+        Text('Preparando sua biblioteca e o banco local...')
+      ])));
+    return Scaffold(
+      resizeToAvoidBottomInset:true,
+      appBar:AppBar(
+        title:const Text('Academia Forense'),
+        backgroundColor:Colors.white,
+        foregroundColor:const Color(0xFF20533F)),
+      body:desktop?Row(children:[
+        NavigationRail(
+          selectedIndex:_tab,onDestinationSelected:(n)=>setState(()=>_tab=n),
+          extended:screen.width>=1150,
+          destinations:List.generate(5,(i)=>NavigationRailDestination(
+            icon:Icon(icons[i]),label:Text(titles[i])))),
+        const VerticalDivider(width:1),
+        Expanded(child:Center(child:ConstrainedBox(
+          constraints:const BoxConstraints(maxWidth:1000),child:_tabBody()))),
+      ]):_tabBody(),
+      bottomNavigationBar:desktop?null:NavigationBar(
+        selectedIndex:_tab,onDestinationSelected:(n)=>setState(()=>_tab=n),
+        destinations:List.generate(5,(i)=>NavigationDestination(
+          icon:Icon(icons[i]),label:titles[i]))),
+    );
+  }
+}
+).hasMatch(clean)){
+      return null;
+    }
+    return clean;
+  }
+
+  Future<void> _saveManualModel({required bool speech}) async {
+    final controller=speech?_manualTtsModel:_manualTextModel;
+    final id=_normalizeModel(controller.text);
+    if(id==null){
+      if(mounted)setState(()=>_keyStatus=
+        'Modelo inválido. Use o ID exibido no Google AI Studio.');
+      return;
+    }
+    if(speech && !id.toLowerCase().contains('tts')){
+      if(mounted)setState(()=>_keyStatus=
+        'O modelo TTS deve identificar uma versão de síntese de voz (-tts).');
+      return;
+    }
+    if(!speech && id.toLowerCase().contains('tts')){
+      if(mounted)setState(()=>_keyStatus=
+        'Este modelo gera voz. Use um modelo de texto para o professor.');
+      return;
+    }
+    final key=speech?'gemini_speech_model':'gemini_tutor_model';
+    try {
+      await _vault.write(key:key,value:id);
+      final result=await _vault.read(key:key);
+      if(result!=id)throw StateError('Falha ao conferir persistência.');
+      if(!mounted)return;
+      setState((){
+        if(speech)_speechModel=id;
+        else _textModel=id;
+        _keyStatus=speech?'Modelo TTS salvo: $id':'Modelo de texto salvo: $id';
+      });
+    } catch(e){
+      if(mounted)setState(()=>_keyStatus='Erro ao salvar modelo: $e');
+    }
   }
 
   Future<void> _testGemini() async {

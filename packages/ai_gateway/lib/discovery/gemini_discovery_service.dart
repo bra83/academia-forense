@@ -30,6 +30,7 @@ class GeminiModelDiscoveryService {
       // Audio speech models support generateSpeech or contain speech in name/description
       if (methods.contains('generateSpeech') ||
           model.name.toLowerCase().contains('speech') ||
+          model.name.toLowerCase().contains('tts') ||
           (model.description != null && model.description!.toLowerCase().contains('speech generation'))) {
         speechModels.add(model);
       }
