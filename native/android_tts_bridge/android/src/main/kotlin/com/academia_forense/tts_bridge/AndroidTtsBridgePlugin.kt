@@ -198,7 +198,7 @@ class AndroidTtsBridgePlugin : FlutterPlugin, MethodCallHandler, EventChannel.St
                     result.error("INIT_FAILED", "TextToSpeech init returned error code $status", null)
                 }
             }
-        } }
+        }
         textToSpeech = if (systemDefault) TextToSpeech(ctx, listener)
             else TextToSpeech(ctx, listener, targetEngine)
     }
