@@ -191,15 +191,33 @@ class GeminiTtsClient {
       throw const GeminiTtsException('Empty audio payload received from Gemini TTS endpoint');
     }
 
-    final wavBytes = WavHeaderBuilder.base64PcmToWav(
-      base64Data,
-      sampleRate: sampleRate,
-    );
-    final rawPcm = base64Decode(base64Data);
+    // Gemini may return either headerless PCM or a complete RIFF/WAV.
+    // Never prepend a second WAV header (Android players then reject it).
+    final decoded = base64Decode(base64Data);
+    final isWav = decoded.length >= 44 &&
+        decoded[0]==0x52 && decoded[1]==0x49 &&
+        decoded[2]==0x46 && decoded[3]==0x46 &&
+        decoded[8]==0x57 && decoded[9]==0x41 &&
+        decoded[10]==0x56 && decoded[11]==0x45;
+    final int actualSampleRate;
+    final Uint8List wavBytes;
+    final Uint8List rawPcm;
+    if (isWav) {
+      final header = WavHeaderBuilder.parseAndValidateWav(decoded);
+      actualSampleRate = header.sampleRate;
+      wavBytes = decoded;
+      rawPcm = Uint8List.fromList(decoded.sublist(44));
+    } else {
+      actualSampleRate = sampleRate;
+      rawPcm = decoded;
+      wavBytes = WavHeaderBuilder.packagePcmToWav(
+          decoded, sampleRate: sampleRate);
+    }
+    if(rawPcm.isEmpty)throw const GeminiTtsException(
+      'O Gemini retornou áudio vazio.');
 
-    // Duration = totalSamples / sampleRate = (byteLength / 2) / sampleRate
     final totalSamples = rawPcm.length ~/ 2;
-    final durationSec = totalSamples / sampleRate;
+    final durationSec = totalSamples / actualSampleRate;
     final duration = Duration(microseconds: (durationSec * 1000000).round());
 
     return GeminiSpeechChunk(
@@ -207,7 +225,7 @@ class GeminiTtsClient {
       paragraphIndex: paragraphIndex,
       rawPcm: rawPcm,
       wavBytes: wavBytes,
-      sampleRate: sampleRate,
+      sampleRate: actualSampleRate,
       duration: duration,
     );
   }

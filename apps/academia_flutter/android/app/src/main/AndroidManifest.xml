@@ -41,6 +41,9 @@
         <package android:name="com.k2fsa.sherpa.onnx.tts.engine" />
         <package android:name="com.k2fsa.sherpa.onnx.tts.engine.debug" />
         <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+        <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>

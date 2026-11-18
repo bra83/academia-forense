@@ -162,19 +162,31 @@ class AndroidTtsBridgePlugin : FlutterPlugin, MethodCallHandler, EventChannel.St
             return
         }
 
-        val targetEngine = enginePackage ?: detectInstalledEngines().firstOrNull()
-        if (targetEngine == null || !isPackageInstalled(targetEngine)) {
-            result.error("ENGINE_NOT_INSTALLED", "Supported Sherpa-ONNX TTS engine is not installed", null)
+        val systemDefault = enginePackage == "system"
+        val targetEngine = if (systemDefault) "system" else
+            (enginePackage ?: detectInstalledEngines().firstOrNull())
+        if (targetEngine == null ||
+            (!systemDefault && (!SUPPORTED_ENGINES.contains(targetEngine) ||
+                !isPackageInstalled(targetEngine)))) {
+            result.error("ENGINE_NOT_INSTALLED",
+                "Motor Braseiro Kokoro não instalado. "
+                + "Instale e ative o motor Sherpa-ONNX, "
+                + "ou selecione Voz Android (sistema).", null)
             return
         }
 
         shutdownEngine()
 
-        textToSpeech = TextToSpeech(ctx, { status ->
+        val listener = TextToSpeech.OnInitListener { status ->
             mainHandler.post {
                 if (status == TextToSpeech.SUCCESS) {
                     isInitialized = true
                     activeEngine = targetEngine
+                    if (systemDefault) {
+                        // Try pt-BR first; the user can still pick an installed
+                        // voice explicitly if only another language exists.
+                        textToSpeech?.setLanguage(Locale.forLanguageTag("pt-BR"))
+                    }
                     setupUtteranceListener()
                     result.success(mapOf(
                         "success" to true,
@@ -186,7 +198,9 @@ class AndroidTtsBridgePlugin : FlutterPlugin, MethodCallHandler, EventChannel.St
                     result.error("INIT_FAILED", "TextToSpeech init returned error code $status", null)
                 }
             }
-        }, targetEngine)
+        } }
+        textToSpeech = if (systemDefault) TextToSpeech(ctx, listener)
+            else TextToSpeech(ctx, listener, targetEngine)
     }
 
     private fun setupUtteranceListener() {
