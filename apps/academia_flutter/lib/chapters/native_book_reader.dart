@@ -36,6 +36,10 @@ class NativeBookReader extends StatefulWidget {
 class _NativeBookReaderState extends State<NativeBookReader> {
   static const forest=Color(0xFF174B3B);
   final _scroll=ScrollController();
+  bool _voiceControlsOpen=false;
+  String _voiceReading='';
+  String _voiceReadingLabel='';
+
   WebViewController? _htmlController;
   bool _htmlReading=Platform.isAndroid;
   String _htmlQuote='',_htmlBlock='';
@@ -428,22 +432,58 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     final selected=_htmlReading && _htmlQuote.isNotEmpty?_htmlQuote:
       (_selectionStart!=null && _selectionEnd!=null?
         body.substring(_selectionStart!,_selectionEnd!):'');
-    final reading=selected.isNotEmpty?selected:body;
-    showModalBottomSheet<void>(
-      context:context,isScrollControlled:true,
-      builder:(ctx)=>SafeArea(child:Padding(
-        padding:const EdgeInsets.all(12),
-        child:SingleChildScrollView(child:Column(
-          mainAxisSize:MainAxisSize.min,children:[
-            Text(selected.isNotEmpty?'Ouvir trecho destacado':'Ouvir $_label',
-              style:Theme.of(ctx).textTheme.titleLarge),
-            const SizedBox(height:8),
-            VoiceReaderV2(
-              key:ValueKey('bookvoice_${_chapter}_${_page}'),
-              readText:reading,
-              getApiKey:widget.getApiKey,
-              speechModel:widget.speechModel),
-          ])))),
+    setState((){
+      _voiceReading=selected.isNotEmpty?selected:body;
+      _voiceReadingLabel=selected.isNotEmpty?'Trecho selecionado':_label;
+      _voiceControlsOpen=true;
+    });
+  }
+
+  void _minimizeVoice() {
+    if(mounted)setState(()=>_voiceControlsOpen=false);
+    // The voice widget stays mounted, so closing controls never stops audio.
+  }
+
+  Widget _persistentVoicePanel(){
+    return Offstage(
+      offstage:!_voiceControlsOpen,
+      child:Stack(children:[
+        Positioned.fill(child:GestureDetector(
+          onTap:_minimizeVoice,behavior:HitTestBehavior.opaque,
+          child:const ColoredBox(color:Color(0x77000000)))),
+        Align(alignment:Alignment.bottomCenter,child:ConstrainedBox(
+          constraints:BoxConstraints(maxWidth:720,
+            maxHeight:MediaQuery.sizeOf(context).height*0.78),
+          child:Material(
+            elevation:16,clipBehavior:Clip.antiAlias,
+            color:Theme.of(context).colorScheme.surface,
+            borderRadius:const BorderRadius.vertical(top:Radius.circular(18)),
+            child:SafeArea(top:false,child:SingleChildScrollView(
+              padding:const EdgeInsets.fromLTRB(12,8,12,18),
+              child:Column(mainAxisSize:MainAxisSize.min,children:[
+                Row(children:[
+                  const Icon(Icons.graphic_eq,size:22),
+                  const SizedBox(width:8),
+                  Expanded(child:Text('Voz · $_voiceReadingLabel',
+                    maxLines:2,
+                    style:Theme.of(context).textTheme.titleMedium)),
+                  IconButton(
+                    tooltip:'Minimizar controles sem parar a voz',
+                    onPressed:_minimizeVoice,
+                    icon:const Icon(Icons.keyboard_arrow_down)),
+                ]),
+                Text('Fechar os controles não interrompe a leitura. '
+                  'Toque em Ouvir para reabrir.',
+                  style:Theme.of(context).textTheme.bodySmall),
+                const SizedBox(height:8),
+                VoiceReaderV2(
+                  key:const ValueKey('persistent_voice_reader'),
+                  readText:_voiceReading,
+                  getApiKey:widget.getApiKey,
+                  speechModel:widget.speechModel),
+              ]))),
+          ))),
+      ]),
     );
   }
 
@@ -466,7 +506,8 @@ class _NativeBookReaderState extends State<NativeBookReader> {
               ()=>widget.onOpenPdf!(_chapter),
             icon:const Icon(Icons.picture_as_pdf_outlined)),
         ]),
-      body:SafeArea(child:_loading?
+      body:Stack(children:[
+        SafeArea(child:_loading?
         const Center(child:CircularProgressIndicator()):
         book==null?
           Center(child:Padding(
@@ -582,7 +623,9 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                     ()=>_moveTo(_page+1),
                   icon:const Icon(Icons.chevron_right,size:29)),
               ])),
-        ]),
-    ));
+        ])),
+        Positioned.fill(child:_persistentVoicePanel()),
+      ]),
+    );
   }
 }
