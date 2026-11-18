@@ -6,6 +6,21 @@ import 'package:persistence_core/persistence_core.dart';
 import 'package:ai_gateway/ai_gateway.dart';
 
 void main() {
+  test('TTS model is recognized by -tts model ID',(){
+    final c=GeminiModelDiscoveryService.parseAndCategorize({
+      'models':[
+        {'name':'models/gemini-2.5-flash-preview-tts',
+         'supportedGenerationMethods':['generateContent']},
+        {'name':'models/gemini-2.5-flash',
+         'supportedGenerationMethods':['generateContent']},
+      ]
+    });
+    expect(c.audioSpeechModels.any(
+      (m)=>m.name=='models/gemini-2.5-flash-preview-tts'),isTrue);
+    expect(c.textTutorModels.any(
+      (m)=>m.name=='models/gemini-2.5-flash'),isTrue);
+  });
+
   group('Dynamic Gemini Model Discovery (§10.1)', () {
     final sampleApiResponse = {
       'models': [

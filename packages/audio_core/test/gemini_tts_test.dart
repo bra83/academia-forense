@@ -112,6 +112,23 @@ void main() {
       expect(wavInfo.dataSize, samplePcm.length);
     });
 
+    test('WAV returned by Gemini is not wrapped in a second WAV header', () async {
+      final pcm=Uint8List.fromList([0,0,8,0,15,0,22,0]);
+      final packaged=WavHeaderBuilder.packagePcmToWav(pcm,sampleRate:24000);
+      final mockHttp=MockClient((request) async => http.Response(jsonEncode({
+        'candidates':[{'content':{'parts':[{'inlineData':{
+          'mimeType':'audio/wav',
+          'data':base64Encode(packaged),
+        }}]}}]
+      }),200));
+      final result=await GeminiTtsClient(apiKey:'test-key',httpClient:mockHttp)
+        .synthesize(chunkId:'wav',text:'Teste curto.',voiceName:'Charon');
+      expect(result.wavBytes,orderedEquals(packaged));
+      expect(result.rawPcm,orderedEquals(pcm));
+      expect(result.sampleRate,24000);
+      expect(WavHeaderBuilder.parseAndValidateWav(result.wavBytes).dataSize,pcm.length);
+    });
+
     test('empty API key throws GeminiAuthException (401)', () async {
       final client = GeminiTtsClient(apiKey: '');
       expect(
