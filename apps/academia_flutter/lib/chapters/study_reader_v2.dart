@@ -171,13 +171,14 @@ class _StudyReaderV2State extends State<StudyReaderV2> {
     final getKey = widget.getApiKey;
     if (getKey == null) return const SizedBox.shrink();
     return ExpansionTile(
-      key: ValueKey('speech-section-${_page}'),
+      key: const ValueKey('speech-section-persistent'),
+      maintainState:true,
       initiallyExpanded: false,
       title: Text('Ouvir página $_page com Kokoro ou Gemini'),
       leading: const Icon(Icons.record_voice_over_outlined),
       children: [
         VoiceReaderV2(
-          key: ValueKey('speech-reader-${_page}'),
+          key:const ValueKey('speech-reader-persistent'),
           readText: pageContent.first.text,
           getApiKey: getKey,
           speechModel: widget.speechModel,
