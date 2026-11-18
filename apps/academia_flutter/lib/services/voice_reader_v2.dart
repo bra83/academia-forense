@@ -27,6 +27,7 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
   String _geminiVoice='Charon';
   double _speed=1.0;
   bool _playing=false, _working=false, _kokoroReady=false;
+  bool _systemVoice=false;
   String _message='';
   List<AudioChunk> _chunks=[];
   int _index=0, _generation=0;
@@ -52,20 +53,26 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
   }
   Future<void> _loadKokoroVoices() async {
     try {
-      if (!_kokoroReady) _kokoroReady=await _kokoro.initialize();
+      if (!_kokoroReady) _kokoroReady=await _kokoro.initialize(
+        enginePackage:_systemVoice?'system':null);
       if (!_kokoroReady) throw StateError('Motor não inicializado.');
-      final voices=await _kokoro.getAvailableVoices();
+      final installed=await _kokoro.getAvailableVoices();
+      final portuguese=installed.where((v)=>v.locale.toLowerCase().startsWith('pt')).toList();
+      final voices=portuguese.isNotEmpty?portuguese:installed;
       if (!mounted) return;
       setState(() {
         _voices=voices.map((v)=>v.name).where((s)=>s.isNotEmpty).toList();
         if (!_voices.contains(_selectedVoice)) {
           _selectedVoice=_voices.isEmpty?null:_voices.first;
         }
-        _message=_voices.isEmpty?'Nenhuma voz disponível no Kokoro.':
-          'Vozes instaladas: '+_voices.length.toString();
+        _message=_voices.isEmpty?'O motor não informou nenhuma voz. Confira '
+          'os pacotes de voz no Android.':
+          'Motor '+(_systemVoice?'Android':'Kokoro')+' inicializado; '
+          '${_voices.length} voz(es) disponível(is).';
       });
     } catch (e) {
-      if (mounted) setState(()=>_message='Kokoro não encontrado ou indisponível: '+e.runtimeType.toString());
+      if (mounted) setState(()=>_message='Falha ao inicializar voz '+
+        (_systemVoice?'Android':'Kokoro')+': $e');
     }
   }
   Future<void> _stop() async {
@@ -78,10 +85,11 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
     if (mounted) setState(() { _playing=false;_working=false;_message='Reprodução parada.'; });
   }
 
-  Future<void> _toggle() async {
+  Future<void> _toggle({bool shortTest=false}) async {
     if (_working) return;
     if (_playing) { await _stop(); return; }
-    final text=widget.readText.trim();
+    final text=shortTest ? 'Olá. Esta é uma verificação de voz da Academia Forense.' :
+      widget.readText.trim();
     if (text.isEmpty) {setState(()=>_message='Sem texto disponível para leitura.');return;}
     _generation++;
     setState(()=>_working=true);
@@ -89,7 +97,12 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
       if (_engine==AudioEngine.kokoroLocal) {
         if (!_kokoroReady || _selectedVoice==null) await _loadKokoroVoices();
         if (!_kokoroReady || _selectedVoice==null) {
-          throw StateError('Instale e habilite o motor Braseiro Kokoro.');
+          throw StateError(_systemVoice?
+            'Motor Android indisponível. Configure um sintetizador de voz '
+            'no dispositivo e instale a voz português do Brasil.':
+            'Motor Braseiro Kokoro indisponível. É necessário instalar '
+            'o Sherpa-ONNX como serviço TTS separado. Para testar sem '
+            'ele, escolha Voz Android (sistema).');
         }
         final voiceWasApplied=await _kokoro.setVoice(_selectedVoice!);
         if (!voiceWasApplied) throw StateError('Voz Kokoro rejeitada pelo motor.');
@@ -100,8 +113,9 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
           throw StateError('Falha na síntese local.');
         }
         if (mounted) setState(() {
-          _playing=true;
-          _message='Kokoro: áudio solicitado à voz real '+_selectedVoice!;
+          _playing=_kokoro.state==MotorPlaybackState.playing;
+          _message=(_systemVoice?'Android':'Kokoro')+': '
+            'síntese encaminhada à voz '+_selectedVoice!;
         });
       } else {
         final key=await widget.getApiKey();
@@ -109,7 +123,7 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
         if (key==null || key.isEmpty || model==null || model.isEmpty) {
           throw StateError('Configure a chave e o modelo Gemini TTS nas configurações.');
         }
-        _chunks=SentenceSegmenter.segment(text,maxLength:450).chunks;
+        _chunks=SentenceSegmenter.segment(text,maxLength:420).chunks;
         _index=0;
         if (mounted) setState(() {
           _playing=true;
@@ -120,7 +134,7 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
     } catch(e) {
       if (mounted) setState(() {
         _playing=false;
-        _message='A leitura falhou ('+e.runtimeType.toString()+'). Nenhum outro motor foi acionado.';
+        _message='Falha de leitura: $e. Nenhum motor alternativo foi acionado.';
       });
     } finally {
       if (mounted) setState(()=>_working=false);
@@ -144,15 +158,16 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
         chunkId:chunk.id,text:chunk.text,
         paragraphIndex:chunk.paragraphIndex,voiceName:_geminiVoice);
       if (!mounted || round!=_generation || !_playing) return;
+      await _geminiPlayer.setSource(BytesSource(audio.wavBytes));
       await _geminiPlayer.setPlaybackRate(_speed);
-      await _geminiPlayer.play(BytesSource(audio.wavBytes));
+      await _geminiPlayer.resume();
       if (mounted) setState(()=>_message='Gemini '+_geminiVoice+
         ' — trecho '+_index.toString()+'/'+_chunks.length.toString());
     } catch(e) {
       if (mounted) setState(() {
         _playing=false;
-        _message='Gemini TTS falhou ('+e.runtimeType.toString()+
-          '). Verifique modelo, chave, internet e cota.';
+        _message='Gemini TTS falhou: $e. Verifique ID do modelo, '
+          'conexão e cota; Charon é uma voz, não um modelo.';
       });
     }
   }
@@ -177,11 +192,31 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
         const SizedBox(height:8),
         Wrap(spacing:8,runSpacing:8,children:[
           ChoiceChip(label:const Text('Kokoro local'),
-            selected:_engine==AudioEngine.kokoroLocal,
-            onSelected:(_) async {await _stop();setState(()=>_engine=AudioEngine.kokoroLocal);await _loadKokoroVoices();}),
-          ChoiceChip(label:const Text('Gemini TTS (Charon)'),
+            selected:_engine==AudioEngine.kokoroLocal && !_systemVoice,
+            onSelected:(_) async {
+              await _stop();
+              setState((){
+                _engine=AudioEngine.kokoroLocal;_systemVoice=false;
+                _kokoroReady=false;_voices=[];_selectedVoice=null;
+              });
+              await _loadKokoroVoices();
+            }),
+          ChoiceChip(label:const Text('Voz Android (sistema)'),
+            selected:_engine==AudioEngine.kokoroLocal && _systemVoice,
+            onSelected:(_) async {
+              await _stop();
+              setState((){
+                _engine=AudioEngine.kokoroLocal;_systemVoice=true;
+                _kokoroReady=false;_voices=[];_selectedVoice=null;
+              });
+              await _loadKokoroVoices();
+            }),
+          ChoiceChip(label:const Text('Gemini TTS'),
             selected:_engine==AudioEngine.geminiOnline,
-            onSelected:(_) async {await _stop();setState(()=>_engine=AudioEngine.geminiOnline);}),
+            onSelected:(_) async {
+              await _stop();
+              setState(()=>_engine=AudioEngine.geminiOnline);
+            }),
         ]),
         if (_engine==AudioEngine.kokoroLocal) ...[
           if (_voices.isNotEmpty)
@@ -190,6 +225,11 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
               decoration:const InputDecoration(labelText:'Voz instalada'),
               items:_voices.map((v)=>DropdownMenuItem(value:v,child:Text(v))).toList(),
               onChanged:(v)=>setState(()=>_selectedVoice=v)),
+          Text(_systemVoice?'Usa o sintetizador padrão do Android. '
+            'A voz pt-BR precisa estar instalada no aparelho.':
+            'Exige o aplicativo Braseiro/Sherpa-ONNX TTS instalado. '
+            'Não é integrado ao APK da Academia.',
+            style:const TextStyle(fontSize:12)),
           TextButton.icon(onPressed:_loadKokoroVoices,
             icon:const Icon(Icons.refresh),label:const Text('Buscar vozes instaladas')),
         ] else DropdownButtonFormField<String>(
@@ -205,9 +245,16 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
             onChanged:(v)=>setState(()=>_speed=v))),
           Text(_speed.toStringAsFixed(2)+'×'),
         ]),
-        FilledButton.icon(onPressed:_working?null:_toggle,
-          icon:Icon(_playing?Icons.stop:Icons.play_arrow),
-          label:Text(_playing?'Parar leitura':'Ler texto desta página')),
+        Wrap(spacing:8,runSpacing:8,children:[
+          FilledButton.icon(
+            onPressed:_working?null:()=>_toggle(),
+            icon:Icon(_playing?Icons.stop:Icons.play_arrow),
+            label:Text(_playing?'Parar leitura':'Ler texto desta página')),
+          OutlinedButton.icon(
+            onPressed:_working?null:()=>_toggle(shortTest:true),
+            icon:const Icon(Icons.volume_up_outlined),
+            label:const Text('Testar voz (frase curta)')),
+        ]),
         if (_message.isNotEmpty) Padding(padding:const EdgeInsets.only(top:8),
           child:Text(_message)),
       ]),
