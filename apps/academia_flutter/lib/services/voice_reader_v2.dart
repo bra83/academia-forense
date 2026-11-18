@@ -17,7 +17,17 @@ class VoiceReaderV2 extends StatefulWidget {
 }
 class _VoiceReaderV2State extends State<VoiceReaderV2> {
   final MotorAKokoroController _kokoro=MotorAKokoroController();
-  final AudioPlayer _geminiPlayer=AudioPlayer();
+  // A hidden, persistent voice panel must not initialize native audio until
+  // playback actually starts. Flutter widget tests also lack audio plugins.
+  AudioPlayer? _geminiPlayer;
+  AudioPlayer get _player {
+    final existing=_geminiPlayer;
+    if(existing!=null)return existing;
+    final player=AudioPlayer();
+    _geminiPlayer=player;
+    _finished=player.onPlayerComplete.listen((_)=>_playNextGemini());
+    return player;
+  }
   StreamSubscription<MotorProgressEvent>? _progress;
   StreamSubscription<String>? _errors;
   StreamSubscription<void>? _finished;
@@ -49,7 +59,6 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
         _message='Erro Kokoro: '+err;
       });
     });
-    _finished=_geminiPlayer.onPlayerComplete.listen((_)=>_playNextGemini());
   }
   Future<void> _loadKokoroVoices() async {
     try {
@@ -80,7 +89,7 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
     _chunks=[];
     try {
       await _kokoro.stop();
-      await _geminiPlayer.stop();
+      await _geminiPlayer?.stop();
     } catch (_) {}
     if (mounted) setState(() { _playing=false;_working=false;_message='Reprodução parada.'; });
   }
@@ -158,9 +167,10 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
         chunkId:chunk.id,text:chunk.text,
         paragraphIndex:chunk.paragraphIndex,voiceName:_geminiVoice);
       if (!mounted || round!=_generation || !_playing) return;
-      await _geminiPlayer.setSource(BytesSource(audio.wavBytes));
-      await _geminiPlayer.setPlaybackRate(_speed);
-      await _geminiPlayer.resume();
+      final player=_player;
+      await player.setSource(BytesSource(audio.wavBytes));
+      await player.setPlaybackRate(_speed);
+      await player.resume();
       if (mounted) setState(()=>_message='Gemini '+_geminiVoice+
         ' — trecho '+_index.toString()+'/'+_chunks.length.toString());
     } catch(e) {
@@ -179,7 +189,7 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
     if (_errors!=null) unawaited(_errors!.cancel());
     if (_finished!=null) unawaited(_finished!.cancel());
     unawaited(_kokoro.dispose().catchError((Object _){}));
-    unawaited(_geminiPlayer.dispose());
+    if(_geminiPlayer!=null)unawaited(_geminiPlayer!.dispose());
     super.dispose();
   }
 
