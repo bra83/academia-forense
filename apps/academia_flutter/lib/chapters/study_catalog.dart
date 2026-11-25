@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import '../services/offline_library.dart';
 
 /// Bundled excerpts from the source ZIP. They are not full PDF transcriptions,
 /// and their editorial accuracy has not been independently certified.
@@ -56,6 +57,44 @@ class StudyChapter {
 }
 
 class StudyCatalog {
+  static const volumeTitles = <String>[
+    'Fundamentos das Ciências Forenses',
+    'Computação, Python, SQL e Matemática',
+    'Estatística e Ciência de Dados Forense',
+    'Perícia Digital',
+    'Telefonia, Geolocalização e Cronologias',
+    'Linguística Forense e NLP',
+    'Documentoscopia e Multimídia',
+    'Ciências Forenses Complementares',
+    'Pesquisa Científica e Exercício Profissional',
+  ];
+  static const volumeEnds = <int>[10,23,39,53,66,78,90,100,113];
+  static int volumeFor(int number) {
+    if(number<1 || number>113)throw RangeError.range(number,1,113);
+    return volumeEnds.indexWhere((end)=>number<=end)+1;
+  }
+  static String chapterId(int number) =>
+    'forense.vol' + volumeFor(number).toString().padLeft(2,'0') +
+    '.ch' + number.toString().padLeft(2,'0');
+
+  /// Keep bundled identifiers and expose only actual imported chapters.
+  static Future<List<StudyChapter>> loadAvailable(OfflineLibrary library) async {
+    final bundled=await loadBundledPreviews();
+    final entries=<int,StudyChapter>{for(final c in bundled)c.number:c};
+    for(final source in library.chapters) {
+      final n=source.number;
+      if(n<1 || n>113 || entries.containsKey(n) || source.pageCount<=0)continue;
+      final pages=await library.pages(n);
+      if(pages.length!=source.pageCount || pages.every((p)=>p.text.trim().isEmpty))continue;
+      entries[n]=StudyChapter(
+        id:chapterId(n),volume:volumeFor(n),number:n,title:source.title,
+        edition:'Importado · fonte original',editorialStatus:'Importado',
+        pdfFileId:'',sections:const [],
+      );
+    }
+    return entries.values.toList()..sort((a,b)=>a.number.compareTo(b.number));
+  }
+
   /// Only chapters 01..26 were supplied. Do not fabricate chapters 27..113.
   static Future<List<StudyChapter>> loadBundledPreviews() async {
     final chapters = <StudyChapter>[];
