@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:persistence_core/persistence_core.dart';
 import '../services/offline_library.dart';
+import 'study_catalog.dart';
 import '../services/voice_reader_v2.dart';
 
 class StudyReaderV2 extends StatefulWidget {
@@ -45,9 +46,7 @@ class _StudyReaderV2State extends State<StudyReaderV2> {
     try {
       _pages = await widget.library.pages(widget.chapter.number);
       final position = await widget.database.userProgressDao
-        .getReadingPosition('forense.vol' +
-          (widget.chapter.number<=10?'01':widget.chapter.number<=23?'02':'03') +
-          '.ch' + widget.chapter.number.toString().padLeft(2,'0'));
+        .getReadingPosition(_chapterId);
       final id = 'study_' + DateTime.now().microsecondsSinceEpoch.toString();
       await widget.database.userProgressDao.startStudySession(
         StudySessionsCompanion.insert(id:id,chapterId:_chapterId));
@@ -64,9 +63,7 @@ class _StudyReaderV2State extends State<StudyReaderV2> {
     }
   }
 
-  String get _chapterId => 'forense.vol' +
-      (widget.chapter.number<=10?'01':widget.chapter.number<=23?'02':'03') +
-      '.ch' + widget.chapter.number.toString().padLeft(2,'0');
+  String get _chapterId => StudyCatalog.chapterId(widget.chapter.number);
 
   Future<void> _recordPage(int page) async {
     if (page < 1) return;
