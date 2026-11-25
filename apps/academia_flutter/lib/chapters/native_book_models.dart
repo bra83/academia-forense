@@ -62,7 +62,7 @@ class SourceBookLibrary {
   const SourceBookLibrary();
 
   Future<BookChapter> load(int chapter,OfflineLibrary library) async {
-    if(chapter<1 || chapter>26)throw ArgumentError.value(chapter,'chapter');
+    if(chapter<1 || chapter>113)throw ArgumentError.value(chapter,'chapter');
     // A previously imported, verified ZIP contains the *real* page mapping.
     final original=await library.pages(chapter);
     if(original.isNotEmpty) {
@@ -72,6 +72,7 @@ class SourceBookLibrary {
         screens:original.map((p)=>BookScreen(number:p.number,text:p.text))
           .toList(growable:false));
     }
+    if(chapter>26)throw StateError('Importe o capítulo integral na Biblioteca.');
     final name=chapter.toString().padLeft(2,'0');
     // Decode locally instead of spawning an isolate for chapters above 50KB.
     // It also keeps native-reader widget tests deterministic.
