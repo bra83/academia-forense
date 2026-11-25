@@ -78,7 +78,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   Future<void> _initialize() async {
     try {
       await _library.initialize();
-      final catalog=await StudyCatalog.loadBundledPreviews();
+      final catalog=await StudyCatalog.loadAvailable(_library);
       await _seedCatalog(catalog);
       String? key, model, speech;
       try {
@@ -111,13 +111,12 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       await db.curriculumDao.insertCurriculum(CurriculumsCompanion.insert(
         id:'academia_enciclopedia',name:'Enciclopédia de Ciências Forenses',
         version:'2026',description:'Índice do acervo pessoal de PDF'));
-      for(final vol in [1,2,3]){
+      for(var vol=1;vol<=StudyCatalog.volumeTitles.length;vol++){
         await db.curriculumDao.insertVolume(VolumesCompanion.insert(
           id:'academia_v'+vol.toString(),
           curriculumId:'academia_enciclopedia',
           volumeNumber:vol,
-          title:vol==1?'Fundamentos':vol==2?'Computação, Python e SQL':
-            'Estatística e Ciência de Dados',
+          title:StudyCatalog.volumeTitles[vol-1],
           discipline:'Ciências Forenses',
           description:'Capítulos originais mantidos no Google Drive',
           totalChapters:catalog.where((c)=>c.volume==vol).length));
@@ -158,8 +157,8 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     try {
       final prefs=await SharedPreferences.getInstance();
       var done=0;
-      for(var i=1;i<=26;i++){
-        if(prefs.getBool('academia_lesson_correct_${i}')??false)done++;
+      for(final entry in _catalog){
+        if(prefs.getBool('academia_lesson_correct_${entry.number}')??false)done++;
       }
       if(mounted)setState(()=>_guidedLessonsComplete=done);
     } catch (_) {
@@ -204,6 +203,11 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     setState(() {_importing=true;_importStatus='Selecionando arquivo do aparelho ou Google Drive...';});
     try{
       final count=await _library.pickAndImport();
+      final catalog=await StudyCatalog.loadAvailable(_library);
+      await _seedCatalog(catalog);
+      if(!mounted)return;
+      setState(()=>_catalog=catalog);
+      await _refreshGuidedLessons();
       if(!mounted)return;
       setState(()=>_importStatus=count==0
         ?'Nenhum arquivo importado.'
@@ -232,6 +236,10 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   }
 
   Future<void> _openSource(StudyChapter chapter) async {
+    if(chapter.pdfFileId.isEmpty) {
+      if(_library.chapter(chapter.number)!=null)await _readChapter(chapter.number);
+      return;
+    }
     try {
       final uri=Uri.parse(chapter.originalPdfUrl);
       if (!await launchUrl(uri,mode:LaunchMode.externalApplication)) {
@@ -570,14 +578,14 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     _topTitle('Academia Forense','Sua Enciclopédia completa em texto ajustável, com voz, marcações e tutor Gemini.'),
     _infoCard('Ler e estudar a Enciclopédia',Column(
       crossAxisAlignment:CrossAxisAlignment.start,children:[
-        Text('Texto integral dos 26 PDFs em leitura paginada, tamanho de fonte '
+        Text('Texto integral de ${_catalog.length} capítulos disponíveis em leitura paginada, tamanho de fonte '
           'ajustável, trechos marcados, anotações, leitura de voz, '
           'Gemini contextual e exercícios dos capítulos.',
           style:Theme.of(context).textTheme.bodyLarge),
         const SizedBox(height:12),
-        Text('Lições aplicadas e registradas: $_guidedLessonsComplete de 26'),
+        Text('Lições aplicadas e registradas: $_guidedLessonsComplete de ${_catalog.length}'),
         const SizedBox(height:8),
-        LinearProgressIndicator(value:_guidedLessonsComplete/26,
+        LinearProgressIndicator(value:_catalog.isEmpty?0.0:(_guidedLessonsComplete/_catalog.length).clamp(0.0,1.0).toDouble(),
           minHeight:10,borderRadius:BorderRadius.circular(8)),
         const SizedBox(height:10),
         Wrap(spacing:8,runSpacing:8,children:[
@@ -608,7 +616,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       crossAxisAlignment:CrossAxisAlignment.start,children:[
         Text(_library.chapters.length.toString()+
           ' documentos originais importados no dispositivo.'),
-        Text((_catalog.length-_library.chapters.where((c)=>c.number<=26).length)
+        Text((_catalog.where((c)=>_library.chapter(c.number)==null).length)
           .toString()+' capítulos do acervo ainda sem arquivo offline.'),
         const SizedBox(height:12),
         FilledButton.icon(onPressed:()=>setState(()=>_tab=2),
@@ -691,8 +699,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     final found=_catalog.where((c)=>c.title.toLowerCase().contains(_filter.toLowerCase()) ||
       c.number.toString().contains(_filter)).toList();
     return ListView(padding:const EdgeInsets.all(16),children:[
-      _topTitle('Biblioteca de referência','26 capítulos existentes em 292 páginas. '
-        'Conteúdo integral mediante importação; capítulos 27–113 não publicados.'),
+      _topTitle('Biblioteca de referência','${_catalog.length} de 113 capítulos disponíveis para leitura. Importe os pacotes integrais restantes para ampliar o acervo.'),
       _infoCard('Importar PDFs do Drive ou do dispositivo',Column(
         crossAxisAlignment:CrossAxisAlignment.start,children:[
           const Text('Baixe o pacote integral fornecido neste chat. '
@@ -721,14 +728,14 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
             ?Icons.cloud_outlined:Icons.check_circle,
             color:const Color(0xFF20533F)),
           IconButton(
-            tooltip:'Abrir documento de referência no Drive',
+            tooltip:c.pdfFileId.isEmpty?'Abrir PDF original offline':'Abrir documento de referência no Drive',
             icon:const Icon(Icons.open_in_new,size:18),
             onPressed:()=>_openSource(c)),
         ]),
         onTap:()=>_openNativeBook(c.number),
       )),
       const SizedBox(height:16),
-      _infoCard('Buscar no conteúdo das 292 páginas',Column(children:[
+      _infoCard('Buscar no conteúdo dos capítulos importados',Column(children:[
         TextField(onChanged:(value)=>_corpusSearch=value,
           decoration:const InputDecoration(
             labelText:'Termo ou expressão nos PDFs importados',
@@ -817,7 +824,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     _infoCard('Matriz de competências',Column(
       crossAxisAlignment:CrossAxisAlignment.start,children:[
         const Text('Proficiência profissional: ainda não aferida.'),
-        Text('Lições interativas respondidas corretamente: $_guidedLessonsComplete de 26'),
+        Text('Lições interativas respondidas corretamente: $_guidedLessonsComplete de ${_catalog.length}'),
         Text('Avaliações formativas acima do corte: '+_assessments.toString()),
         Text('Exercícios executados: '+_labs.toString()),
         Text('Casos registrados: '+_cases.toString()),
