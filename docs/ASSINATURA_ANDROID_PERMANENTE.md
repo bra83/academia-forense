@@ -45,4 +45,6 @@ marcadores e preferências. O workflow não comprova sozinho migração no apare
 
 ## Configuração pelo Android (Termux)
 
-O script `scripts/configurar-assinatura-android.sh` configura os quatro segredos via GitHub CLI, usando um JDK instalado que forneça `keytool`. Após a configuração, uma nova execução do workflow deve gerar o artefato `Academia-Forense-A57-Android-Verified`. Se o nome incluir `TESTE-sem-assinatura-permanente`, a chave não foi aplicada. Não desinstale o APK anterior para testar esse artefato.
+O script `scripts/configurar-assinatura-android.sh` configura os quatro segredos via GitHub CLI, usando `openssl-tool` (OpenSSL) no Termux, sem depender do Java. Após a configuração, uma nova execução do workflow deve gerar o artefato `Academia-Forense-A57-Android-Verified`. Se o nome incluir `TESTE-sem-assinatura-permanente`, a chave não foi aplicada. Não desinstale o APK anterior para testar esse artefato.
+
+Após cadastrar os quatro segredos pelo Termux, compile novamente para verificar a assinatura. Preserve o arquivo PKCS12 original e sua senha em backup privado; não gere outra chave.
