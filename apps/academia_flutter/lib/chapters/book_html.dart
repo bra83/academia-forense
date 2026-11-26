@@ -102,7 +102,7 @@ class SourceHtmlConverter {
   static String readingSource(String raw) {
     var s=cleanLineBreaks(raw);
     s=s.replaceAllMapped(RegExp(r'(EDIÇÃO REVISADA\s+\d+\s*·\s*[A-ZÀ-Ü]+\s+\d{4})(?=N\s*O\s*T\s*A\s*A\s*O\s*L\s*E\s*I\s*T\s*O\s*R)',caseSensitive:false),(m)=>m[1]!+'\n');
-    s=s.replaceAll(RegExp(r'^\s*Capítulo\s+\d+\s*·\s*Edição inaugural[^\n]*PDF pesquisável\s*$',caseSensitive:false,multiLine:true),'');
+    s=s.replaceAll(RegExp(r'^\s*Capítulo\s+\d+\s*·\s*Edição inaugural[^\n]*(?:\n[ \t]*\d{1,2}\s+[a-zç]+\s+\d{4}[^\n]*)?PDF pesquisável\s*$',caseSensitive:false,multiLine:true),'');
     s=s.replaceAll(RegExp(r'^\s*EDIÇÃO REVISADA\s+\d+\s*·\s*[A-ZÀ-Ü]+\s+\d{4}\s*$',caseSensitive:false,multiLine:true),'');
     s=s.replaceAll(RegExp(r'^\s*ENCICLOPÉDIA DE CIÊNCIAS FORENSES\s+VOLUME\s+[IVXLCDM\d]+\s*·\s*CAPÍTULO\s+\d+[ \t]*$',caseSensitive:false,multiLine:true),'');
     s=s.replaceAll(RegExp(r'^[ \t]*FORMAÇÃO TÉCNICO-CIENTÍFICA\s*·\s*EDIÇÃO\s+\d{4}[ \t]+\d+',caseSensitive:false,multiLine:true),'\n');
@@ -133,7 +133,7 @@ class SourceHtmlConverter {
 
   static String blockHtml(HtmlBlock block) {
     final raw=compactEditorial(readingSource(block.text)).trim();
-    if(raw.isEmpty)return '';
+    if(raw.isEmpty||RegExp(r'^Capítulo\s+\d+\s*·\s*Edição inaugural',caseSensitive:false).hasMatch(raw))return '';
     var formatted=escape(raw);
     if(block.kind=='p'){
       final match=lead.firstMatch(raw);
