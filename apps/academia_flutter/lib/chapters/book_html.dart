@@ -136,7 +136,8 @@ class SourceHtmlConverter {
 <style>
 body{margin:0;background:${dark?'#000000':'#ffffff'};color:${dark?'#ffffff':'#000000'};font-family:Georgia,'Noto Serif',serif;font-size:${size}px;line-height:1.74;-webkit-text-size-adjust:100%}
 article{max-width:780px;margin:auto;padding:20px 19px 64px}
-p{margin:0 0 1.22em;text-align:left;hyphens:manual;overflow-wrap:anywhere}
+p{margin:0 0 1.22em;text-align:justify;text-justify:inter-word;hyphens:auto;overflow-wrap:anywhere}
+@media(max-width:360px){p{text-align:start}}
 h1,h2,h3,h4{font-family:system-ui,Roboto,sans-serif;text-align:left;line-height:1.29;hyphens:none;break-after:avoid}
 h1{font-size:1.85em;margin:0.5em 0 0.8em;color:inherit}
 h2{font-size:1.33em;margin:1.4em 0 .75em;color:inherit;border-bottom:1px solid #d2dcd4;padding-bottom:.35em}
