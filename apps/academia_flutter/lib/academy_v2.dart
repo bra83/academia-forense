@@ -96,7 +96,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       }
       if(!mounted)return;
       setState(() {
-        _catalog=catalog;_textModel=model;_speechModel=speech;
+        _catalog=catalog;if(catalog.isNotEmpty&&!catalog.any((c)=>c.number==_selectedChapter))_selectedChapter=catalog.first.number;_textModel=model;_speechModel=speech;
         _manualTextModel.text=model??'';
         _manualTtsModel.text=speech??'';
         _keyPresent=key!=null && key.isNotEmpty;
@@ -117,12 +117,12 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       await db.curriculumDao.insertCurriculum(CurriculumsCompanion.insert(
         id:'academia_enciclopedia',name:'Enciclopédia de Ciências Forenses',
         version:'2026',description:'Índice do acervo pessoal de PDF'));
-      for(var vol=1;vol<=StudyCatalog.volumeTitles.length;vol++){
+      for(var vol=1;vol<=StudyCatalog.volumeTitles.length+(catalog.any((c)=>c.number>StudyCatalog.volumeEnds.last)?1:0);vol++){
         await db.curriculumDao.insertVolume(VolumesCompanion.insert(
           id:'academia_v'+vol.toString(),
           curriculumId:'academia_enciclopedia',
           volumeNumber:vol,
-          title:StudyCatalog.volumeTitles[vol-1],
+          title:StudyCatalog.volumeTitle(vol),
           discipline:'Ciências Forenses',
           description:'Capítulos originais mantidos no Google Drive',
           totalChapters:catalog.where((c)=>c.volume==vol).length));
@@ -192,6 +192,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     final matches=_catalog.where((entry)=>entry.number==number);
     if(matches.isEmpty)return;
     final chapter=matches.first;
+    if(number>26){await _openNativeBook(number);return;}
     await Navigator.of(context).push(MaterialPageRoute<void>(
       builder:(_)=>GuidedLessonScreen(
         chapterNumber:number,
@@ -212,7 +213,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       final catalog=await StudyCatalog.loadAvailable(_library);
       await _seedCatalog(catalog);
       if(!mounted)return;
-      setState((){_catalog=catalog;_matches=[];_searchStatus='';_searchGeneration++;_searching=false;});
+      setState((){_catalog=catalog;if(catalog.isNotEmpty&&!catalog.any((c)=>c.number==_selectedChapter))_selectedChapter=catalog.first.number;_matches=[];_searchStatus='';_searchGeneration++;_searching=false;});
       await _refreshGuidedLessons();
       if(!mounted)return;
       setState(()=>_importStatus=count==0
@@ -618,9 +619,9 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         const SizedBox(height:10),
         Wrap(spacing:8,runSpacing:8,children:[
           FilledButton.icon(
-            onPressed:_catalog.isEmpty?null:()=>_openNativeBook(1),
+            onPressed:_catalog.isEmpty?null:()=>_openNativeBook(_catalog.any((c)=>c.number==_selectedChapter)?_selectedChapter:_catalog.first.number),
             icon:const Icon(Icons.play_arrow),
-            label:const Text('Abrir Capítulo 01')),
+            label:const Text('Continuar estudo')),
           OutlinedButton.icon(
             onPressed:()=>setState(()=>_tab=1),
             icon:const Icon(Icons.view_module_outlined),
@@ -684,7 +685,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
           FilledButton.icon(onPressed:()=>_openNativeBook(_selectedChapter),
             icon:const Icon(Icons.auto_stories_outlined),label:const Text('Ler capítulo completo')),
           OutlinedButton.icon(onPressed:()=>_openGuidedLesson(_selectedChapter),
-            icon:const Icon(Icons.science_outlined),label:const Text('Práticas complementares')),
+            icon:const Icon(Icons.science_outlined),label:Text(_selectedChapter<=26?'Práticas complementares':'Exercícios do capítulo')),
           OutlinedButton.icon(onPressed:()=>_readChapter(_selectedChapter),
             icon:const Icon(Icons.picture_as_pdf_outlined),label:const Text('PDF com figuras')),
           OutlinedButton.icon(onPressed:_openQuiz,icon:const Icon(Icons.quiz_outlined),
@@ -726,9 +727,10 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   Widget _libraryTab(){
     final query=studyFold(_filter);
     final available={for(final c in _catalog)c.number:c};
-    final found=List.generate(StudyCatalog.plannedTitles.length,(i)=>i+1).where((n)=>studyFold(available[n]?.title??StudyCatalog.plannedTitles[n-1]).contains(query)||n.toString().contains(query)||n.toString().padLeft(2,'0').contains(query)).toList();
+    final numbers=<int>{...List.generate(StudyCatalog.plannedTitles.length,(i)=>i+1),...available.keys}.toList()..sort();
+    final found=numbers.where((n)=>studyFold(available[n]?.title??StudyCatalog.plannedTitles[n-1]).contains(query)||n.toString().contains(query)||n.toString().padLeft(2,'0').contains(query)).toList();
     return ListView(padding:const EdgeInsets.all(16),children:[
-      _topTitle('Biblioteca','Acervo de estudo · '+_catalog.length.toString()+' de '+StudyCatalog.volumeEnds.last.toString()+' capítulos disponíveis'),
+      _topTitle('Biblioteca','Acervo de estudo · '+_catalog.where((c)=>c.number<=StudyCatalog.volumeEnds.last).length.toString()+' de '+StudyCatalog.volumeEnds.last.toString()+' capítulos curriculares disponíveis'),
       Wrap(spacing:8,runSpacing:8,children:[
         FilledButton.icon(onPressed:_importing?null:_import,icon:const Icon(Icons.cloud_download_outlined),label:Text(_importing?'Importando...':'Importar do Drive')),
         OutlinedButton.icon(onPressed:_openDriveFolder,icon:const Icon(Icons.folder_open),label:const Text('Abrir acervo no Drive')),
@@ -747,12 +749,12 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         TextField(onChanged:(v)=>setState(()=>_filter=v),decoration:const InputDecoration(prefixIcon:Icon(Icons.search),labelText:'Título ou número do capítulo',border:OutlineInputBorder())),
         const SizedBox(height:8),
         if(found.isEmpty)const Text('Nenhum capítulo corresponde ao filtro.'),
-        for(var vol=1;vol<=StudyCatalog.volumeTitles.length;vol++)
+        for(var vol=1;vol<=StudyCatalog.volumeTitles.length+(available.keys.any((n)=>n>StudyCatalog.volumeEnds.last)?1:0);vol++)
           if(query.isEmpty||found.any((n)=>StudyCatalog.volumeFor(n)==vol)) Card(child:ExpansionTile(
             key:ValueKey('index_'+vol.toString()+'_'+query),
             initiallyExpanded:query.isNotEmpty||vol==StudyCatalog.volumeFor(_selectedChapter),
-            title:Text('Volume '+vol.toString()+' — '+StudyCatalog.volumeTitles[vol-1]),
-            subtitle:Text(_catalog.where((c)=>c.volume==vol).length.toString()+' disponíveis · capítulos '+(vol==1?1:StudyCatalog.volumeEnds[vol-2]+1).toString()+'–'+StudyCatalog.volumeEnds[vol-1].toString()),
+            title:Text('Volume '+vol.toString()+' — '+StudyCatalog.volumeTitle(vol)),
+            subtitle:Text(_catalog.where((c)=>c.volume==vol).length.toString()+' disponíveis'+(vol>StudyCatalog.volumeEnds.length?' · complementares':' · capítulos '+(vol==1?1:StudyCatalog.volumeEnds[vol-2]+1).toString()+'–'+StudyCatalog.volumeEnds[vol-1].toString())),
             children:[
               for(final n in found.where((n)=>StudyCatalog.volumeFor(n)==vol)) ListTile(
                 leading:CircleAvatar(child:Text(n.toString())),
