@@ -19,11 +19,11 @@ class SourceHtmlConverter {
   static String role(String line) {
     if(section.hasMatch(line) || RegExp(r'^\d{1,3}\.\s+[A-Za-zÀ-ÿ]').hasMatch(line))return 'h2';
     if(caption.hasMatch(line))return 'figcaption';
-    if(heading.hasMatch(line))return 'h3';
+    if(heading.hasMatch(line)||line=='Nota ao leitor'||line=='Mapa da coleção')return 'h3';
     if(callout.hasMatch(line))return 'aside';
     if(footer.hasMatch(line))return 'small';
     if(['Dos dados','às evidências','Estatística descritiva',
-      'Computador, armazenamento e','ambiente de trabalho'].contains(line))return 'h1';
+      'Computador, armazenamento e','ambiente de trabalho','Dos dados às evidências'].contains(line))return 'h1';
     if(RegExp(r'^[A-ZÁÉÍÓÚÃÕÊÔÇ\d\s·|–—-]{8,}$').hasMatch(line)&&line.length<100)return 'h4';
     return 'p';
   }
@@ -92,8 +92,48 @@ class SourceHtmlConverter {
       RegExp(r'^CAPÍTULO\d+[·•]\d+DE\d+$').hasMatch(key);
   }
 
+  static String cleanLineBreaks(String raw) {
+    return raw.replaceAll(RegExp(r'[\u00ad\u2010]\s*\n\s*'),'')
+      .replaceAll('\u00ad','').replaceAll(RegExp(r'[ \t]+'),' ');
+  }
+
+  // Remove only known repeated printing furniture from the reading view.
+  // The original page text and PDF remain unchanged for search and evidence.
+  static String readingSource(String raw) {
+    var s=cleanLineBreaks(raw);
+    s=s.replaceAllMapped(RegExp(r'(EDIÇÃO REVISADA\s+\d+\s*·\s*[A-ZÀ-Ü]+\s+\d{4})(?=N\s*O\s*T\s*A\s*A\s*O\s*L\s*E\s*I\s*T\s*O\s*R)',caseSensitive:false),(m)=>m[1]!+'\n');
+    s=s.replaceAll(RegExp(r'^\s*Capítulo\s+\d+\s*·\s*Edição inaugural[^\n]*PDF pesquisável\s*$',caseSensitive:false,multiLine:true),'');
+    s=s.replaceAll(RegExp(r'^\s*EDIÇÃO REVISADA\s+\d+\s*·\s*[A-ZÀ-Ü]+\s+\d{4}\s*$',caseSensitive:false,multiLine:true),'');
+    s=s.replaceAll(RegExp(r'^\s*ENCICLOPÉDIA DE CIÊNCIAS FORENSES\s+VOLUME\s+[IVXLCDM\d]+\s*·\s*CAPÍTULO\s+\d+[ \t]*$',caseSensitive:false,multiLine:true),'');
+    s=s.replaceAll(RegExp(r'^[ \t]*FORMAÇÃO TÉCNICO-CIENTÍFICA\s*·\s*EDIÇÃO\s+\d{4}[ \t]+\d+',caseSensitive:false,multiLine:true),'\n');
+    s=s.replaceAllMapped(RegExp(r'^[ \t]*N\s*O\s*T\s*A\s*A\s*O\s*L\s*E\s*I\s*T\s*O\s*R[ \t]*$',caseSensitive:false,multiLine:true),(_)=>'Nota ao leitor');
+    s=s.replaceAllMapped(RegExp(r'^[ \t]*M\s*A\s*P\s*A\s*D\s*A\s*C\s*O\s*L\s*E\s*Ç\s*Ã\s*O[ \t]*$',caseSensitive:false,multiLine:true),(_)=>'Mapa da coleção');
+    s=s.replaceAllMapped(RegExp(r'^Dos dados\s*\n\s*às evidências[ \t]*$',multiLine:true),(_)=>'Dos dados às evidências');
+    return s;
+  }
+
+  static bool printingFurniture(String raw) {
+    final t=raw.trim();
+    return editorialLabel(t) ||
+      RegExp(r'^Capítulo\s+\d+\s*·\s*Edição inaugural',caseSensitive:false).hasMatch(t) ||
+      RegExp(r'^\d{1,2}\s+[a-zç]+\s+\d{4}\s*·\s*A4\s*·\s*PDF pesquisável$',caseSensitive:false).hasMatch(t) ||
+      RegExp(r'^(?:Página\s+)?\d{1,4}$',caseSensitive:false).hasMatch(t);
+  }
+
+  static String narrationText(String source,{List<Map<String,dynamic>> layout=const []}) {
+    final blocks=layout.isEmpty?parse(readingSource(source)):layout.map((b)=>HtmlBlock('',b['kind'].toString(),b['text'].toString())).toList();
+    final parts=<String>[];
+    for(final b in blocks){
+      final cleaned=compactEditorial(readingSource(b.text)).replaceAll(RegExp(r'\s+'),' ').trim();
+      if(cleaned.isEmpty||printingFurniture(cleaned))continue;
+      parts.add(cleaned);
+    }
+    return parts.join('\n\n');
+  }
+
   static String blockHtml(HtmlBlock block) {
-    final raw=compactEditorial(block.text);
+    final raw=compactEditorial(readingSource(block.text)).trim();
+    if(raw.isEmpty)return '';
     var formatted=escape(raw);
     if(block.kind=='p'){
       final match=lead.firstMatch(raw);
@@ -141,7 +181,7 @@ class SourceHtmlConverter {
     bool dark=false,
     List<Map<String,dynamic>> layout=const [],
   }) {
-    final blocks=layout.isEmpty?parse(source):List.generate(layout.length,(i)=>HtmlBlock('b$i',(layout[i]['kind']??'p').toString(),(layout[i]['text']??'').toString()));
+    final blocks=layout.isEmpty?parse(readingSource(source)):List.generate(layout.length,(i)=>HtmlBlock('b$i',(layout[i]['kind']??'p').toString(),(layout[i]['text']??'').toString()));
     final content=layout.isEmpty?blocks.map(blockHtml).join('\n'):List.generate(blocks.length,(i)=>richBlockHtml(blocks[i],layout[i])).join('\n');
     final marks=highlights.where((h)=>h['page']==screen && h['text'] is String)
       .map((h)=><String,dynamic>{
