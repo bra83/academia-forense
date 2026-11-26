@@ -646,22 +646,24 @@ class _NativeBookReaderState extends State<NativeBookReader> {
       appBar:AppBar(
         key:const ValueKey('reader_compact_header'),
         toolbarHeight:48, titleSpacing:0,backgroundColor:bg,foregroundColor:_ink,
+        iconTheme:IconThemeData(color:_ink),actionsIconTheme:IconThemeData(color:_ink),
+        titleTextStyle:TextStyle(color:_ink,fontSize:13,fontWeight:FontWeight.w600),
         title:Text('$_chapter · $_title',maxLines:2,
-          overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:13,fontWeight:FontWeight.w600)),
+          overflow:TextOverflow.ellipsis,style:TextStyle(color:_ink,fontSize:13,fontWeight:FontWeight.w600)),
         actions:[
           if(_hasSelection)IconButton(tooltip:'Salvar trecho selecionado',
             onPressed:_markSelection,icon:const Icon(Icons.highlight_outlined,size:21)),
           if(book!=null&&(widget.library.chapter(_chapter)?.layoutVersion??0)<2)
             IconButton(tooltip:'Transcrição legada: importe a edição nativa na Biblioteca',
-              onPressed:()=>_notify('Esta é uma transcrição provisória. Para diagramas, tabelas e códigos nativos, importe a edição REV3 na Biblioteca.'),
+              onPressed:()=>_notify('Esta é uma transcrição provisória. Para diagramas, tabelas e códigos nativos, importe a edição nativa mais recente na Biblioteca.'),
               icon:const Icon(Icons.info_outline,size:19)),
           if(book?.screens[_page].visualJpeg!=null)
             IconButton(tooltip:'Ver gráficos, tabelas e página original',
-              onPressed:_showOriginalPage,icon:const Icon(Icons.image_outlined,size:21)),
+              onPressed:_showOriginalPage,icon:Icon(Icons.image_outlined,size:21,color:_ink)),
           IconButton(tooltip:'Ajustes de leitura',onPressed:book==null?null:_readingSettings,
-            icon:const Icon(Icons.text_fields,size:22)),
+            icon:Icon(Icons.text_fields,size:22,color:_ink)),
           PopupMenuButton<String>(
-            tooltip:'Ferramentas do capítulo',enabled:book!=null,onSelected:_menuAction,
+            tooltip:'Ferramentas do capítulo',icon:Icon(Icons.more_vert,color:_ink),enabled:book!=null,onSelected:_menuAction,
             itemBuilder:(_)=>[
               const PopupMenuItem(value:'index',child:Text('Índice de capítulos')),
               const PopupMenuItem(value:'note',child:Text('Anotar página')),
@@ -680,7 +682,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
           const Center(child:CircularProgressIndicator()):
           book==null?Center(child:Padding(padding:const EdgeInsets.all(24),child:Text(_error,style:TextStyle(color:_ink)))):
           Column(children:[
-            LinearProgressIndicator(value:(_page+1)/book.screens.length,minHeight:2),
+            LinearProgressIndicator(value:(_page+1)/book.screens.length,minHeight:2,color:_dark?Colors.white:const Color(0xFF174B3B),backgroundColor:_dark?Colors.white24:Colors.black12),
             Expanded(key:const ValueKey('reader_content_area'),child:ColoredBox(color:bg,
               child:_htmlReading && _htmlController!=null?
                 WebViewWidget(controller:_htmlController!):
