@@ -67,10 +67,11 @@ class StudyCatalog {
     'Documentoscopia e Multimídia',
     'Ciências Forenses Complementares',
     'Pesquisa Científica e Exercício Profissional',
+    'Prática Profissional e Casos Integrados',
   ];
-  static const volumeEnds = <int>[10,23,39,53,66,78,90,100,113];
+  static const volumeEnds = <int>[10,23,39,53,66,78,90,100,113,116];
   static int volumeFor(int number) {
-    if(number<1 || number>113)throw RangeError.range(number,1,113);
+    if(number<1 || number>volumeEnds.last)throw RangeError.range(number,1,volumeEnds.last);
     return volumeEnds.indexWhere((end)=>number<=end)+1;
   }
   static String chapterId(int number) =>
@@ -83,7 +84,7 @@ class StudyCatalog {
     final entries=<int,StudyChapter>{for(final c in bundled)c.number:c};
     for(final source in library.chapters) {
       final n=source.number;
-      if(n<1 || n>113 || entries.containsKey(n) || source.pageCount<=0)continue;
+      if(n<1 || n>volumeEnds.last || entries.containsKey(n) || source.pageCount<=0)continue;
       final pages=await library.pages(n);
       if(pages.length!=source.pageCount || pages.every((p)=>p.text.trim().isEmpty))continue;
       entries[n]=StudyChapter(
@@ -95,7 +96,7 @@ class StudyCatalog {
     return entries.values.toList()..sort((a,b)=>a.number.compareTo(b.number));
   }
 
-  /// Only chapters 01..26 were supplied. Do not fabricate chapters 27..113.
+  /// Only chapters 01..26 were supplied. Do not fabricate chapters 27 em diante.
   static Future<List<StudyChapter>> loadBundledPreviews() async {
     final chapters = <StudyChapter>[];
     for (var n = 1; n <= 26; n++) {
