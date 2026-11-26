@@ -169,9 +169,13 @@ class OfflineLibrary {
       final m = raw as Map<String,dynamic>;
       final n = (m['chapter'] as num).toInt();
       if(m['chapter']!=n || m['title'] is! String || (m['title'] as String).trim().isEmpty)throw const FormatException('Metadados de capítulo inválidos.');
-      final revision=m['revision']??0;
-      if(revision is! int || revision<0)throw const FormatException('Revisão inválida.');
-      final edition=m['edition']??'Importado · fonte original';
+      final rawRevision=m['revision'];
+      final int revision;
+      if(rawRevision==null){revision=0;}else if(rawRevision is int && rawRevision>=0){revision=rawRevision;}else if(rawRevision is String){
+        final match=RegExp(r'REV(\d+)',caseSensitive:false).firstMatch(rawRevision);
+        revision=match==null?0:int.parse(match.group(1)!);
+      }else{throw const FormatException('Revisão inválida.');}
+      final edition=m['edition']??(rawRevision is String?rawRevision:'Importado · fonte original');
       if(edition is! String || edition.trim().isEmpty)throw const FormatException('Edição inválida.');
       if (n < 1 || n > 999 || !seen.add(n)) {
         throw const FormatException('Numeração inválida ou duplicada.');
