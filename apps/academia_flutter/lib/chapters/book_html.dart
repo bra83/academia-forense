@@ -69,8 +69,31 @@ class SourceHtmlConverter {
     return blocks;
   }
 
+  // Only known editorial labels are normalized; source text and page IDs stay unchanged.
+  static String compactEditorial(String raw) {
+    final key=raw.toUpperCase().replaceAll(RegExp(r'\s+'),'');
+    final cover=RegExp(r'^ENCICLOPÉDIADECIÊNCIASFORENSES[·•]VOLUME([IVXLCDM]+|\d+)$').firstMatch(key);
+    if(cover!=null)return 'Enciclopédia de Ciências Forenses · Volume '+cover.group(1)!;
+    final guide=RegExp(r'^GUIADEESTUDO/CAPÍTULO(\d+)$').firstMatch(key);
+    if(guide!=null)return 'Guia de estudo · Capítulo '+guide.group(1)!;
+    final part=RegExp(r'^CAPÍTULO(\d+)[·•](\d+)DE(\d+)$').firstMatch(key);
+    if(part!=null)return 'Capítulo '+part.group(1)!+' · '+part.group(2)!+' de '+part.group(3)!;
+    if(key=='NOTAAOLEITOR')return 'Nota ao leitor';
+    if(key=='MAPADACOLEÇÃO')return 'Mapa da coleção';
+    if(key=='APÊNDICEA')return 'Apêndice A';
+    return raw;
+  }
+
+  static bool editorialLabel(String raw) {
+    final key=raw.toUpperCase().replaceAll(RegExp(r'\s+'),'');
+    return key.startsWith('ENCICLOPÉDIADECIÊNCIASFORENSES') ||
+      key.startsWith('FORMAÇÃOTÉCNICO-CIENTÍFICA') ||
+      key.startsWith('EDIÇÃOREVISADA') ||
+      RegExp(r'^CAPÍTULO\d+[·•]\d+DE\d+$').hasMatch(key);
+  }
+
   static String blockHtml(HtmlBlock block) {
-    final raw=block.text;
+    final raw=compactEditorial(block.text);
     var formatted=escape(raw);
     if(block.kind=='p'){
       final match=lead.firstMatch(raw);
@@ -79,7 +102,7 @@ class SourceHtmlConverter {
           +escape(raw.substring(match.end));
       }
     }
-    final tag=block.kind=='h1'?'h1':block.kind=='h2'?'h2':
+    final tag=editorialLabel(block.text)?'small':block.kind=='h1'?'h1':block.kind=='h2'?'h2':
       block.kind=='h3'?'h3':block.kind=='h4'?'h4':
       block.kind=='figcaption'?'figcaption':block.kind=='aside'?'aside':
       block.kind=='small'?'small':block.kind=='pre'?'pre':'p';
@@ -134,18 +157,18 @@ class SourceHtmlConverter {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:;">
 <style>
-body{margin:0;background:${dark?'#000000':'#ffffff'};color:${dark?'#ffffff':'#000000'};font-family:Georgia,'Noto Serif',serif;font-size:${size}px;line-height:1.74;-webkit-text-size-adjust:100%}
-article{max-width:780px;margin:auto;padding:20px 19px 64px}
-p{margin:0 0 1.22em;text-align:justify;text-justify:inter-word;hyphens:auto;overflow-wrap:anywhere}
-@media(max-width:360px){p{text-align:start}}
+body{margin:0;background:${dark?'#000000':'#ffffff'};color:${dark?'#ffffff':'#000000'};font-family:Georgia,'Noto Serif',serif;font-size:${size}px;line-height:1.58;-webkit-text-size-adjust:100%}
+article{max-width:780px;margin:auto;padding:12px 16px 20px}
+p{margin:0 0 .85em;text-align:justify;text-justify:inter-word;hyphens:auto;overflow-wrap:anywhere}
+@media(max-width:480px){p{text-align:start}}
 h1,h2,h3,h4{font-family:system-ui,Roboto,sans-serif;text-align:left;line-height:1.29;hyphens:none;break-after:avoid}
-h1{font-size:1.85em;margin:0.5em 0 0.8em;color:inherit}
-h2{font-size:1.33em;margin:1.4em 0 .75em;color:inherit;border-bottom:1px solid #d2dcd4;padding-bottom:.35em}
-h3{font-size:1.16em;margin:1.3em 0 .75em;color:inherit}
-h4{font-size:.82em;letter-spacing:.09em;color:inherit;margin:1.2em 0}
+h1{font-size:1.48em;margin:.35em 0 .55em;color:inherit}
+h2{font-size:1.22em;margin:.8em 0 .45em;color:inherit;border-bottom:1px solid #d2dcd4;padding-bottom:.35em}
+h3{font-size:1.10em;margin:.7em 0 .4em;color:inherit}
+h4{font-size:.9em;letter-spacing:normal;color:inherit;margin:.6em 0 .35em}
 aside{display:block;margin:1.1em 0 1.35em;border-left:4px solid ${dark?'#aaaaaa':'#555555'};background:${dark?'#1c1c1c':'#f0f0f0'};padding:.85em 1em;border-radius:0 8px 8px 0;font-weight:600;line-height:1.55}
 figcaption{display:block;font-size:.79em;line-height:1.55;font-style:italic;color:inherit;margin:.5em 0 1.2em}
-small{display:block;margin:.8em 0;color:inherit;font-size:.67em}
+small{display:block;margin:.25em 0 .6em;color:inherit;font-size:.70em;line-height:1.3;letter-spacing:normal;overflow-wrap:normal;word-break:normal}
 strong{font-family:system-ui,Roboto,sans-serif}
 figure{margin:1em 0}figure img{max-width:100%;height:auto;display:block;margin:auto}.table-scroll{overflow-x:auto}table{border-collapse:collapse;min-width:100%;font-size:.9em}th,td{border:1px solid #888;padding:.5em;text-align:left;vertical-align:top}th{font-weight:700}.study-block{white-space:pre-wrap}.formula{font-family:serif;text-align:center}
 pre{white-space:pre;overflow-x:auto;max-width:100%;padding:.8em;border:1px solid #888;border-radius:6px;font: .88em/1.55 monospace;color:inherit}
