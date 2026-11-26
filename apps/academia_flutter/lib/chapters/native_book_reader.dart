@@ -38,8 +38,13 @@ class NativeBookReader extends StatefulWidget {
 class _NativeBookReaderState extends State<NativeBookReader> {
   final _scroll=ScrollController();
   bool _voiceControlsOpen=false;
-  String _voiceReading='';
-  String _voiceReadingLabel='';
+  String get _voiceReading {
+    final book=_book;
+    if(book==null)return '';
+    return SourceHtmlConverter.narrationText(_pageText,layout:book.screens[_page].layout);
+  }
+  String get _voiceReadingLabel=>_label;
+  String get _voiceSourceId=>'$_chapter:$_page';
 
   WebViewController? _htmlController;
   bool _htmlReading=Platform.isAndroid;
@@ -200,7 +205,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
 
   Future<void> _moveTo(int index) async {
     final book=_book;
-    if(book==null || index<0 || index>=book.screens.length)return;
+    if(book==null || index<0 || index>=book.screens.length||index==_page)return;
     setState((){
       _page=index;_selectionStart=null;_selectionEnd=null;
       _htmlQuote='';_htmlBlock='';_htmlStart=-1;_htmlEnd=-1;
@@ -490,16 +495,8 @@ class _NativeBookReaderState extends State<NativeBookReader> {
         openTutor:_openTutor)));
   }
   void _openVoice(){
-    final body=_pageText;
-    if(body.isEmpty)return;
-    final selected=_htmlReading && _htmlQuote.isNotEmpty?_htmlQuote:
-      (_selectionStart!=null && _selectionEnd!=null?
-        body.substring(_selectionStart!,_selectionEnd!):'');
-    setState((){
-      _voiceReading=selected.isNotEmpty?selected:body;
-      _voiceReadingLabel=selected.isNotEmpty?'Trecho selecionado':_label;
-      _voiceControlsOpen=true;
-    });
+    if(_voiceReading.isEmpty){_notify('Não há texto narrável nesta página.');return;}
+    setState(()=>_voiceControlsOpen=true);
   }
 
   void _minimizeVoice() {
@@ -527,7 +524,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                 Row(children:[
                   const Icon(Icons.graphic_eq,size:22),
                   const SizedBox(width:8),
-                  Expanded(child:Text('Voz · $_voiceReadingLabel',
+                  Expanded(child:Text('Cap. $_chapter · $_voiceReadingLabel',
                     maxLines:2,
                     style:Theme.of(context).textTheme.titleMedium)),
                   IconButton(
@@ -536,12 +533,12 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                     icon:const Icon(Icons.keyboard_arrow_down)),
                 ]),
                 Text('Fechar os controles não interrompe a leitura. '
-                  'Toque em Ouvir para reabrir.',
+                  'Ao mudar de página, a voz anterior é interrompida. Toque em Ouvir para reabrir.',
                   style:Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height:8),
                 VoiceReaderV2(
                   key:const ValueKey('persistent_voice_reader'),
-                  readText:_voiceReading,
+                  readText:_voiceReading,sourceId:_voiceSourceId,sourceLabel:_voiceReadingLabel,
                   getApiKey:widget.getApiKey,
                   speechModel:widget.speechModel),
               ]))),
@@ -685,7 +682,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                   onPressed:_page==0?null:()=>_moveTo(_page-1),
                   icon:const Icon(Icons.chevron_left,size:25)),
                 Expanded(child:TextButton(onPressed:_choosePage,child:Text(
-                  '${_page+1} / ${book.screens.length}',
+                  '${book.exactPdfPages?'Pág.':'Tela'} ${_page+1} / ${book.screens.length}',
                   style:TextStyle(fontSize:13,color:_ink),overflow:TextOverflow.ellipsis))),
                 IconButton(tooltip:'Ouvir',onPressed:_openVoice,
                   icon:const Icon(Icons.record_voice_over_outlined,size:21)),
