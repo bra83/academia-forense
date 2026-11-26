@@ -104,7 +104,6 @@ class _NativeBookReaderState extends State<NativeBookReader> {
             final data=jsonDecode(event.message) as Map<String,dynamic>;
             if(data['type']!='selection')return;
             final quote=(data['quote']??'').toString().trim();
-            if(quote.isEmpty)return;
             setState((){
               _htmlQuote=quote;
               _htmlBlock=(data['block']??'').toString();
@@ -174,7 +173,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
             }
           }
         } catch (_) {
-          // Report invalid stored records without replacing content.
+          throw const FormatException('Anotações antigas ilegíveis; nenhuma foi sobrescrita.');
         }
       }
       if(!mounted)return;
@@ -270,20 +269,20 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     await _renderHtml();
   }
 
-  Future<void> _markSelection() async {
-    if(!_hasSelection)return;
-    final html=_htmlReading && _htmlQuote.trim().isNotEmpty;
+  Future<void> _markSelection({bool pageNote=false}) async {
+    if(!_hasSelection&&!pageNote)return;
+    final html=!pageNote && _htmlReading && _htmlQuote.trim().isNotEmpty;
     final body=_pageText;
-    final quote=html ? _htmlQuote.trim() :
+    final quote=pageNote?'':html ? _htmlQuote.trim() :
       body.substring(_selectionStart!,_selectionEnd!).trim();
-    if(quote.isEmpty)return;
-    final start=html?body.indexOf(quote):_selectionStart!;
+    if(quote.isEmpty&&!pageNote)return;
+    final start=pageNote?-1:html?body.indexOf(quote):_selectionStart!;
     final end=start<0?-1:(html?start+quote.length:_selectionEnd!);
-    if(!html && (start<0 || end>body.length || end<=start))return;
+    if(!html && !pageNote && (start<0 || end>body.length || end<=start))return;
     final noteInput=TextEditingController();
     final message=await showDialog<String>(
       context:context,builder:(ctx)=>AlertDialog(
-        title:const Text('Salvar trecho marcado'),
+        title:Text(pageNote?'Anotação da página':'Salvar trecho marcado'),
         content:SingleChildScrollView(child:Column(
           mainAxisSize:MainAxisSize.min,
           crossAxisAlignment:CrossAxisAlignment.start,children:[
@@ -294,17 +293,17 @@ class _NativeBookReaderState extends State<NativeBookReader> {
           TextField(controller:noteInput,
             maxLines:3,
             decoration:const InputDecoration(
-              labelText:'Sua anotação (opcional)',
+              labelText:'Sua anotação',
               border:OutlineInputBorder())),
         ])),
         actions:[
           TextButton(onPressed:()=>Navigator.pop(ctx),
             child:const Text('Cancelar')),
           FilledButton(onPressed:()=>Navigator.pop(ctx,noteInput.text),
-            child:const Text('Salvar trecho')),
+            child:const Text('Salvar')),
         ]));
     noteInput.dispose();
-    if(message==null)return;
+    if(message==null||(pageNote&&message.trim().isEmpty))return;
     final next=List<Map<String,dynamic>>.from(_highlights)
       ..add(<String,dynamic>{
         'page':_page,'start':start,'end':end,'text':quote,
@@ -330,7 +329,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   }
 
   List<TextSpan> _spans(String text) {
-    final marks=_highlights.where((m)=>m['page']==_page)
+    final marks=_highlights.where((m)=>m['page']==_page && m['start'] is int && m['end'] is int && (m['start'] as int)>=0 && (m['end'] as int)<=text.length && (m['end'] as int)>(m['start'] as int) && text.substring(m['start'] as int,m['end'] as int).trim()==m['text'].toString().trim())
       .map((m)=>ReaderMark(m['start'] as int,m['end'] as int))
       .toList(growable:false);
     return SourceTypography.spans(
@@ -340,7 +339,10 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   }
 
   void _selectionChanged(TextSelection selection,SelectionChangedCause? cause) {
-    if(!selection.isValid || selection.isCollapsed)return;
+    if(!selection.isValid || selection.isCollapsed){
+      if(_selectionStart!=null||_selectionEnd!=null)setState((){_selectionStart=null;_selectionEnd=null;});
+      return;
+    }
     final start=selection.start;
     final end=selection.end;
     if(start<0 || end>_pageText.length || end<=start)return;
@@ -373,7 +375,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
               ListTile(
                 isThreeLine:true,
                 leading:const Icon(Icons.highlight),
-                title:Text(annotation['text'].toString(),maxLines:2,
+                title:Text(annotation['text'].toString().isEmpty?'Anotação da página':annotation['text'].toString(),maxLines:2,
                   overflow:TextOverflow.ellipsis),
                 subtitle:Text('Tela ${(annotation['page'] as int)+1}'
                   '${annotation['note'].toString().isEmpty?'':': '+annotation['note'].toString()}',
@@ -523,6 +525,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
           IconButton(tooltip:'Exercícios do PDF',
             onPressed:book==null?null:_openExercises,
             icon:const Icon(Icons.assignment_outlined)),
+          IconButton(tooltip:'Anotar página',onPressed:book==null?null:()=>_markSelection(pageNote:true),icon:const Icon(Icons.note_add_outlined)),
           IconButton(tooltip:'Trechos salvos',
             onPressed:book==null?null:_openMarks,
             icon:const Icon(Icons.collections_bookmark_outlined)),
@@ -563,7 +566,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
               LinearProgressIndicator(
                 value:(_page+1)/book.screens.length,minHeight:5),
               const SizedBox(height:6),
-              Row(children:[
+              Wrap(alignment:WrapAlignment.center,crossAxisAlignment:WrapCrossAlignment.center,children:[
                 IconButton(tooltip:'Alternar HTML e texto',
                   onPressed:()=>setState((){
                     _htmlReading=!_htmlReading;
@@ -578,7 +581,6 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                 IconButton(tooltip:'Aumentar fonte',
                   onPressed:_font>=36?null:()=>_changeFont(_font+1),
                   icon:const Icon(Icons.text_increase)),
-                const Spacer(),
                 IconButton(tooltip:_dark?'Fundo branco':'Fundo preto',
                   onPressed:_toggleDark,icon:Icon(_dark?Icons.light_mode:Icons.dark_mode)),
                 IconButton(
