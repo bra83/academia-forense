@@ -100,4 +100,19 @@ void main(){
     expect(speech,isNot(contains('Join-Path')));
   });
 
+  test('Diagram caption is rendered once and internal labels are voiced as accessibility text',(){
+    const layout=[
+      {'kind':'figure','text':'Figura 2. Escada ilustrativa do raciocínio.',
+       'alt':'Dado: 20:16:12. Observação. Hipótese. Conclusão.',
+       'jpeg':'/9j/2Q=='},
+      {'kind':'h3','text':'Exemplo inteiramente explicado'},
+    ];
+    final html=SourceHtmlConverter.pageHtml('raw',fontSize:19,chapter:1,screen:5,layout:layout,dark:true);
+    expect(html,contains('alt="Dado: 20:16:12. Observação. Hipótese. Conclusão."'));
+    expect(html,contains('<figcaption>Figura 2. Escada ilustrativa do raciocínio.</figcaption>'));
+    final speech=SourceHtmlConverter.narrationText('raw',layout:layout);
+    expect('Dado:'.allMatches(speech).length,1);
+    expect('Figura 2.'.allMatches(speech).length,1);
+  });
+
 }
