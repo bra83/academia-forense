@@ -25,12 +25,12 @@ void main(){
       library:OfflineLibrary(root:Directory.systemTemp),
       getApiKey:() async => null,textModel:null,speechModel:null)));
     await tester.pumpAndSettle();
-    expect(find.text('Ouvir'),findsOneWidget);
+    expect(find.byTooltip('Ouvir'),findsOneWidget);
     // The player exists even while controls are offstage.
     final player=find.byType(VoiceReaderV2,skipOffstage:false);
     expect(player,findsOneWidget);
     final state=tester.state(player);
-    await tester.tap(find.text('Ouvir'));
+    await tester.tap(find.byTooltip('Ouvir'));
     await tester.pumpAndSettle();
     expect(find.text('Testar voz (frase curta)'),findsOneWidget);
     expect(identical(tester.state(player),state),isTrue);
@@ -39,7 +39,7 @@ void main(){
     expect(find.byType(VoiceReaderV2),findsNothing);
     expect(find.byType(VoiceReaderV2,skipOffstage:false),findsOneWidget);
     expect(identical(tester.state(player),state),isTrue);
-    await tester.tap(find.text('Ouvir'));
+    await tester.tap(find.byTooltip('Ouvir'));
     await tester.pumpAndSettle();
     expect(find.text('Testar voz (frase curta)'),findsOneWidget);
     expect(identical(tester.state(player),state),isTrue);
