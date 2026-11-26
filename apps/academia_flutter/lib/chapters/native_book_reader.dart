@@ -36,7 +36,6 @@ class NativeBookReader extends StatefulWidget {
   State<NativeBookReader> createState()=>_NativeBookReaderState();
 }
 class _NativeBookReaderState extends State<NativeBookReader> {
-  static const forest=Color(0xFF174B3B);
   final _scroll=ScrollController();
   bool _voiceControlsOpen=false;
   String _voiceReading='';
@@ -632,12 +631,12 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   Widget build(BuildContext context){
     final book=_book;
     final bg=_dark?Colors.black:Colors.white;
-    final chrome=Theme.of(context).colorScheme.surface;
+    final chrome=bg;
     return Scaffold(
       backgroundColor:bg,
       appBar:AppBar(
         key:const ValueKey('reader_compact_header'),
-        toolbarHeight:48, titleSpacing:0,
+        toolbarHeight:48, titleSpacing:0,backgroundColor:bg,foregroundColor:_ink,
         title:Text('$_chapter · $_title',maxLines:2,
           overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:13,fontWeight:FontWeight.w600)),
         actions:[
@@ -681,13 +680,13 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                 )),
             )),
             SizedBox(key:const ValueKey('reader_compact_footer'),height:48,
-              child:Material(color:chrome,child:Row(children:[
+              child:Material(color:chrome,child:IconTheme(data:IconThemeData(color:_ink),child:Row(children:[
                 IconButton(tooltip:'Tela anterior',
                   onPressed:_page==0?null:()=>_moveTo(_page-1),
                   icon:const Icon(Icons.chevron_left,size:25)),
                 Expanded(child:TextButton(onPressed:_choosePage,child:Text(
                   '${_page+1} / ${book.screens.length}',
-                  style:const TextStyle(fontSize:13),overflow:TextOverflow.ellipsis))),
+                  style:TextStyle(fontSize:13,color:_ink),overflow:TextOverflow.ellipsis))),
                 IconButton(tooltip:'Ouvir',onPressed:_openVoice,
                   icon:const Icon(Icons.record_voice_over_outlined,size:21)),
                 IconButton(tooltip:'Gemini',onPressed:_openTutor,
@@ -695,7 +694,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                 IconButton(tooltip:'Próxima tela',
                   onPressed:_page>=book.screens.length-1?null:()=>_moveTo(_page+1),
                   icon:const Icon(Icons.chevron_right,size:25)),
-              ]))),
+              ])))),
           ]),
         ),
         Positioned.fill(child:_persistentVoicePanel()),
