@@ -124,6 +124,10 @@ class SourceHtmlConverter {
     final blocks=layout.isEmpty?parse(readingSource(source)):layout.map((b)=>HtmlBlock('',b['kind'].toString(),b['text'].toString())).toList();
     final parts=<String>[];
     for(final b in blocks){
+      if(b.kind=='pre'){
+        if(!printingFurniture(b.text))parts.add('Bloco de código ou dados técnicos disponível para consulta na página.');
+        continue;
+      }
       final cleaned=compactEditorial(readingSource(b.text)).replaceAll(RegExp(r'\s+'),' ').trim();
       if(cleaned.isEmpty||printingFurniture(cleaned))continue;
       parts.add(cleaned);
@@ -158,13 +162,18 @@ class SourceHtmlConverter {
         final tag=entry.key==0?'th':'td';
         return '<tr>'+ (entry.value as List).map((cell)=>'<$tag>'+escape(cell.toString())+'</$tag>').join()+'</tr>';
       }).join();
-      return '<div id="$id"><p>$t</p><div class="table-scroll"><table>$body</table></div></div>';
+      final caption=escape((data['caption']??'').toString());
+      return '<div id="$id">'+(caption.isEmpty?'':'<p class="table-caption">$caption</p>')+'<div class="table-scroll"><table>$body</table></div></div>';
     }
     if(block.kind=='figure' && data['jpeg'] is String){
       final jpeg=data['jpeg'] as String;
       if(RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(jpeg)){
         return '<figure id="$id"><img alt="$t" src="data:image/jpeg;base64,$jpeg"><figcaption>$t</figcaption></figure>';
       }
+    }
+    if(block.kind=='pre'){
+      if(printingFurniture(block.text))return '';
+      return '<div class="code-card"><div class="code-bar"><span>Código / dados técnicos</span><button type="button" data-copy="$id">Copiar</button></div><pre id="$id"><code>$t</code></pre></div>';
     }
     if(block.kind=='formula')return '<pre id="$id" class="formula">$t</pre>';
     if(block.kind=='exercise'||block.kind=='lab'||block.kind=='answer'||block.kind=='reference'){
@@ -210,8 +219,8 @@ aside{display:block;margin:1.1em 0 1.35em;border-left:4px solid ${dark?'#aaaaaa'
 figcaption{display:block;font-size:.79em;line-height:1.55;font-style:italic;color:inherit;margin:.5em 0 1.2em}
 small{display:block;margin:.25em 0 .6em;color:inherit;font-size:.70em;line-height:1.3;letter-spacing:normal;overflow-wrap:normal;word-break:normal}
 strong{font-family:system-ui,Roboto,sans-serif}
-figure{margin:1em 0}figure img{max-width:100%;height:auto;display:block;margin:auto}.table-scroll{overflow-x:auto}table{border-collapse:collapse;min-width:100%;font-size:.9em}th,td{border:1px solid #888;padding:.5em;text-align:left;vertical-align:top}th{font-weight:700}.study-block{white-space:pre-wrap}.formula{font-family:serif;text-align:center}
-pre{white-space:pre;overflow-x:auto;max-width:100%;padding:.8em;border:1px solid #888;border-radius:6px;font: .88em/1.55 monospace;color:inherit}
+figure{margin:1em 0}figure img{max-width:100%;height:auto;display:block;margin:auto;border:1px solid #aaa;border-radius:4px}.table-scroll{overflow-x:auto;margin:.65em 0 1.15em}table{border-collapse:collapse;min-width:100%;font-size:.85em}th{background:${dark?'#222222':'#eeeeee'}}td{min-width:92px}th,td{border:1px solid #888;padding:.5em;text-align:left;vertical-align:top}th{font-weight:700}.study-block{white-space:pre-wrap}.formula{font-family:serif;text-align:center}
+pre{white-space:pre;overflow-x:auto;max-width:100%;padding:.8em;border:1px solid #888;border-radius:6px;font: .82em/1.5 monospace;color:inherit;hyphens:none}.code-card{margin:1em 0;border:1px solid #888;border-radius:8px;background:${dark?'#141414':'#f5f5f5'}}.code-card pre{margin:0;border:0;border-top:1px solid #888;border-radius:0;user-select:text}.code-bar{display:flex;justify-content:space-between;align-items:center;padding:.45em .7em;font:600 .75em system-ui}.code-bar button{font:inherit;border:1px solid #888;border-radius:4px;padding:.4em .7em;background:transparent;color:inherit}
 mark.saved{background:#ffe08c;color:#000000;border-radius:2px}
 ::selection{background:#8cd4b0;color:#15362a}
 </style></head><body><article data-chapter="$chapter" data-screen="$screen">
@@ -221,6 +230,11 @@ $content
 "use strict";
 const article=document.querySelector('article');
 const marks=$json;
+article.addEventListener('click',function(event){
+ const btn=event.target.closest('[data-copy]');if(!btn)return;
+ const el=document.getElementById(btn.dataset.copy);
+ if(el&&window.BookBridge)window.BookBridge.postMessage(JSON.stringify({type:'copyCode',block:el.id}));
+});
 function locate(block,offset){
  let w=document.createTreeWalker(block,NodeFilter.SHOW_TEXT),node,left=offset;
  while((node=w.nextNode())){let n=node.textContent.length;
