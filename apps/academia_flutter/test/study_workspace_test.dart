@@ -13,7 +13,8 @@ void main(){
     expect(StudyCatalog.volumeFor(10),1);
     expect(StudyCatalog.volumeFor(11),2);
     expect(StudyCatalog.volumeFor(113),9);
-    expect(()=>StudyCatalog.volumeFor(114),throwsRangeError);
+    expect(StudyCatalog.volumeFor(114),10);
+    expect(()=>StudyCatalog.volumeFor(1000),throwsRangeError);
   });
   test('busca normaliza acentos e espaços',(){
     expect(studyFold('  PERÍCIA\n Digital '),'pericia digital');
