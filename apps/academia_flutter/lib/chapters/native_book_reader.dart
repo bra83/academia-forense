@@ -21,9 +21,11 @@ class NativeBookReader extends StatefulWidget {
   const NativeBookReader({
     super.key,required this.initialChapter,required this.catalog,
     required this.library,required this.getApiKey,required this.textModel,
-    required this.speechModel,this.onOpenPdf,
+    required this.speechModel,this.onOpenPdf,this.initialPage,this.initialQuote,
   });
   final int initialChapter;
+  final int? initialPage;
+  final String? initialQuote;
   final List<StudyChapter> catalog;
   final OfflineLibrary library;
   final Future<String?> Function() getApiKey;
@@ -47,7 +49,10 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   BookChapter? _book;
   bool _loading=true;
   int _chapter=1,_page=0;
-  double _font=17.0;
+  double _font=19.0;
+  bool _dark=false;
+  bool _firstLoad=true;
+  Color get _ink=>_dark?Colors.white:Colors.black;
   String _error='';
   List<Map<String,dynamic>> _highlights=[];
   Set<int> _bookmarks={};
@@ -126,7 +131,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     try {
       await controller.loadHtmlString(SourceHtmlConverter.pageHtml(
         _pageText,fontSize:_font,chapter:_chapter,screen:_page,
-        highlights:_highlights));
+        highlights:_highlights,dark:_dark));
     } catch (e) {
       if(mounted){
         setState(()=>_htmlReading=false);
@@ -146,7 +151,15 @@ class _NativeBookReaderState extends State<NativeBookReader> {
       final book=await const SourceBookLibrary().load(chapter,widget.library);
       final prefs=await SharedPreferences.getInstance();
       final savedPage=prefs.getInt('source_reader_page_$chapter')??0;
-      final font=prefs.getDouble('source_reader_font')??17;
+      final font=prefs.getDouble('source_reader_font')??19.0;
+      final dark=prefs.getBool('source_reader_dark')??false;
+      var target=_firstLoad?(widget.initialPage??savedPage):savedPage;
+      final quote=_firstLoad?widget.initialQuote:null;
+      if(quote!=null && quote.isNotEmpty){
+        final exact=book.screens.indexWhere((p)=>p.text.contains(quote));
+        if(exact>=0)target=exact;
+      }
+      _firstLoad=false;
       final marks=prefs.getStringList('source_reader_marks_$chapter')??[];
       final annotations=prefs.getString('source_reader_highlights_$chapter');
       final loaded=<Map<String,dynamic>>[];
@@ -167,8 +180,9 @@ class _NativeBookReaderState extends State<NativeBookReader> {
       if(!mounted)return;
       setState((){
         _book=book;_loading=false;
-        _page=savedPage.clamp(0,book.screens.length-1);
-        _font=font.clamp(14.0,26.0);
+        _page=target.clamp(0,book.screens.length-1).toInt();
+        _dark=dark;
+        _font=font.clamp(12.0,36.0).toDouble();
         _bookmarks=marks.map(int.tryParse)
           .whereType<int>().toSet();
         _highlights=loaded;
@@ -205,7 +219,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   }
 
   Future<void> _changeFont(double value) async {
-    setState(()=>_font=value.clamp(14.0,26.0));
+    setState(()=>_font=value.clamp(12.0,36.0).toDouble());
     await _renderHtml();
     try {
       final prefs=await SharedPreferences.getInstance();
@@ -213,6 +227,15 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     } catch (_) {
       _notify('A preferência de tamanho não foi gravada.');
     }
+  }
+
+  Future<void> _toggleDark() async {
+    setState(()=>_dark=!_dark);
+    await _renderHtml();
+    try {
+      final prefs=await SharedPreferences.getInstance();
+      if(!await prefs.setBool('source_reader_dark',_dark))throw StateError('Falha ao gravar');
+    } catch (_) {_notify('Não foi possível guardar o tema.');}
   }
 
   Future<void> _bookmark() async {
@@ -291,6 +314,8 @@ class _NativeBookReaderState extends State<NativeBookReader> {
         },
         'note':message.trim(),
         'savedAt':DateTime.now().toIso8601String(),
+        'sourceSha':widget.library.chapter(_chapter)?.sha,
+        'exactPdfPages':_book?.exactPdfPages??false,
       });
     try {
       await _saveHighlights(next);
@@ -310,7 +335,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
       .toList(growable:false);
     return SourceTypography.spans(
       text,fontSize:_font,
-      color:Theme.of(context).colorScheme.onSurface,
+      color:_ink,
       highlights:marks);
   }
 
@@ -547,13 +572,15 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                   icon:Icon(_htmlReading?Icons.article_outlined:
                     Icons.html)),
                 IconButton(tooltip:'Diminuir fonte',
-                  onPressed:_font<=14?null:()=>_changeFont(_font-1),
+                  onPressed:_font<=12?null:()=>_changeFont(_font-1),
                   icon:const Icon(Icons.text_decrease)),
                 Text('${_font.toStringAsFixed(0)} pt'),
                 IconButton(tooltip:'Aumentar fonte',
-                  onPressed:_font>=26?null:()=>_changeFont(_font+1),
+                  onPressed:_font>=36?null:()=>_changeFont(_font+1),
                   icon:const Icon(Icons.text_increase)),
                 const Spacer(),
+                IconButton(tooltip:_dark?'Fundo branco':'Fundo preto',
+                  onPressed:_toggleDark,icon:Icon(_dark?Icons.light_mode:Icons.dark_mode)),
                 IconButton(
                   tooltip:'Marcar/desmarcar tela',
                   onPressed:_bookmark,
@@ -566,7 +593,8 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                     icon:const Icon(Icons.border_color_outlined,size:17),
                     label:const Text('Salvar trecho selecionado'))),
             ])),
-          Expanded(child:_htmlReading && _htmlController!=null?
+          Expanded(child:ColoredBox(color:_dark?Colors.black:Colors.white,
+            child:_htmlReading && _htmlController!=null?
             WebViewWidget(controller:_htmlController!):
             Scrollbar(
               controller:_scroll,
@@ -578,17 +606,17 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                   crossAxisAlignment:CrossAxisAlignment.start,children:[
                     SelectableText.rich(TextSpan(children:_spans(_pageText)),
                       onSelectionChanged:_selectionChanged,
-                      textAlign:TextAlign.justify,
+                      textAlign:TextAlign.start,
                       style:TextStyle(
                         fontSize:_font,height:1.68,
-                        color:Theme.of(context).colorScheme.onSurface)),
+                        color:_ink)),
                     const SizedBox(height:14),
                     if(!book.exactPdfPages)const Text(
                       'Texto extraído do PDF e ajustado à tela. As telas '
                       'não correspondem às páginas impressas; confira '
                       'figuras, fórmulas e tabelas no PDF original.',
-                      style:TextStyle(fontSize:12,height:1.45)),
-                  ])))),
+                      style:TextStyle(fontSize:12,height:1.45,color:Colors.grey)),
+                  ]))))),
           Padding(padding:const EdgeInsets.symmetric(
             horizontal:10,vertical:5),
             child:Wrap(
