@@ -94,8 +94,11 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       } catch (_) {
         _keyStatus='Cofre de credenciais não disponível neste ambiente.';
       }
+      final prefs=await SharedPreferences.getInstance();
+      final last=prefs.getInt('source_reader_last_chapter');
       if(!mounted)return;
       setState(() {
+        if(last!=null&&catalog.any((c)=>c.number==last))_selectedChapter=last;
         _catalog=catalog;if(catalog.isNotEmpty&&!catalog.any((c)=>c.number==_selectedChapter))_selectedChapter=catalog.first.number;_textModel=model;_speechModel=speech;
         _manualTextModel.text=model??'';
         _manualTtsModel.text=speech??'';
@@ -173,7 +176,8 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   }
 
   Future<void> _openNativeBook(int number,{int? page,String? quote}) async {
-    if(_catalog.isEmpty)return;
+    if(!_catalog.any((c)=>c.number==number))return;
+    setState(()=>_selectedChapter=number);
     await Navigator.of(context).push(MaterialPageRoute<void>(
       builder:(_)=>NativeBookReader(
         initialChapter:number,initialPage:page,initialQuote:quote,
@@ -185,6 +189,9 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         onOpenPdf:_readChapter,
       ),
     ));
+    final prefs=await SharedPreferences.getInstance();
+    final last=prefs.getInt('source_reader_last_chapter');
+    if(mounted&&last!=null&&_catalog.any((c)=>c.number==last))setState(()=>_selectedChapter=last);
     await _refreshMetrics();
   }
 
