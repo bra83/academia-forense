@@ -73,17 +73,24 @@ void main(){
     });
     for(var i=0;i<40;i++){
       await tester.pump(const Duration(milliseconds:100));
-      if(find.text('Enciclopédia — leitura integral').evaluate().isNotEmpty)break;
+      if(find.byKey(const ValueKey('reader_content_area')).evaluate().isNotEmpty)break;
     }
-    if(find.text('Enciclopédia — leitura integral').evaluate().isEmpty){
-      final visible=tester.widgetList<Text>(find.byType(Text))
-        .map((widget)=>widget.data).toList();
-      fail('Leitor não entrou na tela principal. Textos: $visible');
-    }
-    expect(find.text('Enciclopédia — leitura integral'),findsOneWidget);
-    expect(find.textContaining('Tela 1 de'),findsWidgets);
+    final content=find.byKey(const ValueKey('reader_content_area'));
+    expect(content,findsOneWidget);
+    expect(tester.getSize(find.byKey(const ValueKey('reader_compact_header'))).height,lessThanOrEqualTo(48));
+    expect(tester.getSize(find.byKey(const ValueKey('reader_compact_footer'))).height,48);
+    expect(tester.getSize(content).height,greaterThan(800));
+    expect(find.byTooltip('Ouvir'),findsOneWidget);
+    expect(find.byTooltip('Gemini'),findsOneWidget);
+    await tester.tap(find.byTooltip('Ajustes de leitura'));
+    await tester.pumpAndSettle();
     expect(find.byTooltip('Aumentar fonte'),findsOneWidget);
-    expect(find.text('Gemini'),findsOneWidget);
+    expect(find.text('Fundo preto'),findsOneWidget);
+    await tester.tap(find.text('Voltar à leitura'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Ferramentas do capítulo'));
+    await tester.pumpAndSettle();
     expect(find.text('Exercícios'),findsOneWidget);
+    expect(find.text('Índice de capítulos'),findsOneWidget);
   },timeout:const Timeout(Duration(minutes:1)));
 }
