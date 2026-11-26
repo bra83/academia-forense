@@ -53,4 +53,22 @@ void main(){
     expect(html,contains('mark.saved'));
     expect(html,contains("mark.className='saved'"));
   });
+
+  test('Volume I cover and editorial labels render without spaced letters',(){
+    const cover='E N C I C L O P É D I A  D E  C I Ê N C I A S  F O R E N S E S  ·  V O L U M E  1';
+    final html=SourceHtmlConverter.pageHtml(cover,fontSize:15,chapter:1,screen:0,
+      layout:const [
+        {'kind':'h4','text':cover},
+        {'kind':'h2','text':'Dos dados\nàs evidências'},
+        {'kind':'p','text':'Fundamentos do raciocínio forense'},
+        {'kind':'h4','text':'N O TA A O  L E I T O R'},
+      ]);
+    expect(html,contains('<small id="b0"'));
+    expect(html,contains('Enciclopédia de Ciências Forenses · Volume 1'));
+    expect(html,isNot(contains(cover)));
+    expect(html,contains('Nota ao leitor'));
+    expect(html,contains('Fundamentos do raciocínio forense'));
+    expect(html,contains('letter-spacing:normal'));
+  });
+
 }
