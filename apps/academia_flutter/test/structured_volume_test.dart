@@ -82,7 +82,7 @@ void main(){
     const layout=[
       {'kind':'h2','text':'Preservação, aquisição e cadeia de custódia'},
       {'kind':'table','text':'Termo · Uso técnico\nColeta · Receber vestígios','rows':[['Termo','Uso técnico'],['Coleta','Receber vestígios']]},
-      {'kind':'pre','text':'$base = Join-Path $home "LAB"\n  $copia = $base'},
+      {'kind':'pre','text':r'$base = Join-Path $home "LAB"' '\n' r'  $copia = $base'},
       {'kind':'figure','text':'Figura 2.1. Fluxo conceitual','jpeg':'/9j/2Q=='},
       {'kind':'p','text':'O hash não demonstra autoria.'},
     ];
@@ -91,7 +91,7 @@ void main(){
     expect(html,isNot(contains('<p>Termo · Uso técnico')));
     expect(html,contains('<pre id="b2"><code>'));
     expect(html,contains('data-copy="b2"'));
-    expect(html,contains('  $copia = $base'));
+    expect(html,contains(r'  $copia = $base'));
     expect(html,contains('<figure id="b3">'));
     final speech=SourceHtmlConverter.narrationText('raw',layout:layout);
     expect(speech,contains('Figura 2.1.'));
