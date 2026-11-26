@@ -699,7 +699,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     final found=_catalog.where((c)=>c.title.toLowerCase().contains(_filter.toLowerCase()) ||
       c.number.toString().contains(_filter)).toList();
     return ListView(padding:const EdgeInsets.all(16),children:[
-      _topTitle('Biblioteca de referência','${_catalog.length} de 113 capítulos disponíveis para leitura. Importe os pacotes integrais restantes para ampliar o acervo.'),
+      _topTitle('Biblioteca de referência','${_catalog.length} de ${StudyCatalog.volumeEnds.last} capítulos disponíveis para leitura. Importe os pacotes integrais restantes para ampliar o acervo.'),
       _infoCard('Importar PDFs do Drive ou do dispositivo',Column(
         crossAxisAlignment:CrossAxisAlignment.start,children:[
           const Text('Baixe o pacote integral fornecido neste chat. '
