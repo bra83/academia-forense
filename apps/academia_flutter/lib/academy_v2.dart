@@ -725,7 +725,8 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
 
   Widget _libraryTab(){
     final query=studyFold(_filter);
-    final found=_catalog.where((c)=>studyFold(c.title).contains(query)||c.number.toString().contains(query)||c.number.toString().padLeft(2,'0').contains(query)).toList();
+    final available={for(final c in _catalog)c.number:c};
+    final found=List.generate(StudyCatalog.plannedTitles.length,(i)=>i+1).where((n)=>studyFold(available[n]?.title??StudyCatalog.plannedTitles[n-1]).contains(query)||n.toString().contains(query)||n.toString().padLeft(2,'0').contains(query)).toList();
     return ListView(padding:const EdgeInsets.all(16),children:[
       _topTitle('Biblioteca','Acervo de estudo · '+_catalog.length.toString()+' de '+StudyCatalog.volumeEnds.last.toString()+' capítulos disponíveis'),
       Wrap(spacing:8,runSpacing:8,children:[
@@ -745,21 +746,21 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       if(_libraryMode==0)...[
         TextField(onChanged:(v)=>setState(()=>_filter=v),decoration:const InputDecoration(prefixIcon:Icon(Icons.search),labelText:'Título ou número do capítulo',border:OutlineInputBorder())),
         const SizedBox(height:8),
-        if(found.isEmpty)const Text('Nenhum capítulo disponível corresponde ao filtro.'),
+        if(found.isEmpty)const Text('Nenhum capítulo corresponde ao filtro.'),
         for(var vol=1;vol<=StudyCatalog.volumeTitles.length;vol++)
-          if(query.isEmpty||found.any((c)=>c.volume==vol)) Card(child:ExpansionTile(
+          if(query.isEmpty||found.any((n)=>StudyCatalog.volumeFor(n)==vol)) Card(child:ExpansionTile(
             key:ValueKey('index_'+vol.toString()+'_'+query),
             initiallyExpanded:query.isNotEmpty||vol==StudyCatalog.volumeFor(_selectedChapter),
             title:Text('Volume '+vol.toString()+' — '+StudyCatalog.volumeTitles[vol-1]),
-            subtitle:Text(found.where((c)=>c.volume==vol).length.toString()+' disponíveis · capítulos '+(vol==1?1:StudyCatalog.volumeEnds[vol-2]+1).toString()+'–'+StudyCatalog.volumeEnds[vol-1].toString()),
+            subtitle:Text(_catalog.where((c)=>c.volume==vol).length.toString()+' disponíveis · capítulos '+(vol==1?1:StudyCatalog.volumeEnds[vol-2]+1).toString()+'–'+StudyCatalog.volumeEnds[vol-1].toString()),
             children:[
-              for(final c in found.where((c)=>c.volume==vol)) ListTile(
-                leading:CircleAvatar(child:Text(c.number.toString())),
-                title:Text(c.title),
-                subtitle:Text(_library.chapter(c.number)==null?'Texto incluído no app':'Disponível offline'),
-                trailing:const Icon(Icons.chevron_right),
-                onTap:(){setState(()=>_selectedChapter=c.number);_openNativeBook(c.number);}),
-              if(!found.any((c)=>c.volume==vol))const Padding(padding:EdgeInsets.all(12),child:Text('Importe o acervo integral para liberar este volume.')),
+              for(final n in found.where((n)=>StudyCatalog.volumeFor(n)==vol)) ListTile(
+                leading:CircleAvatar(child:Text(n.toString())),
+                title:Text(available[n]?.title??StudyCatalog.plannedTitles[n-1]),
+                subtitle:Text(available[n]==null?'Ainda não importado':_library.chapter(n)==null?'Texto incluído no app':'Disponível offline'),
+                trailing:Icon(available[n]==null?Icons.cloud_download_outlined:Icons.chevron_right),
+                onTap:available[n]==null?(_importing?null:_import):(){setState(()=>_selectedChapter=n);_openNativeBook(n);}),
+              if(!found.any((n)=>StudyCatalog.volumeFor(n)==vol))const Padding(padding:EdgeInsets.all(12),child:Text('Importe o acervo integral para liberar este volume.')),
             ])),
       ]else...[
         TextField(onChanged:(v){_corpusSearch=v;_searchGeneration++;setState((){_matches=[];_searchStatus='';_searching=false;});},onSubmitted:(_)=>_searchFullText(),decoration:const InputDecoration(prefixIcon:Icon(Icons.search),labelText:'Termo ou expressão (com ou sem acento)',border:OutlineInputBorder())),
