@@ -745,7 +745,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         OutlinedButton.icon(onPressed:_openNotebook,icon:const Icon(Icons.edit_note),label:const Text('Meu caderno')),
       ]),
       const SizedBox(height:8),
-      const Text('No Android, selecione Google Drive no seletor de arquivos e escolha o ZIP integral v2. O conteúdo fica disponível offline. PDFs individuais não incluem texto nativo; prefira o pacote completo.'),
+      const Text('No Android, selecione Google Drive no seletor de arquivos e escolha o ZIP integral v2. O conteúdo fica disponível offline. A edição nativa REV3 (layout 2) inclui figuras reais, tabelas e blocos de código. Transcrições antigas são provisórias.'),
       if(_importStatus.isNotEmpty)Padding(padding:const EdgeInsets.symmetric(vertical:8),child:Text(_importStatus)),
       const SizedBox(height:16),
       SegmentedButton<int>(segments:const [
@@ -767,7 +767,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
               for(final n in found.where((n)=>StudyCatalog.volumeFor(n)==vol)) ListTile(
                 leading:CircleAvatar(child:Text(n.toString())),
                 title:Text(available[n]?.title??StudyCatalog.plannedTitles[n-1]),
-                subtitle:Text(available[n]==null?'Ainda não importado':_library.chapter(n)==null?'Texto incluído no app':'Disponível offline'),
+                subtitle:Text(available[n]==null?'Ainda não importado':(_library.chapter(n)?.layoutVersion??0)>=2?'Edição nativa offline':_library.chapter(n)==null?'Transcrição provisória · importar edição nativa':'Edição legada · importar versão nativa'),
                 trailing:Icon(available[n]==null?Icons.cloud_download_outlined:Icons.chevron_right),
                 onTap:available[n]==null?(_importing?null:_import):(){setState(()=>_selectedChapter=n);_openNativeBook(n);}),
               if(!found.any((n)=>StudyCatalog.volumeFor(n)==vol))const Padding(padding:EdgeInsets.all(12),child:Text('Importe o acervo integral para liberar este volume.')),
