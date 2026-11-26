@@ -11,6 +11,7 @@ class OfflineChapter {
   const OfflineChapter({
     required this.number, required this.title, required this.pdfPath,
     required this.sha, this.pagesPath, this.pageCount = 0,
+    this.pagesSha, this.layoutVersion=0,
   });
   final int number;
   final String title;
@@ -18,22 +19,28 @@ class OfflineChapter {
   final String sha;
   final String? pagesPath;
   final int pageCount;
+  final String? pagesSha;
+  final int layoutVersion;
   Map<String, dynamic> toJson() => {
     'number': number, 'title': title, 'pdfPath': pdfPath,
     'sha': sha, 'pagesPath': pagesPath, 'pageCount': pageCount,
+    'pagesSha':pagesSha,'layoutVersion':layoutVersion,
   };
   factory OfflineChapter.fromJson(Map<String, dynamic> j) => OfflineChapter(
     number: (j['number'] as num).toInt(), title: j['title'].toString(),
     pdfPath: j['pdfPath'].toString(), sha: j['sha'].toString(),
     pagesPath: j['pagesPath'] as String?,
     pageCount: (j['pageCount'] as num?)?.toInt() ?? 0,
+    pagesSha:j['pagesSha'] as String?,layoutVersion:(j['layoutVersion'] as num?)?.toInt()??0,
   );
 }
 
 class OriginalPage {
-  const OriginalPage(this.number, this.text);
+  const OriginalPage(this.number, this.text,{this.layout=const [],this.visualJpeg});
   final int number;
   final String text;
+  final List<Map<String,dynamic>> layout;
+  final String? visualJpeg;
 }
 
 class OfflineLibrary {
@@ -171,6 +178,20 @@ class OfflineLibrary {
       }
       final pdfHash=sha256.convert(pdf).toString();
       final textHash=sha256.convert(pageBytes).toString();
+      if(m['pagesSha256']!=null && m['pagesSha256']!=textHash)throw FormatException('Texto do capítulo $n não passou no SHA-256.');
+      final layoutVersion=(textDoc['layoutVersion'] as num?)?.toInt()??0;
+      if(layoutVersion!=0 && layoutVersion!=1)throw const FormatException('Versão de layout não suportada.');
+      if(layoutVersion==1){
+        if(m['layoutVersion']!=1 || m['pagesSha256']!=textHash)throw const FormatException('Manifesto de layout incompleto.');
+        for(final row in pageRows){
+          final blocks=row['layout'];final visual=row['visualJpeg'];
+          if(blocks is! List || blocks.isEmpty || blocks.length>1500 || blocks.any((b)=>b is! Map || b['text'] is! String || !const ['p','h2','h3','h4','small','pre','figcaption'].contains(b['kind'])) || visual is! String || visual.length>2000000)throw FormatException('Layout inválido no capítulo $n.');
+          final bytes=base64Decode(visual);
+          if(bytes.length<4 || bytes[0]!=255 || bytes[1]!=216 || bytes[bytes.length-2]!=255 || bytes.last!=217)throw FormatException('Imagem inválida no capítulo $n.');
+        }
+      }
+      final current=_items[n];
+      if(current!=null && current.sha==pdfHash && current.layoutVersion>layoutVersion && current.pagesPath!=null && await File(current.pagesPath!).exists())continue;
       final pdfPath = p.join(_dir.path, 'cap_${suffix}_$pdfHash.pdf');
       final pagePath = p.join(_dir.path, 'cap_${suffix}_$textHash.json');
       files[pdfPath] = pdf;
@@ -178,7 +199,7 @@ class OfflineLibrary {
       staged.add(OfflineChapter(
         number:n, title:m['title'].toString(), pdfPath:pdfPath,
         pagesPath:pagePath, sha:m['sha256'].toString(),
-        pageCount:pageRows.length));
+        pageCount:pageRows.length,pagesSha:textHash,layoutVersion:layoutVersion));
     }
     for (final entry in files.entries) {
       final old=File(entry.key);
@@ -215,15 +236,18 @@ class OfflineLibrary {
     await _saveIndex();
   }
 
-  Future<List<OriginalPage>> pages(int number) async {
+  Future<List<OriginalPage>> pages(int number,{bool includeLayout=false}) async {
     final chapter = _items[number];
     if (chapter?.pagesPath == null) return [];
     try {
-      final j = jsonDecode(await File(chapter!.pagesPath!).readAsString())
-        as Map<String,dynamic>;
+      final bytes=await File(chapter!.pagesPath!).readAsBytes();
+      if(chapter.pagesSha!=null && sha256.convert(bytes).toString()!=chapter.pagesSha)return [];
+      final j = jsonDecode(utf8.decode(bytes)) as Map<String,dynamic>;
       return (j['pages'] as List<dynamic>).map((e) {
         final row = e as Map<String,dynamic>;
-        return OriginalPage((row['number'] as num).toInt(),row['text'].toString());
+        return OriginalPage((row['number'] as num).toInt(),row['text'].toString(),
+          layout:includeLayout?(row['layout'] as List<dynamic>? ?? []).whereType<Map<String,dynamic>>().toList(growable:false):const [],
+          visualJpeg:includeLayout?row['visualJpeg'] as String?:null);
       }).toList();
     } catch (_) { return []; }
   }
