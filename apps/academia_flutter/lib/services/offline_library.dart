@@ -185,7 +185,7 @@ class OfflineLibrary {
         if(m['layoutVersion']!=1 || m['pagesSha256']!=textHash)throw const FormatException('Manifesto de layout incompleto.');
         for(final row in pageRows){
           final blocks=row['layout'];final visual=row['visualJpeg'];
-          if(blocks is! List || blocks.isEmpty || blocks.length>1500 || blocks.any((b)=>b is! Map || b['text'] is! String || !const ['p','h2','h3','h4','small','pre','figcaption'].contains(b['kind'])) || visual is! String || visual.length>2000000)throw FormatException('Layout inválido no capítulo $n.');
+          if(blocks is! List || blocks.isEmpty || blocks.length>1500 || blocks.any((b)=>b is! Map || b['text'] is! String || !(const <String>['p','h2','h3','h4','small','pre','figcaption']).contains(b['kind'])) || visual is! String || visual.length>2000000)throw FormatException('Layout inválido no capítulo $n.');
           final bytes=base64Decode(visual);
           if(bytes.length<4 || bytes[0]!=255 || bytes[1]!=216 || bytes[bytes.length-2]!=255 || bytes.last!=217)throw FormatException('Imagem inválida no capítulo $n.');
         }
@@ -238,16 +238,16 @@ class OfflineLibrary {
 
   Future<List<OriginalPage>> pages(int number,{bool includeLayout=false}) async {
     final chapter = _items[number];
-    if (chapter?.pagesPath == null) return [];
+    if (chapter == null || chapter.pagesPath == null) return [];
     try {
-      final bytes=await File(chapter!.pagesPath!).readAsBytes();
+      final bytes=await File(chapter.pagesPath!).readAsBytes();
       if(chapter.pagesSha!=null && sha256.convert(bytes).toString()!=chapter.pagesSha)return [];
       final j = jsonDecode(utf8.decode(bytes)) as Map<String,dynamic>;
       return (j['pages'] as List<dynamic>).map((e) {
         final row = e as Map<String,dynamic>;
         return OriginalPage((row['number'] as num).toInt(),row['text'].toString(),
           layout:includeLayout?(row['layout'] as List<dynamic>? ?? []).whereType<Map<String,dynamic>>().toList(growable:false):const [],
-          visualJpeg:includeLayout?row['visualJpeg'] as String?:null);
+          visualJpeg:includeLayout ? row['visualJpeg'] as String? : null);
       }).toList();
     } catch (_) { return []; }
   }
