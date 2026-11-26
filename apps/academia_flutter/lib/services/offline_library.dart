@@ -93,6 +93,20 @@ class OfflineLibrary {
     }
   }
 
+  static bool _validBlock(Map b){
+    final kind=b['kind'];
+    if(kind=='table'){
+      final rows=b['rows'];
+      return rows is List && rows.isNotEmpty && rows.length<=300 && rows.first is List && (rows.first as List).isNotEmpty && (rows.first as List).length<=30 && rows.every((r)=>r is List && r.length==(rows.first as List).length && r.every((c)=>c is String));
+    }
+    if(kind=='figure'){
+      final jpeg=b['jpeg'];
+      if(jpeg is! String || jpeg.length>2000000)return false;
+      try{final bytes=base64Decode(jpeg);return bytes.length>4&&bytes[0]==255&&bytes[1]==216&&bytes[bytes.length-2]==255&&bytes.last==217;}catch(_){return false;}
+    }
+    return true;
+  }
+
   static bool _pdf(List<int> b) => b.length > 100 &&
     b[0] == 37 && b[1] == 80 && b[2] == 68 && b[3] == 70 && b[4] == 45;
 
@@ -190,12 +204,12 @@ class OfflineLibrary {
       final textHash=sha256.convert(pageBytes).toString();
       if(m['pagesSha256']!=null && m['pagesSha256']!=textHash)throw FormatException('Texto do capítulo $n não passou no SHA-256.');
       final layoutVersion=(textDoc['layoutVersion'] as num?)?.toInt()??0;
-      if(layoutVersion!=0 && layoutVersion!=1)throw const FormatException('Versão de layout não suportada.');
-      if(layoutVersion==1){
-        if(m['layoutVersion']!=1 || m['pagesSha256']!=textHash)throw const FormatException('Manifesto de layout incompleto.');
+      if(layoutVersion<0 || layoutVersion>2)throw const FormatException('Versão de layout não suportada.');
+      if(layoutVersion>=1){
+        if(m['layoutVersion']!=layoutVersion || m['pagesSha256']!=textHash)throw const FormatException('Manifesto de layout incompleto.');
         for(final row in pageRows){
           final blocks=row['layout'];final visual=row['visualJpeg'];
-          if(blocks is! List || blocks.isEmpty || blocks.length>1500 || blocks.any((b)=>b is! Map || b['text'] is! String || !(const <String>['p','h2','h3','h4','small','pre','figcaption']).contains(b['kind'])) || visual is! String || visual.length>2000000)throw FormatException('Layout inválido no capítulo $n.');
+          if(blocks is! List || blocks.isEmpty || blocks.length>1500 || blocks.any((b)=>b is! Map || b['text'] is! String || !(const <String>['p','h2','h3','h4','small','pre','figcaption','table','formula','figure','exercise','answer','lab','reference']).contains(b['kind']) || (layoutVersion==2 && !_validBlock(b))) || visual is! String || visual.length>2000000)throw FormatException('Layout inválido no capítulo $n.');
           final bytes=base64Decode(visual);
           if(bytes.length<4 || bytes[0]!=255 || bytes[1]!=216 || bytes[bytes.length-2]!=255 || bytes.last!=217)throw FormatException('Imagem inválida no capítulo $n.');
         }
