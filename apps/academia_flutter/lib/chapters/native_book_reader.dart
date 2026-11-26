@@ -154,9 +154,12 @@ class _NativeBookReaderState extends State<NativeBookReader> {
       final dark=prefs.getBool('source_reader_dark')??false;
       var target=_firstLoad?(widget.initialPage??savedPage):savedPage;
       final quote=_firstLoad?widget.initialQuote:null;
+      var quoteMissing=false;
       if(quote!=null && quote.isNotEmpty){
-        final exact=book.screens.indexWhere((p)=>p.text.contains(quote));
-        if(exact>=0)target=exact;
+        String fold(String v)=>v.replaceAll(RegExp(r'\s+'),' ').trim();
+        bool match(BookScreen p)=>fold(p.text).contains(fold(quote))||p.layout.any((b)=>fold(b['text'].toString()).contains(fold(quote)));
+        final exact=target>=0&&target<book.screens.length&&match(book.screens[target])?target:book.screens.indexWhere(match);
+        if(exact>=0)target=exact;else quoteMissing=true;
       }
       _firstLoad=false;
       final marks=prefs.getStringList('source_reader_marks_$chapter')??[];
@@ -186,7 +189,9 @@ class _NativeBookReaderState extends State<NativeBookReader> {
           .whereType<int>().toSet();
         _highlights=loaded;
       });
+      await prefs.setInt('source_reader_last_chapter',chapter);
       await _renderHtml();
+      if(quoteMissing)_notify('O trecho não foi encontrado nesta edição. A anotação original foi preservada; exibindo a posição anterior.');
     } catch(e) {
       if(mounted)setState((){
         _loading=false;_error='Não foi possível carregar o livro: $e';
@@ -205,6 +210,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     await _renderHtml();
     try {
       final prefs=await SharedPreferences.getInstance();
+      await prefs.setInt('source_reader_last_chapter',_chapter);
       final ok=await prefs.setInt('source_reader_page_$_chapter',index);
       if(!ok)throw StateError('Posição de leitura não gravada.');
     } catch (_) {
