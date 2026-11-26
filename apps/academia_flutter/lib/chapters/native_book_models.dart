@@ -65,7 +65,7 @@ class SourceBookLibrary {
   const SourceBookLibrary();
 
   Future<BookChapter> load(int chapter,OfflineLibrary library,{bool includeLayout=true}) async {
-    if(chapter<1 || chapter>StudyCatalog.volumeEnds.last)throw ArgumentError.value(chapter,'chapter');
+    if(chapter<1 || chapter>StudyCatalog.maxChapter)throw ArgumentError.value(chapter,'chapter');
     // A previously imported, verified ZIP contains the *real* page mapping.
     final original=await library.pages(chapter,includeLayout:includeLayout);
     if(original.isNotEmpty) {
@@ -75,6 +75,7 @@ class SourceBookLibrary {
         screens:original.map((p)=>BookScreen(number:p.number,text:p.text,layout:p.layout,visualJpeg:p.visualJpeg))
           .toList(growable:false));
     }
+    if(library.chapter(chapter)?.pagesPath!=null)throw StateError('Texto importado não passou na verificação. Reimporte o pacote.');
     if(chapter>26)throw StateError('Importe o capítulo integral na Biblioteca.');
     final name=chapter.toString().padLeft(2,'0');
     // Decode locally instead of spawning an isolate for chapters above 50KB.
