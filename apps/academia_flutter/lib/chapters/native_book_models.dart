@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 import '../services/offline_library.dart';
+import 'study_catalog.dart';
 
 /// A reader screen is deliberately distinguished from a numbered PDF page.
 class BookScreen {
@@ -62,7 +63,7 @@ class SourceBookLibrary {
   const SourceBookLibrary();
 
   Future<BookChapter> load(int chapter,OfflineLibrary library) async {
-    if(chapter<1 || chapter>113)throw ArgumentError.value(chapter,'chapter');
+    if(chapter<1 || chapter>StudyCatalog.volumeEnds.last)throw ArgumentError.value(chapter,'chapter');
     // A previously imported, verified ZIP contains the *real* page mapping.
     final original=await library.pages(chapter);
     if(original.isNotEmpty) {
