@@ -43,5 +43,16 @@ void main(){
     await tester.pumpAndSettle();
     expect(find.text('Testar voz (frase curta)'),findsOneWidget);
     expect(identical(tester.state(player),state),isTrue);
+    final first=tester.widget<VoiceReaderV2>(player);
+    expect(first.sourceId,'1:0');
+    await tester.tap(find.byTooltip('Minimizar controles sem parar a voz'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Próxima tela'));
+    await tester.pumpAndSettle();
+    final second=tester.widget<VoiceReaderV2>(player);
+    expect(second.sourceId,'1:1');
+    expect(second.readText,isNot(first.readText));
+    expect(second.sourceLabel,contains('2'));
+    expect(identical(tester.state(player),state),isTrue);
   });
 }
