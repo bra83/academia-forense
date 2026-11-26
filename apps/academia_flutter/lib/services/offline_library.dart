@@ -52,6 +52,8 @@ class OfflineLibrary {
     _dir = Directory(p.join(root.path, 'academia_forense_private'));
     await _dir.create(recursive: true);
     final idx = File(p.join(_dir.path, 'index.json'));
+    final backup=File(p.join(_dir.path,'index.bak'));
+    if(!await idx.exists() && await backup.exists())await backup.copy(idx.path);
     if (await idx.exists()) {
       try {
         final j = jsonDecode(await idx.readAsString()) as Map<String,dynamic>;
@@ -73,8 +75,12 @@ class OfflineLibrary {
     await tmp.writeAsString(jsonEncode({'chapters':
       chapters.map((c) => c.toJson()).toList()}), flush:true);
     final index = File(p.join(_dir.path,'index.json'));
-    if (await index.exists()) await index.delete();
-    await tmp.rename(index.path);
+    final backup=File(p.join(_dir.path,'index.bak'));
+    if(await index.exists())await index.copy(backup.path);
+    try{await tmp.rename(index.path);}catch(_){
+      if(await backup.exists())await backup.copy(index.path);
+      rethrow;
+    }
   }
 
   static bool _pdf(List<int> b) => b.length > 100 &&
@@ -118,6 +124,7 @@ class OfflineLibrary {
       if (total > 250 * 1024 * 1024) {
         throw const FormatException('Conteúdo ZIP excede 250MB.');
       }
+      if(entries.containsKey(entry.name))throw const FormatException('Entrada ZIP duplicada.');
       entries[entry.name] = entry;
     }
     final head = entries['manifest.json'];
@@ -156,8 +163,16 @@ class OfflineLibrary {
           pageRows.length != (m['pageCount'] as num).toInt()) {
         throw FormatException('Páginas incorretas no capítulo $n.');
       }
-      final pdfPath = p.join(_dir.path, 'cap_$suffix.pdf');
-      final pagePath = p.join(_dir.path, 'cap_$suffix.json');
+      if(pageRows.isEmpty || pageRows.asMap().entries.any((e){
+        final v=e.value;
+        return v is! Map || v['number']!=e.key+1 || v['text'] is! String;
+      }) || pageRows.every((v)=>(v['text'] as String).trim().isEmpty)){
+        throw FormatException('Texto ausente ou numeração irregular no capítulo $n.');
+      }
+      final pdfHash=sha256.convert(pdf).toString();
+      final textHash=sha256.convert(pageBytes).toString();
+      final pdfPath = p.join(_dir.path, 'cap_${suffix}_$pdfHash.pdf');
+      final pagePath = p.join(_dir.path, 'cap_${suffix}_$textHash.json');
       files[pdfPath] = pdf;
       files[pagePath] = pageBytes;
       staged.add(OfflineChapter(
@@ -166,14 +181,16 @@ class OfflineLibrary {
         pageCount:pageRows.length));
     }
     for (final entry in files.entries) {
+      final old=File(entry.key);
+      if(await old.exists() && sha256.convert(await old.readAsBytes()).toString()==sha256.convert(entry.value).toString())continue;
       final tmp = File(entry.key + '.tmp');
       await tmp.writeAsBytes(entry.value, flush:true);
-      final old = File(entry.key);
       if (await old.exists()) await old.delete();
       await tmp.rename(entry.key);
     }
+    final previous=Map<int,OfflineChapter>.from(_items);
     for (final c in staged) { _items[c.number] = c; }
-    await _saveIndex();
+    try{await _saveIndex();}catch(_){_items..clear()..addAll(previous);rethrow;}
     return staged.length;
   }
 
@@ -185,6 +202,11 @@ class OfflineLibrary {
       throw const FormatException('PDF inválido ou número de capítulo ausente no nome.');
     }
     final n = int.parse(match.group(1)!);
+    final current=_items[n];
+    if(current!=null && current.pagesPath!=null){
+      if(current.sha==sha256.convert(bytes).toString())return;
+      throw const FormatException('Para atualizar um capítulo com texto nativo, importe o ZIP integral v2; o conteúdo anterior foi preservado.');
+    }
     final dst = File(p.join(_dir.path, 'cap_' + n.toString().padLeft(2,'0') + '.pdf'));
     await dst.writeAsBytes(bytes, flush:true);
     _items[n] = OfflineChapter(
