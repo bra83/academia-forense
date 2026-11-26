@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -106,6 +107,17 @@ class _NativeBookReaderState extends State<NativeBookReader> {
           if(!mounted)return;
           try {
             final data=jsonDecode(event.message) as Map<String,dynamic>;
+            if(data['type']=='copyCode'){
+              final block=widget.library.chapter(_chapter);
+              final id=(data['block']??'').toString();
+              final i=id.startsWith('b')?int.tryParse(id.substring(1)):null;
+              final book=_book;
+              if(block==null||book==null||i==null||i<0)return;
+              final layout=book.screens[_page].layout;
+              if(i>=layout.length||layout[i]['kind']!='pre')return;
+              unawaited(Clipboard.setData(ClipboardData(text:layout[i]['text'].toString())).then((_){if(mounted)_notify('Código copiado.');}));
+              return;
+            }
             if(data['type']!='selection')return;
             final quote=(data['quote']??'').toString().trim();
             setState((){
@@ -639,6 +651,10 @@ class _NativeBookReaderState extends State<NativeBookReader> {
         actions:[
           if(_hasSelection)IconButton(tooltip:'Salvar trecho selecionado',
             onPressed:_markSelection,icon:const Icon(Icons.highlight_outlined,size:21)),
+          if(book!=null&&(widget.library.chapter(_chapter)?.layoutVersion??0)<2)
+            IconButton(tooltip:'Transcrição legada: importe a edição nativa na Biblioteca',
+              onPressed:()=>_notify('Esta é uma transcrição provisória. Para diagramas, tabelas e códigos nativos, importe a edição REV3 na Biblioteca.'),
+              icon:const Icon(Icons.info_outline,size:19)),
           if(book?.screens[_page].visualJpeg!=null)
             IconButton(tooltip:'Ver gráficos, tabelas e página original',
               onPressed:_showOriginalPage,icon:const Icon(Icons.image_outlined,size:21)),
