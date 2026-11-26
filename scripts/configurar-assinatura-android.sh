@@ -4,7 +4,7 @@ umask 077
 repo=bra83/academia-forense
 dir="$HOME/.academia-signing"
 key="$dir/academia-release.p12"
-for tool in gh keytool base64; do
+for tool in gh openssl base64; do
   command -v "$tool" >/dev/null || { echo "Ferramenta ausente: $tool"; exit 1; }
 done
 gh auth status --hostname github.com
@@ -30,13 +30,27 @@ echo
 [ "$confirm" = "$ACADEMIA_PASS" ] || { echo "Senhas diferentes."; exit 1; }
 unset confirm
 export ACADEMIA_PASS
-trap 'unset ACADEMIA_PASS' EXIT
+tmp=""
+cleanup() {
+  if [ -n "$tmp" ]; then rm -rf -- "$tmp"; fi
+  unset ACADEMIA_PASS
+}
+trap cleanup EXIT
 if [ ! -f "$key" ]; then
-  keytool -genkeypair -storetype PKCS12 -keystore "$key" \
-    -alias academia -keyalg RSA -keysize 3072 -validity 10000 \
-    -dname "CN=Academia Forense" -storepass:env ACADEMIA_PASS -keypass:env ACADEMIA_PASS
+  tmp="$(mktemp -d "$dir/.create.XXXXXXXX")"
+  openssl req -new -x509 -newkey rsa:3072 -sha256 -days 10000 \
+    -subj "/CN=Academia Forense" \
+    -keyout "$tmp/private.pem" -out "$tmp/cert.pem" \
+    -passout env:ACADEMIA_PASS
+  openssl pkcs12 -export -name academia \
+    -inkey "$tmp/private.pem" -in "$tmp/cert.pem" \
+    -passin env:ACADEMIA_PASS -passout env:ACADEMIA_PASS \
+    -out "$tmp/academia.p12"
+  openssl pkcs12 -in "$tmp/academia.p12" -noout -passin env:ACADEMIA_PASS
+  mv -- "$tmp/academia.p12" "$key"
 fi
-keytool -list -keystore "$key" -alias academia -storepass:env ACADEMIA_PASS >/dev/null
+# Preserve existing keys. Wrong password or damaged file must not trigger rotation.
+openssl pkcs12 -in "$key" -noout -passin env:ACADEMIA_PASS
 # Send via stdin. Never print passwords, upload key to Git or rotate an existing complete set.
 base64 -w0 "$key" | gh secret set ACADEMIA_KEYSTORE_B64 --app actions --repo "$repo"
 printf %s "$ACADEMIA_PASS" | gh secret set ACADEMIA_KEYSTORE_PASSWORD --app actions --repo "$repo"
