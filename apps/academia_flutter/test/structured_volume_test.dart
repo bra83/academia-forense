@@ -78,4 +78,26 @@ void main(){
     expect(html,contains('<pre id="b1"'));
     expect(html,contains('A | B\n1 | 2'));
   });
+  test('Native figures, tables and code render as separate semantic blocks; code is not read as prose',(){
+    const layout=[
+      {'kind':'h2','text':'Preservação, aquisição e cadeia de custódia'},
+      {'kind':'table','text':'Termo · Uso técnico\nColeta · Receber vestígios','rows':[['Termo','Uso técnico'],['Coleta','Receber vestígios']]},
+      {'kind':'pre','text':'$base = Join-Path $home "LAB"\n  $copia = $base'},
+      {'kind':'figure','text':'Figura 2.1. Fluxo conceitual','jpeg':'/9j/2Q=='},
+      {'kind':'p','text':'O hash não demonstra autoria.'},
+    ];
+    final html=SourceHtmlConverter.pageHtml('raw',fontSize:20,chapter:2,screen:3,layout:layout);
+    expect(html,contains('<table>'));
+    expect(html,isNot(contains('<p>Termo · Uso técnico')));
+    expect(html,contains('<pre id="b2"><code>'));
+    expect(html,contains('data-copy="b2"'));
+    expect(html,contains('  $copia = $base'));
+    expect(html,contains('<figure id="b3">'));
+    final speech=SourceHtmlConverter.narrationText('raw',layout:layout);
+    expect(speech,contains('Figura 2.1.'));
+    expect(speech,contains('O hash não demonstra autoria.'));
+    expect(speech,contains('Coleta'));
+    expect(speech,isNot(contains('Join-Path')));
+  });
+
 }
