@@ -2,6 +2,8 @@ name: Academia Forense — Android Quality Gate
 
 on:
   push:
+    branches: [main, feat/acervo-integral-113-20261125]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
