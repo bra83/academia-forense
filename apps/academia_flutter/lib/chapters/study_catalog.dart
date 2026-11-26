@@ -185,10 +185,13 @@ class StudyCatalog {
     'Portfólio, avaliação final e desenvolvimento contínuo',
   ];
   static const volumeEnds = <int>[10,23,39,53,66,78,90,100,113];
+  static const maxChapter=999;
   static int volumeFor(int number) {
-    if(number<1 || number>volumeEnds.last)throw RangeError.range(number,1,volumeEnds.last);
+    if(number<1 || number>maxChapter)throw RangeError.range(number,1,maxChapter);
+    if(number>volumeEnds.last)return volumeTitles.length+1;
     return volumeEnds.indexWhere((end)=>number<=end)+1;
   }
+  static String volumeTitle(int volume)=>volume<=volumeTitles.length?volumeTitles[volume-1]:'Material complementar importado';
   static String chapterId(int number) =>
     'forense.vol' + volumeFor(number).toString().padLeft(2,'0') +
     '.ch' + number.toString().padLeft(2,'0');
@@ -199,12 +202,12 @@ class StudyCatalog {
     final entries=<int,StudyChapter>{for(final c in bundled)c.number:c};
     for(final source in library.chapters) {
       final n=source.number;
-      if(n<1 || n>volumeEnds.last || source.pageCount<=0)continue;
+      if(n<1 || n>maxChapter || source.pageCount<=0)continue;
       final pages=await library.pages(n);
       if(pages.length!=source.pageCount || pages.every((p)=>p.text.trim().isEmpty))continue;
       entries[n]=StudyChapter(
         id:chapterId(n),volume:volumeFor(n),number:n,title:source.title,
-        edition:'Importado · fonte original',editorialStatus:'Importado',
+        edition:source.edition,editorialStatus:'Importado',
         pdfFileId:entries[n]?.pdfFileId??'',sections:entries[n]?.sections??const [],
       );
     }
@@ -218,7 +221,8 @@ class StudyCatalog {
       final v = n <= 10 ? 1 : (n <= 23 ? 2 : 3);
       final name = 'vol' + v.toString().padLeft(2, '0') +
           '_ch' + n.toString().padLeft(2, '0') + '.json';
-      final raw = await rootBundle.loadString('assets/chapters/' + name);
+      String raw;
+      try{raw=await rootBundle.loadString('assets/chapters/' + name);}catch(_){continue;}
       final data = jsonDecode(raw) as Map<String, dynamic>;
       final chapter = StudyChapter.fromMap(data);
       if (chapter.number != n || chapter.volume != v) {
