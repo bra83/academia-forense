@@ -445,7 +445,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     for(final chapter in List<StudyChapter>.of(_catalog)){
       if(!mounted||generation!=_searchGeneration)return;
       try{
-        final book=await const SourceBookLibrary().load(chapter.number,_library);
+        final book=await const SourceBookLibrary().load(chapter.number,_library,includeLayout:false);
         for(var i=0;i<book.screens.length;i++){
           final raw=book.screens[i].text.replaceAll('\u00ad','').replaceAll(RegExp(r'\s+'),' ').trim();
           final index=studyFold(raw).indexOf(q);
