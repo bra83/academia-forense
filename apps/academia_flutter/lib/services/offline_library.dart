@@ -11,7 +11,7 @@ class OfflineChapter {
   const OfflineChapter({
     required this.number, required this.title, required this.pdfPath,
     required this.sha, this.pagesPath, this.pageCount = 0,
-    this.pagesSha, this.layoutVersion=0,
+    this.pagesSha, this.layoutVersion=0,this.revision=0,this.edition='Importado · fonte original',
   });
   final int number;
   final String title;
@@ -21,10 +21,12 @@ class OfflineChapter {
   final int pageCount;
   final String? pagesSha;
   final int layoutVersion;
+  final int revision;
+  final String edition;
   Map<String, dynamic> toJson() => {
     'number': number, 'title': title, 'pdfPath': pdfPath,
     'sha': sha, 'pagesPath': pagesPath, 'pageCount': pageCount,
-    'pagesSha':pagesSha,'layoutVersion':layoutVersion,
+    'pagesSha':pagesSha,'layoutVersion':layoutVersion,'revision':revision,'edition':edition,
   };
   factory OfflineChapter.fromJson(Map<String, dynamic> j) => OfflineChapter(
     number: (j['number'] as num).toInt(), title: j['title'].toString(),
@@ -32,6 +34,7 @@ class OfflineChapter {
     pagesPath: j['pagesPath'] as String?,
     pageCount: (j['pageCount'] as num?)?.toInt() ?? 0,
     pagesSha:j['pagesSha'] as String?,layoutVersion:(j['layoutVersion'] as num?)?.toInt()??0,
+    revision:(j['revision'] as num?)?.toInt()??0,edition:j['edition'] as String? ?? 'Importado · fonte original',
   );
 }
 
@@ -97,10 +100,11 @@ class OfflineLibrary {
     await initialize();
     final picked = await FilePicker.platform.pickFiles(
       type: FileType.custom, allowedExtensions: ['zip','pdf'],
-      allowMultiple: true, withData: true);
+      allowMultiple: false, withData: false);
     if (picked == null) return 0;
     var imported = 0;
     for (final file in picked.files) {
+      if(file.size>100*1024*1024)throw const FormatException('Arquivo maior que 100 MB. Divida por volumes.');
       final b = file.bytes ?? (file.path == null ? null :
         await File(file.path!).readAsBytes());
       if (b == null) throw const FormatException('Provedor de arquivos indisponível.');
@@ -142,6 +146,7 @@ class OfflineLibrary {
       throw const FormatException('Importe o pacote integral v2 com PDFs e páginas.');
     }
     final rows = manifest['chapters'] as List<dynamic>;
+    if(rows.isEmpty || rows.length>124 || (manifest['chapterCount']!=null && manifest['chapterCount']!=rows.length))throw const FormatException('Quantidade de capítulos inválida.');
     final staged = <OfflineChapter>[];
     final files = <String,List<int>>{};
     final seen = <int>{};
@@ -149,6 +154,11 @@ class OfflineLibrary {
     for (final raw in rows) {
       final m = raw as Map<String,dynamic>;
       final n = (m['chapter'] as num).toInt();
+      if(m['chapter']!=n || m['title'] is! String || (m['title'] as String).trim().isEmpty)throw const FormatException('Metadados de capítulo inválidos.');
+      final revision=m['revision']??0;
+      if(revision is! int || revision<0)throw const FormatException('Revisão inválida.');
+      final edition=m['edition']??'Importado · fonte original';
+      if(edition is! String || edition.trim().isEmpty)throw const FormatException('Edição inválida.');
       if (n < 1 || n > 999 || !seen.add(n)) {
         throw const FormatException('Numeração inválida ou duplicada.');
       }
@@ -191,7 +201,12 @@ class OfflineLibrary {
         }
       }
       final current=_items[n];
-      if(current!=null && current.sha==pdfHash && current.layoutVersion>layoutVersion && current.pagesPath!=null && await File(current.pagesPath!).exists())continue;
+      if(current!=null && current.pagesPath!=null && await File(current.pagesPath!).exists()){
+        if(current.revision>revision)continue;
+        if(current.revision==revision && revision>0 && current.sha!=pdfHash)throw FormatException('Capítulo $n: edição conflitante; aumente a revisão.');
+        if(current.sha==pdfHash && current.layoutVersion>layoutVersion)continue;
+        if(current.sha==pdfHash && current.pagesSha==textHash && current.revision==revision)continue;
+      }
       final pdfPath = p.join(_dir.path, 'cap_${suffix}_$pdfHash.pdf');
       final pagePath = p.join(_dir.path, 'cap_${suffix}_$textHash.json');
       files[pdfPath] = pdf;
@@ -199,7 +214,7 @@ class OfflineLibrary {
       staged.add(OfflineChapter(
         number:n, title:m['title'].toString(), pdfPath:pdfPath,
         pagesPath:pagePath, sha:m['sha256'].toString(),
-        pageCount:pageRows.length,pagesSha:textHash,layoutVersion:layoutVersion));
+        pageCount:pageRows.length,pagesSha:textHash,layoutVersion:layoutVersion,revision:revision,edition:edition));
     }
     for (final entry in files.entries) {
       final old=File(entry.key);
