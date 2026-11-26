@@ -10,6 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'chapters/study_catalog.dart';
 import 'chapters/guided_lesson_screen.dart';
 import 'chapters/native_book_reader.dart';
+import 'chapters/native_book_models.dart';
+import 'chapters/study_notebook.dart';
 import 'chapters/study_reader_v2.dart';
 import 'chapters/quiz_v2.dart';
 import 'services/offline_library.dart';
@@ -50,6 +52,10 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   LabDomain _domain=LabDomain.telephony;
   List<({int chapter,int page,String excerpt})> _matches=[];
   bool _showCaseAnswer=false;
+  bool _searching=false;
+  String _searchStatus='';
+  int _libraryMode=0;
+  int _searchGeneration=0;
   final Map<int,int> _caseSelections={};
   static const _sampleCdr='call_id,timestamp,caller_msisdn,callee_msisdn,duration_sec,cell_tower_id,latitude,longitude\n'
       'C1,2026-11-16T10:00:00Z,+5531988880001,+5531977770002,120,ERB_BH_01,-19.92,-43.94\n'
@@ -166,11 +172,11 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     }
   }
 
-  Future<void> _openNativeBook(int number) async {
+  Future<void> _openNativeBook(int number,{int? page,String? quote}) async {
     if(_catalog.isEmpty)return;
     await Navigator.of(context).push(MaterialPageRoute<void>(
       builder:(_)=>NativeBookReader(
-        initialChapter:number,
+        initialChapter:number,initialPage:page,initialQuote:quote,
         catalog:_catalog,
         library:_library,
         getApiKey:_getKey,
@@ -206,12 +212,12 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       final catalog=await StudyCatalog.loadAvailable(_library);
       await _seedCatalog(catalog);
       if(!mounted)return;
-      setState(()=>_catalog=catalog);
+      setState((){_catalog=catalog;_matches=[];_searchStatus='';_searchGeneration++;_searching=false;});
       await _refreshGuidedLessons();
       if(!mounted)return;
       setState(()=>_importStatus=count==0
         ?'Nenhum arquivo importado.'
-        :'Importados '+count.toString()+' PDFs originais com verificação de integridade.');
+        :'Importação concluída: '+count.toString()+' documentos. Consulte o índice para ver o conteúdo disponível.');
     }catch(e){
       if(mounted)setState(()=>_importStatus='Falha na importação: '+e.toString());
     }finally{if(mounted)setState(()=>_importing=false);}
@@ -417,24 +423,46 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     await _refreshMetrics();
   }
 
+  Future<void> _openNotebook() async {
+    await Navigator.of(context).push(MaterialPageRoute<void>(builder:(_)=>StudyNotebook(
+      catalog:_catalog,openChapter:(n,p,q)=>_openNativeBook(n,page:p,quote:q))));
+  }
+
+  Future<void> _openDriveFolder() async {
+    try{
+      final ok=await launchUrl(Uri.parse('https://drive.google.com/drive/folders/19tpPVsKlmoXpRY9TwsNK8j-VpMfsLKys'),mode:LaunchMode.externalApplication);
+      if(!ok)throw StateError('Não foi possível abrir o Drive.');
+    }catch(e){if(mounted)ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text(e.toString())));}
+  }
+
   Future<void> _searchFullText() async {
-    final q=_corpusSearch.trim().toLowerCase();
-    if(q.length<3){setState(()=>_matches=[]);return;}
+    final q=studyFold(_corpusSearch);
+    final generation=++_searchGeneration;
+    if(q.length<2){setState((){_matches=[];_searching=false;_searchStatus='Digite pelo menos dois caracteres.';});return;}
+    setState((){_matches=[];_searching=true;_searchStatus='Buscando em todo o acervo disponível...';});
     final found=<({int chapter,int page,String excerpt})>[];
-    for(final chapter in _library.chapters){
-      final pages=await _library.pages(chapter.number);
-      for(final page in pages){
-        final i=page.text.toLowerCase().indexOf(q);
-        if(i<0)continue;
-        final from=i>45?i-45:0;
-        final to=(i+145).clamp(0,page.text.length);
-        found.add((chapter:chapter.number,page:page.number,
-          excerpt:page.text.substring(from,to).replaceAll('\n',' ')));
-        if(found.length>=30)break;
-      }
-      if(found.length>=30)break;
+    var failures=0,total=0;
+    for(final chapter in List<StudyChapter>.of(_catalog)){
+      if(!mounted||generation!=_searchGeneration)return;
+      try{
+        final book=await const SourceBookLibrary().load(chapter.number,_library);
+        for(var i=0;i<book.screens.length;i++){
+          final raw=book.screens[i].text.replaceAll('\u00ad','').replaceAll(RegExp(r'\s+'),' ').trim();
+          final index=studyFold(raw).indexOf(q);
+          if(index<0)continue;
+          total++;
+          if(found.length<200){
+            final start=(index-70).clamp(0,raw.length).toInt();
+            final end=(index+q.length+110).clamp(start,raw.length).toInt();
+            found.add((chapter:chapter.number,page:i,excerpt:raw.substring(start,end)));
+          }
+        }
+      }catch(_){failures++;}
     }
-    if(mounted)setState(()=>_matches=found);
+    if(mounted&&generation==_searchGeneration)setState((){
+      _matches=found;_searching=false;
+      _searchStatus=total.toString()+' páginas/telas encontradas'+(total>200?' (primeiras 200 exibidas; refine a busca)':'')+(failures>0?' · '+failures.toString()+' capítulos não pesquisáveis':'');
+    });
   }
 
   void _setLabDomain(LabDomain d) {
@@ -696,62 +724,55 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   }
 
   Widget _libraryTab(){
-    final found=_catalog.where((c)=>c.title.toLowerCase().contains(_filter.toLowerCase()) ||
-      c.number.toString().contains(_filter)).toList();
+    final query=studyFold(_filter);
+    final found=_catalog.where((c)=>studyFold(c.title).contains(query)||c.number.toString().contains(query)||c.number.toString().padLeft(2,'0').contains(query)).toList();
     return ListView(padding:const EdgeInsets.all(16),children:[
-      _topTitle('Biblioteca de referência','${_catalog.length} de ${StudyCatalog.volumeEnds.last} capítulos disponíveis para leitura. Importe os pacotes integrais restantes para ampliar o acervo.'),
-      _infoCard('Importar PDFs do Drive ou do dispositivo',Column(
-        crossAxisAlignment:CrossAxisAlignment.start,children:[
-          const Text('Baixe o pacote integral fornecido neste chat. '
-            'Toque no botão e selecione o ZIP no armazenamento ou no aplicativo Google Drive. '
-            'Os PDFs e o texto das páginas serão guardados no aparelho.'),
-          const SizedBox(height:12),
-          FilledButton.icon(onPressed:_importing?null:_import,
-            icon:const Icon(Icons.file_upload_outlined),
-            label:Text(_importing?'Importando...':'Importar pacote ZIP / PDFs')),
-          if(_importStatus.isNotEmpty)Text(_importStatus),
-          const SizedBox(height:8),
-          Text('Documentos originais disponíveis: '+_library.chapters.length.toString()),
-        ]),icon:Icons.folder_open),
-      TextField(onChanged:(v)=>setState(()=>_filter=v),
-        decoration:const InputDecoration(prefixIcon:Icon(Icons.search),
-          labelText:'Pesquisar título ou número do capítulo',
-          border:OutlineInputBorder())),
-      const SizedBox(height:12),
-      for(final c in found) Card(child:ListTile(
-        title:Text('Cap. '+c.number.toString().padLeft(2,'0')+' — '+c.title),
-        subtitle:Text('Toque para ler o texto integral · Vol. '+c.volume.toString()+' • '+c.edition+
-          ' • '+(_library.chapter(c.number)==null?'PDF de apoio não importado':'PDF original disponível offline')),
-        isThreeLine:true,
-        trailing:Row(mainAxisSize:MainAxisSize.min,children:[
-          Icon(_library.chapter(c.number)==null
-            ?Icons.cloud_outlined:Icons.check_circle,
-            color:const Color(0xFF20533F)),
-          IconButton(
-            tooltip:c.pdfFileId.isEmpty?'Abrir PDF original offline':'Abrir documento de referência no Drive',
-            icon:const Icon(Icons.open_in_new,size:18),
-            onPressed:()=>_openSource(c)),
-        ]),
-        onTap:()=>_openNativeBook(c.number),
-      )),
+      _topTitle('Biblioteca','Acervo de estudo · '+_catalog.length.toString()+' de '+StudyCatalog.volumeEnds.last.toString()+' capítulos disponíveis'),
+      Wrap(spacing:8,runSpacing:8,children:[
+        FilledButton.icon(onPressed:_importing?null:_import,icon:const Icon(Icons.cloud_download_outlined),label:Text(_importing?'Importando...':'Importar do Drive')),
+        OutlinedButton.icon(onPressed:_openDriveFolder,icon:const Icon(Icons.folder_open),label:const Text('Abrir acervo no Drive')),
+        OutlinedButton.icon(onPressed:_openNotebook,icon:const Icon(Icons.edit_note),label:const Text('Meu caderno')),
+      ]),
+      const SizedBox(height:8),
+      const Text('No Android, selecione Google Drive no seletor de arquivos e escolha o ZIP integral v2. O conteúdo fica disponível offline. PDFs individuais não incluem texto nativo; prefira o pacote completo.'),
+      if(_importStatus.isNotEmpty)Padding(padding:const EdgeInsets.symmetric(vertical:8),child:Text(_importStatus)),
       const SizedBox(height:16),
-      _infoCard('Buscar no conteúdo dos capítulos importados',Column(children:[
-        TextField(onChanged:(value)=>_corpusSearch=value,
-          decoration:const InputDecoration(
-            labelText:'Termo ou expressão nos PDFs importados',
-            border:OutlineInputBorder())),
+      SegmentedButton<int>(segments:const [
+        ButtonSegment(value:0,label:Text('Índice'),icon:Icon(Icons.list_alt)),
+        ButtonSegment(value:1,label:Text('Busca integral'),icon:Icon(Icons.search)),
+      ],selected:{_libraryMode},onSelectionChanged:(v)=>setState(()=>_libraryMode=v.first)),
+      const SizedBox(height:12),
+      if(_libraryMode==0)...[
+        TextField(onChanged:(v)=>setState(()=>_filter=v),decoration:const InputDecoration(prefixIcon:Icon(Icons.search),labelText:'Título ou número do capítulo',border:OutlineInputBorder())),
         const SizedBox(height:8),
-        FilledButton(onPressed:_searchFullText,
-          child:const Text('Pesquisar texto integral')),
-        for(final m in _matches) ListTile(
-          title:Text('Cap. '+m.chapter.toString()+' · página '+m.page.toString()),
-          subtitle:Text(m.excerpt,maxLines:3,overflow:TextOverflow.ellipsis),
-          onTap:()=>_readChapter(m.chapter)),
-        if(_matches.isEmpty)const Text('Nenhum resultado carregado.'),
-      ]),icon:Icons.manage_search),
-      const Text('Para arquivos novos, use novamente Importar. '
-        'O acesso pelo seletor de arquivos do Android pode ler arquivos do Google Drive; '
-        'sincronização automática sem autenticação OAuth não é afirmada.'),
+        if(found.isEmpty)const Text('Nenhum capítulo disponível corresponde ao filtro.'),
+        for(var vol=1;vol<=StudyCatalog.volumeTitles.length;vol++)
+          if(query.isEmpty||found.any((c)=>c.volume==vol)) Card(child:ExpansionTile(
+            key:ValueKey('index_'+vol.toString()+'_'+query),
+            initiallyExpanded:query.isNotEmpty||vol==StudyCatalog.volumeFor(_selectedChapter),
+            title:Text('Volume '+vol.toString()+' — '+StudyCatalog.volumeTitles[vol-1]),
+            subtitle:Text(found.where((c)=>c.volume==vol).length.toString()+' disponíveis · capítulos '+(vol==1?1:StudyCatalog.volumeEnds[vol-2]+1).toString()+'–'+StudyCatalog.volumeEnds[vol-1].toString()),
+            children:[
+              for(final c in found.where((c)=>c.volume==vol)) ListTile(
+                leading:CircleAvatar(child:Text(c.number.toString())),
+                title:Text(c.title),
+                subtitle:Text(_library.chapter(c.number)==null?'Texto incluído no app':'Disponível offline'),
+                trailing:const Icon(Icons.chevron_right),
+                onTap:(){setState(()=>_selectedChapter=c.number);_openNativeBook(c.number);}),
+              if(!found.any((c)=>c.volume==vol))const Padding(padding:EdgeInsets.all(12),child:Text('Importe o acervo integral para liberar este volume.')),
+            ])),
+      ]else...[
+        TextField(onChanged:(v){_corpusSearch=v;_searchGeneration++;setState((){_matches=[];_searchStatus='';_searching=false;});},onSubmitted:(_)=>_searchFullText(),decoration:const InputDecoration(prefixIcon:Icon(Icons.search),labelText:'Termo ou expressão (com ou sem acento)',border:OutlineInputBorder())),
+        const SizedBox(height:8),
+        FilledButton.icon(onPressed:_searching?null:_searchFullText,icon:const Icon(Icons.manage_search),label:const Text('Buscar em todos os capítulos')),
+        if(_searching)const LinearProgressIndicator(),
+        if(_searchStatus.isNotEmpty)Text(_searchStatus),
+        for(final m in _matches)Card(child:ListTile(
+          title:Text('Cap. '+m.chapter.toString()+' — '+_catalog.firstWhere((c)=>c.number==m.chapter).title),
+          subtitle:Text('Posição '+(m.page+1).toString()+'\n'+m.excerpt,maxLines:5,overflow:TextOverflow.ellipsis),
+          trailing:const Icon(Icons.chevron_right),
+          onTap:()=>_openNativeBook(m.chapter,page:m.page))),
+      ],
     ]);
   }
 
@@ -821,6 +842,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
 
   Widget _profile()=>ListView(padding:const EdgeInsets.all(16),children:[
     _topTitle('Meu Espaço','Somente resultados persistidos e configurações verificáveis.'),
+    FilledButton.icon(onPressed:_openNotebook,icon:const Icon(Icons.edit_note),label:const Text('Abrir meu caderno de estudos')),
     _infoCard('Matriz de competências',Column(
       crossAxisAlignment:CrossAxisAlignment.start,children:[
         const Text('Proficiência profissional: ainda não aferida.'),
