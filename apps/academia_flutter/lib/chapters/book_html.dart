@@ -91,6 +91,7 @@ class SourceHtmlConverter {
     required int chapter,
     required int screen,
     List<Map<String,dynamic>> highlights=const [],
+    bool dark=false,
   }) {
     final content=parse(source).map(blockHtml).join('\n');
     final marks=highlights.where((h)=>h['page']==screen && h['text'] is String)
@@ -101,25 +102,25 @@ class SourceHtmlConverter {
         'quote':h['text']??'',
       }).toList();
     final json=jsonEncode(marks).replaceAll('</','<\\/');
-    final size=fontSize.clamp(14.0,26.0);
+    final size=fontSize.clamp(12.0,36.0);
     return '''<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:;">
 <style>
-body{margin:0;background:#fffefb;color:#243129;font-family:Georgia,'Noto Serif',serif;font-size:${size}px;line-height:1.74;-webkit-text-size-adjust:100%}
+body{margin:0;background:${dark?'#000000':'#ffffff'};color:${dark?'#ffffff':'#000000'};font-family:Georgia,'Noto Serif',serif;font-size:${size}px;line-height:1.74;-webkit-text-size-adjust:100%}
 article{max-width:780px;margin:auto;padding:20px 19px 64px}
-p{margin:0 0 1.22em;text-align:justify;text-justify:inter-word;hyphens:auto;overflow-wrap:break-word}
+p{margin:0 0 1.22em;text-align:left;hyphens:manual;overflow-wrap:anywhere}
 h1,h2,h3,h4{font-family:system-ui,Roboto,sans-serif;text-align:left;line-height:1.29;hyphens:none;break-after:avoid}
-h1{font-size:1.85em;margin:0.5em 0 0.8em;color:#194a37}
-h2{font-size:1.33em;margin:1.4em 0 .75em;color:#18503a;border-bottom:1px solid #d2dcd4;padding-bottom:.35em}
-h3{font-size:1.16em;margin:1.3em 0 .75em;color:#204a38}
-h4{font-size:.82em;letter-spacing:.09em;color:#47755b;margin:1.2em 0}
-aside{display:block;margin:1.1em 0 1.35em;border-left:4px solid #2f8057;background:#eef5ee;padding:.85em 1em;border-radius:0 8px 8px 0;font-weight:600;line-height:1.55}
-figcaption{display:block;font-size:.79em;line-height:1.55;font-style:italic;color:#54645b;margin:.5em 0 1.2em}
-small{display:block;margin:.8em 0;color:#8b948e;font-size:.67em}
+h1{font-size:1.85em;margin:0.5em 0 0.8em;color:inherit}
+h2{font-size:1.33em;margin:1.4em 0 .75em;color:inherit;border-bottom:1px solid #d2dcd4;padding-bottom:.35em}
+h3{font-size:1.16em;margin:1.3em 0 .75em;color:inherit}
+h4{font-size:.82em;letter-spacing:.09em;color:inherit;margin:1.2em 0}
+aside{display:block;margin:1.1em 0 1.35em;border-left:4px solid ${dark?'#aaaaaa':'#555555'};background:${dark?'#1c1c1c':'#f0f0f0'};padding:.85em 1em;border-radius:0 8px 8px 0;font-weight:600;line-height:1.55}
+figcaption{display:block;font-size:.79em;line-height:1.55;font-style:italic;color:inherit;margin:.5em 0 1.2em}
+small{display:block;margin:.8em 0;color:inherit;font-size:.67em}
 strong{font-family:system-ui,Roboto,sans-serif}
-mark.saved{background:#ffe08c;color:inherit;border-radius:2px}
+mark.saved{background:#ffe08c;color:#000000;border-radius:2px}
 ::selection{background:#8cd4b0;color:#15362a}
 </style></head><body><article data-chapter="$chapter" data-screen="$screen">
 $content
@@ -139,6 +140,9 @@ function addMark(m){
  if(!el||a<0||b<=a){
    el=Array.from(article.children).find(x=>x.textContent.includes(m.quote));
    if(!el)return;a=el.textContent.indexOf(m.quote);b=a+m.quote.length;
+ }
+ if(el.textContent.slice(a,b).trim()!==m.quote.trim()) {
+   a=el.textContent.indexOf(m.quote);if(a<0)return;b=a+m.quote.length;
  }
  const from=locate(el,a),to=locate(el,b);
  if(!from||!to)return;
