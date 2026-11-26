@@ -229,6 +229,9 @@ figure{margin:1em 0}figure img{max-width:100%;height:auto;display:block;margin:a
 pre{white-space:pre;overflow-x:auto;max-width:100%;padding:.8em;border:1px solid #888;border-radius:6px;font: .82em/1.5 monospace;color:inherit;hyphens:none}.code-card{margin:1em 0;border:1px solid #888;border-radius:8px;background:${dark?'#141414':'#f5f5f5'}}.code-card pre{margin:0;border:0;border-top:1px solid #888;border-radius:0;user-select:text}.code-bar{display:flex;justify-content:space-between;align-items:center;padding:.45em .7em;font:600 .75em system-ui}.code-bar button{font:inherit;border:1px solid #888;border-radius:4px;padding:.4em .7em;background:transparent;color:inherit}
 mark.saved{background:#ffe08c;color:#000000;border-radius:2px}
 ::selection{background:#8cd4b0;color:#15362a}
+
+/* Narrow display and maximum font size: horizontal scrolling is local to code/tables. */
+*,*::before,*::after{box-sizing:border-box}article{min-width:0;overflow-wrap:anywhere}h1,h2,h3,h4,small,figcaption,aside{overflow-wrap:anywhere;word-break:normal}figure img{max-width:100%;box-sizing:border-box}.table-scroll,pre,.code-card{max-width:100%;min-width:0}.code-bar{flex-wrap:wrap;gap:.4em}.code-bar span{min-width:0;overflow-wrap:anywhere}
 </style></head><body><article data-chapter="$chapter" data-screen="$screen">
 $content
 </article><script>
