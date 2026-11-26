@@ -42,3 +42,7 @@ Academia-Forense-A57-Android-Verified. Compare o certificado dos próximos dois
 APKs com apksigner verify --print-certs e verifique versionCode crescente.
 Teste instalação por cima sem desinstalar e preservação de conteúdo, notas,
 marcadores e preferências. O workflow não comprova sozinho migração no aparelho.
+
+## Configuração pelo Android (Termux)
+
+O script `scripts/configurar-assinatura-android.sh` configura os quatro segredos via GitHub CLI, usando um JDK instalado que forneça `keytool`. Após a configuração, uma nova execução do workflow deve gerar o artefato `Academia-Forense-A57-Android-Verified`. Se o nome incluir `TESTE-sem-assinatura-permanente`, a chave não foi aplicada. Não desinstale o APK anterior para testar esse artefato.
