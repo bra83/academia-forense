@@ -7,9 +7,11 @@ import 'study_catalog.dart';
 
 /// A reader screen is deliberately distinguished from a numbered PDF page.
 class BookScreen {
-  const BookScreen({required this.number,required this.text});
+  const BookScreen({required this.number,required this.text,this.layout=const [],this.visualJpeg});
   final int number;
   final String text;
+  final List<Map<String,dynamic>> layout;
+  final String? visualJpeg;
 }
 
 class BookChapter {
@@ -62,15 +64,15 @@ class BookPaginator {
 class SourceBookLibrary {
   const SourceBookLibrary();
 
-  Future<BookChapter> load(int chapter,OfflineLibrary library) async {
+  Future<BookChapter> load(int chapter,OfflineLibrary library,{bool includeLayout=true}) async {
     if(chapter<1 || chapter>StudyCatalog.volumeEnds.last)throw ArgumentError.value(chapter,'chapter');
     // A previously imported, verified ZIP contains the *real* page mapping.
-    final original=await library.pages(chapter);
+    final original=await library.pages(chapter,includeLayout:includeLayout);
     if(original.isNotEmpty) {
       return BookChapter(
         chapter:chapter,sourceName:'Páginas extraídas do PDF original',
         originalPages:original.length,exactPdfPages:true,
-        screens:original.map((p)=>BookScreen(number:p.number,text:p.text))
+        screens:original.map((p)=>BookScreen(number:p.number,text:p.text,layout:p.layout,visualJpeg:p.visualJpeg))
           .toList(growable:false));
     }
     if(chapter>26)throw StateError('Importe o capítulo integral na Biblioteca.');
