@@ -130,7 +130,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     try {
       await controller.loadHtmlString(SourceHtmlConverter.pageHtml(
         _pageText,fontSize:_font,chapter:_chapter,screen:_page,
-        highlights:_highlights,dark:_dark));
+        highlights:_highlights,dark:_dark,layout:_book!.screens[_page].layout));
     } catch (e) {
       if(mounted){
         setState(()=>_htmlReading=false);
@@ -226,6 +226,18 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     } catch (_) {
       _notify('A preferência de tamanho não foi gravada.');
     }
+  }
+
+  Future<void> _showOriginalPage() async {
+    final visual=_book?.screens[_page].visualJpeg;
+    if(visual==null)return;
+    try {
+      final bytes=base64Decode(visual);
+      await Navigator.of(context).push(MaterialPageRoute<void>(builder:(ctx)=>Scaffold(
+        appBar:AppBar(title:Text('Página original · $_label')),
+        backgroundColor:Colors.black,
+        body:SafeArea(child:Center(child:InteractiveViewer(minScale:0.8,maxScale:6,child:Image.memory(bytes,fit:BoxFit.contain,errorBuilder:(_,__,___)=>const Text('Imagem indisponível',style:TextStyle(color:Colors.white))))))));
+    }catch(e){_notify('Não foi possível mostrar a página: $e');}
   }
 
   Future<void> _toggleDark() async {
@@ -595,6 +607,9 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                     icon:const Icon(Icons.border_color_outlined,size:17),
                     label:const Text('Salvar trecho selecionado'))),
             ])),
+          if(book.screens[_page].visualJpeg!=null)
+            Padding(padding:const EdgeInsets.symmetric(horizontal:10),child:OutlinedButton.icon(
+              onPressed:_showOriginalPage,icon:const Icon(Icons.image_outlined),label:const Text('Ver gráficos, tabelas e página original'))),
           Expanded(child:ColoredBox(color:_dark?Colors.black:Colors.white,
             child:_htmlReading && _htmlController!=null?
             WebViewWidget(controller:_htmlController!):
