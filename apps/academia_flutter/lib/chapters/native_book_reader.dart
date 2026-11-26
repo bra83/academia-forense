@@ -239,10 +239,29 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     if(visual==null)return;
     try {
       final bytes=base64Decode(visual);
-      await Navigator.of(context).push(MaterialPageRoute<void>(builder:(ctx)=>Scaffold(
-        appBar:AppBar(title:Text('Página original · $_label')),
-        backgroundColor:Colors.black,
-        body:SafeArea(child:Center(child:InteractiveViewer(minScale:0.8,maxScale:6,child:Image.memory(bytes,fit:BoxFit.contain,errorBuilder:(_,__,___)=>const Text('Imagem indisponível',style:TextStyle(color:Colors.white))))))));
+      final label=_label;
+      await Navigator.of(context).push(MaterialPageRoute<void>(
+        builder:(ctx)=>Scaffold(
+          appBar:AppBar(title:Text('Página original · $label')),
+          backgroundColor:Colors.black,
+          body:SafeArea(
+            child:Center(
+              child:InteractiveViewer(
+                minScale:0.8,
+                maxScale:6,
+                child:Image.memory(
+                  bytes,
+                  fit:BoxFit.contain,
+                  errorBuilder:(_,__,___)=>const Text(
+                    'Imagem indisponível',
+                    style:TextStyle(color:Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ));
     }catch(e){_notify('Não foi possível mostrar a página: $e');}
   }
 
