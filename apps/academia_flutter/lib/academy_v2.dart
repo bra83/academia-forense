@@ -16,6 +16,7 @@ import 'chapters/study_reader_v2.dart';
 import 'chapters/quiz_v2.dart';
 import 'services/offline_library.dart';
 import 'services/report_v2.dart';
+import 'services/study_backup.dart';
 
 class AcademiaV2Screen extends StatefulWidget {
   const AcademiaV2Screen({super.key, required this.database,this.privateLibrary, this.fixtureMode = false});
@@ -850,9 +851,49 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     _caseExercise(),
   ]);
 
+  bool _backupBusy=false;
+  String _backupStatus='';
+  Future<void> _studyBackup({required bool restore}) async {
+    if(_backupBusy)return;
+    setState((){_backupBusy=true;_backupStatus='';});
+    try{
+      if(!restore){
+        final saved=await StudyBackup.exportFile();
+        if(mounted)setState(()=>_backupStatus=saved?'Caderno e progresso de leitura exportados.':'Exportação cancelada.');
+      }else{
+        final data=await StudyBackup.pickBackup();
+        if(data==null)return;
+        if(!mounted)return;
+        final yes=await showDialog<bool>(context:context,builder:(ctx)=>AlertDialog(
+          title:const Text('Restaurar backup de estudos?'),
+          content:const Text('As anotações e marcadores serão reunidos com os atuais. Preferências já existentes serão mantidas.'),
+          actions:[
+            TextButton(onPressed:()=>Navigator.pop(ctx,false),child:const Text('Cancelar')),
+            FilledButton(onPressed:()=>Navigator.pop(ctx,true),child:const Text('Restaurar')),
+          ]));
+        if(yes!=true)return;
+        final prefs=await SharedPreferences.getInstance();
+        final count=await StudyBackup.merge(prefs,data);
+        if(!mounted)return;
+        setState(()=>_backupStatus='Backup restaurado: '+count.toString()+' grupos de registros.');
+        await _refreshGuidedLessons();
+      }
+    }catch(e){if(mounted)setState(()=>_backupStatus='Falha no backup: '+e.toString());}
+    finally{if(mounted)setState(()=>_backupBusy=false);}
+  }
+
   Widget _profile()=>ListView(padding:const EdgeInsets.all(16),children:[
     _topTitle('Meu Espaço','Somente resultados persistidos e configurações verificáveis.'),
     FilledButton.icon(onPressed:_openNotebook,icon:const Icon(Icons.edit_note),label:const Text('Abrir meu caderno de estudos')),
+    _infoCard('Backup do caderno e leitura',Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+      const Text('Salve anotações, destaques, marcadores, posição de leitura, tema, fonte e lições concluídas em um arquivo JSON privado. Não inclui PDFs, chave Gemini nem histórico do banco de dados.'),
+      const SizedBox(height:8),
+      Wrap(spacing:8,runSpacing:8,children:[
+        OutlinedButton.icon(onPressed:_backupBusy?null:()=>_studyBackup(restore:false),icon:const Icon(Icons.save_alt),label:const Text('Exportar backup')),
+        OutlinedButton.icon(onPressed:_backupBusy?null:()=>_studyBackup(restore:true),icon:const Icon(Icons.restore),label:const Text('Restaurar backup')),
+      ]),
+      if(_backupStatus.isNotEmpty)Text(_backupStatus),
+    ]),icon:Icons.backup_outlined),
     _infoCard('Matriz de competências',Column(
       crossAxisAlignment:CrossAxisAlignment.start,children:[
         const Text('Proficiência profissional: ainda não aferida.'),
