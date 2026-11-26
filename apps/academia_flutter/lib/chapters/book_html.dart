@@ -123,7 +123,8 @@ class SourceHtmlConverter {
   static String narrationText(String source,{List<Map<String,dynamic>> layout=const []}) {
     final blocks=layout.isEmpty?parse(readingSource(source)):layout.map((b)=>HtmlBlock('',b['kind'].toString(),b['text'].toString())).toList();
     final parts=<String>[];
-    for(final b in blocks){
+    for(var i=0;i<blocks.length;i++){
+      final b=blocks[i];
       if(b.kind=='pre'){
         if(!printingFurniture(b.text))parts.add('Bloco de código ou dados técnicos disponível para consulta na página.');
         continue;
@@ -131,6 +132,10 @@ class SourceHtmlConverter {
       final cleaned=compactEditorial(readingSource(b.text)).replaceAll(RegExp(r'\s+'),' ').trim();
       if(cleaned.isEmpty||printingFurniture(cleaned))continue;
       parts.add(cleaned);
+      if(b.kind=='figure'&&layout.isNotEmpty){
+        final alt=(layout[i]['alt']??'').toString().trim();
+        if(alt.isNotEmpty&&!cleaned.contains(alt))parts.add('Descrição do diagrama: '+alt);
+      }
     }
     return parts.join('\n\n');
   }
@@ -168,7 +173,8 @@ class SourceHtmlConverter {
     if(block.kind=='figure' && data['jpeg'] is String){
       final jpeg=data['jpeg'] as String;
       if(RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(jpeg)){
-        return '<figure id="$id"><img alt="$t" src="data:image/jpeg;base64,$jpeg"><figcaption>$t</figcaption></figure>';
+        final alt=escape((data['alt']??block.text).toString());
+        return '<figure id="$id"><img alt="$alt" src="data:image/jpeg;base64,$jpeg"><figcaption>$t</figcaption></figure>';
       }
     }
     if(block.kind=='pre'){
