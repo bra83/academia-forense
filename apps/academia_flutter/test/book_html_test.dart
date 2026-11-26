@@ -71,4 +71,37 @@ void main(){
     expect(html,contains('letter-spacing:normal'));
   });
 
+
+  test('legacy cover joins title, separates glued note and excludes print metadata from speech',(){
+    const raw='Dos dados\nàs evidências\n'
+      'Capítulo 1 · Edição inaugural 12 novembro 2026 · A4 · PDF pesquisável\n'
+      'EDIÇÃO REVISADA 2 · NOVEMBRO 2026N O TA A O L E I T O R\n'
+      'Este volume foi escrito para quem está retomando os estudos.\n'
+      'O texto deve ser memoriza‐\ndo.';
+    final html=SourceHtmlConverter.pageHtml(raw,fontSize:19,chapter:1,screen:0);
+    final speech=SourceHtmlConverter.narrationText(raw);
+    expect(html,contains('Dos dados às evidências'));
+    expect(html,contains('Nota ao leitor'));
+    expect(html,isNot(contains('PDF pesquisável')));
+    expect(html,isNot(contains('2026N O TA')));
+    expect(speech,contains('Nota ao leitor'));
+    expect(speech,contains('memorizado'));
+    expect(speech,isNot(contains('EDIÇÃO REVISADA')));
+    expect(speech,isNot(contains('Edição inaugural')));
+  });
+
+  test('structured speech follows the displayed page and excludes cover imprint',(){
+    const layout=[
+      {'kind':'h4','text':'E N C I C L O P É D I A D E C I Ê N C I A S F O R E N S E S · V O L U M E 1'},
+      {'kind':'h2','text':'Título desta página'},
+      {'kind':'p','text':'Somente o conteúdo aberto.'},
+      {'kind':'pre','text':'Capítulo 1 · Edição inaugural\n12 novembro 2026 · A4 · PDF pesquisável'},
+    ];
+    final speech=SourceHtmlConverter.narrationText('Texto bruto diferente',layout:layout);
+    expect(speech,contains('Título desta página'));
+    expect(speech,contains('Somente o conteúdo aberto.'));
+    expect(speech,isNot(contains('Texto bruto diferente')));
+    expect(speech,isNot(contains('PDF pesquisável')));
+  });
+
 }
