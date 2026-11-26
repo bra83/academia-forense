@@ -551,149 +551,153 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     );
   }
 
+  Future<void> _readingSettings() async {
+    await showModalBottomSheet<void>(
+      context:context,isScrollControlled:true,
+      builder:(ctx)=>SafeArea(child:StatefulBuilder(builder:(ctx,update){
+        return SingleChildScrollView(
+          padding:const EdgeInsets.fromLTRB(20,12,20,20),
+          child:Column(mainAxisSize:MainAxisSize.min,children:[
+            Row(children:[
+              Expanded(child:Text('Ajustes de leitura',style:Theme.of(ctx).textTheme.titleMedium)),
+              IconButton(onPressed:()=>Navigator.pop(ctx),icon:const Icon(Icons.close)),
+            ]),
+            Row(children:[
+              IconButton(tooltip:'Diminuir fonte',onPressed:_font<=12?null:() async{
+                await _changeFont(_font-1);if(ctx.mounted)update((){});
+              },icon:const Icon(Icons.text_decrease)),
+              Expanded(child:Slider(min:12,max:36,divisions:24,value:_font,
+                label:_font.toStringAsFixed(0),onChanged:(v){setState(()=>_font=v);update((){});},
+                onChangeEnd:(v)=>_changeFont(v))),
+              IconButton(tooltip:'Aumentar fonte',onPressed:_font>=36?null:() async{
+                await _changeFont(_font+1);if(ctx.mounted)update((){});
+              },icon:const Icon(Icons.text_increase)),
+              Text(_font.toStringAsFixed(0)),
+            ]),
+            SwitchListTile(contentPadding:EdgeInsets.zero,
+              title:const Text('Fundo preto'),subtitle:const Text('Letras brancas'),
+              value:_dark,onChanged:(_) async{await _toggleDark();if(ctx.mounted)update((){});}),
+            SwitchListTile(contentPadding:EdgeInsets.zero,
+              title:const Text('Texto formatado'),
+              subtitle:const Text('Desative apenas para consultar a transcrição bruta'),
+              value:_htmlReading,onChanged:_htmlController==null?null:(v){
+                setState(()=>_htmlReading=v);update((){});if(v)_renderHtml();
+              }),
+            FilledButton(onPressed:()=>Navigator.pop(ctx),child:const Text('Voltar à leitura')),
+          ]),
+        );
+      })),
+    );
+  }
+
+  Future<void> _chapterIndex() async {
+    final selected=await showModalBottomSheet<int>(context:context,isScrollControlled:true,
+      builder:(ctx){
+        var query='';
+        return SafeArea(child:SizedBox(height:MediaQuery.sizeOf(ctx).height*.8,
+          child:StatefulBuilder(builder:(ctx,update){
+            final entries=widget.catalog.where((c)=>c.title.toLowerCase().contains(query)||c.number.toString().contains(query)).toList();
+            return Column(children:[
+              Padding(padding:const EdgeInsets.all(12),child:TextField(
+                onChanged:(v)=>update(()=>query=v.trim().toLowerCase()),
+                decoration:const InputDecoration(prefixIcon:Icon(Icons.search),hintText:'Buscar capítulo'))),
+              Expanded(child:ListView.builder(itemCount:entries.length,itemBuilder:(ctx,i){
+                final c=entries[i];
+                return ListTile(selected:c.number==_chapter,
+                  title:Text(c.title),leading:Text(c.number.toString().padLeft(2,'0')),
+                  onTap:()=>Navigator.pop(ctx,c.number));
+              })),
+            ]);
+          }),
+        ));
+      });
+    if(selected!=null&&selected!=_chapter&&mounted)await _load(selected);
+  }
+
+  void _menuAction(String action){
+    switch(action){
+      case 'settings':_readingSettings();break;
+      case 'index':_chapterIndex();break;
+      case 'bookmark':_bookmark();break;
+      case 'note':_markSelection(pageNote:true);break;
+      case 'marks':_openMarks();break;
+      case 'exercise':_openExercises();break;
+      case 'gemini':_openTutor();break;
+      case 'visual':_showOriginalPage();break;
+      case 'pdf':widget.onOpenPdf?.call(_chapter);break;
+    }
+  }
+
   @override
   Widget build(BuildContext context){
     final book=_book;
+    final bg=_dark?Colors.black:Colors.white;
+    final chrome=Theme.of(context).colorScheme.surface;
     return Scaffold(
+      backgroundColor:bg,
       appBar:AppBar(
-        title:Text('Cap. ${_chapter.toString().padLeft(2,'0')} · $_title',
-          maxLines:1,overflow:TextOverflow.ellipsis),
+        key:const ValueKey('reader_compact_header'),
+        toolbarHeight:48, titleSpacing:0,
+        title:Text('$_chapter · $_title',maxLines:2,
+          overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:13,fontWeight:FontWeight.w600)),
         actions:[
-          IconButton(tooltip:'Exercícios do PDF',
-            onPressed:book==null?null:_openExercises,
-            icon:const Icon(Icons.assignment_outlined)),
-          IconButton(tooltip:'Anotar página',onPressed:book==null?null:()=>_markSelection(pageNote:true),icon:const Icon(Icons.note_add_outlined)),
-          IconButton(tooltip:'Trechos salvos',
-            onPressed:book==null?null:_openMarks,
-            icon:const Icon(Icons.collections_bookmark_outlined)),
-          IconButton(tooltip:'PDF original (figuras e tabelas)',
-            onPressed:widget.onOpenPdf==null?null:
-              ()=>widget.onOpenPdf!(_chapter),
-            icon:const Icon(Icons.picture_as_pdf_outlined)),
-        ]),
+          if(_hasSelection)IconButton(tooltip:'Salvar trecho selecionado',
+            onPressed:_markSelection,icon:const Icon(Icons.highlight_outlined,size:21)),
+          if(book?.screens[_page].visualJpeg!=null)
+            IconButton(tooltip:'Ver gráficos, tabelas e página original',
+              onPressed:_showOriginalPage,icon:const Icon(Icons.image_outlined,size:21)),
+          IconButton(tooltip:'Ajustes de leitura',onPressed:book==null?null:_readingSettings,
+            icon:const Icon(Icons.text_fields,size:22)),
+          PopupMenuButton<String>(
+            tooltip:'Ferramentas do capítulo',enabled:book!=null,onSelected:_menuAction,
+            itemBuilder:(_)=>[
+              const PopupMenuItem(value:'index',child:Text('Índice de capítulos')),
+              const PopupMenuItem(value:'note',child:Text('Anotar página')),
+              PopupMenuItem(value:'bookmark',child:Text(_bookmarks.contains(_page)?'Remover marcador':'Marcar página')),
+              const PopupMenuItem(value:'marks',child:Text('Trechos salvos')),
+              const PopupMenuItem(value:'gemini',child:Text('Gemini')),
+              const PopupMenuItem(value:'exercise',child:Text('Exercícios')),
+              if(book?.screens[_page].visualJpeg!=null)const PopupMenuItem(value:'visual',child:Text('Página original ampliável')),
+              if(widget.onOpenPdf!=null)const PopupMenuItem(value:'pdf',child:Text('PDF original')),
+            ],
+          ),
+        ],
+      ),
       body:Stack(children:[
-        SafeArea(child:_loading?
-        const Center(child:CircularProgressIndicator()):
-        book==null?
-          Center(child:Padding(
-            padding:const EdgeInsets.all(24),child:Text(_error))):
-        Column(children:[
-          Padding(padding:const EdgeInsets.fromLTRB(14,8,14,8),
-            child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
-              Row(children:[
-                const Icon(Icons.menu_book_outlined,color:forest),
-                const SizedBox(width:8),
-                Expanded(child:Text('Enciclopédia — leitura integral',
-                  style:Theme.of(context).textTheme.titleMedium)),
-                PopupMenuButton<int>(
-                  tooltip:'Escolher outro capítulo',
-                  initialValue:_chapter,
-                  onSelected:_load,
-                  itemBuilder:(_)=>widget.catalog.map((entry)=>
-                    PopupMenuItem<int>(value:entry.number,
-                      child:Text('${entry.number.toString().padLeft(2,'0')} — ${entry.title}',
-                        maxLines:2))).toList(),
-                  child:const Padding(
-                    padding:EdgeInsets.all(9),child:Icon(Icons.list_alt)),
-                ),
-              ]),
-              Text(_label,style:const TextStyle(
-                fontSize:12,color:forest,fontWeight:FontWeight.w600)),
-              const SizedBox(height:7),
-              LinearProgressIndicator(
-                value:(_page+1)/book.screens.length,minHeight:5),
-              const SizedBox(height:6),
-              Wrap(alignment:WrapAlignment.center,crossAxisAlignment:WrapCrossAlignment.center,children:[
-                IconButton(tooltip:'Alternar HTML e texto',
-                  onPressed:()=>setState((){
-                    _htmlReading=!_htmlReading;
-                    if(_htmlReading)_renderHtml();
-                  }),
-                  icon:Icon(_htmlReading?Icons.article_outlined:
-                    Icons.html)),
-                IconButton(tooltip:'Diminuir fonte',
-                  onPressed:_font<=12?null:()=>_changeFont(_font-1),
-                  icon:const Icon(Icons.text_decrease)),
-                Text('${_font.toStringAsFixed(0)} pt'),
-                IconButton(tooltip:'Aumentar fonte',
-                  onPressed:_font>=36?null:()=>_changeFont(_font+1),
-                  icon:const Icon(Icons.text_increase)),
-                IconButton(tooltip:_dark?'Fundo branco':'Fundo preto',
-                  onPressed:_toggleDark,icon:Icon(_dark?Icons.light_mode:Icons.dark_mode)),
-                IconButton(
-                  tooltip:'Marcar/desmarcar tela',
-                  onPressed:_bookmark,
-                  icon:Icon(_bookmarks.contains(_page)?
-                    Icons.bookmark:Icons.bookmark_outline)),
-              ]),
-              if(_hasSelection)
-                Align(alignment:Alignment.centerRight,
-                  child:TextButton.icon(onPressed:_markSelection,
-                    icon:const Icon(Icons.border_color_outlined,size:17),
-                    label:const Text('Salvar trecho selecionado'))),
-            ])),
-          if(book.screens[_page].visualJpeg!=null)
-            Padding(padding:const EdgeInsets.symmetric(horizontal:10),child:OutlinedButton.icon(
-              onPressed:_showOriginalPage,icon:const Icon(Icons.image_outlined),label:const Text('Ver gráficos, tabelas e página original'))),
-          Expanded(child:ColoredBox(color:_dark?Colors.black:Colors.white,
-            child:_htmlReading && _htmlController!=null?
-            WebViewWidget(controller:_htmlController!):
-            Scrollbar(
-              controller:_scroll,
-              child:SingleChildScrollView(
-                key:ValueKey('reading_$_chapter'+'_$_page'),
-                controller:_scroll,
-                padding:const EdgeInsets.fromLTRB(18,16,18,34),
-                child:Column(
-                  crossAxisAlignment:CrossAxisAlignment.start,children:[
-                    SelectableText.rich(TextSpan(children:_spans(_pageText)),
-                      onSelectionChanged:_selectionChanged,
-                      textAlign:TextAlign.start,
-                      style:TextStyle(
-                        fontSize:_font,height:1.68,
-                        color:_ink)),
-                    const SizedBox(height:14),
-                    if(!book.exactPdfPages)const Text(
-                      'Texto extraído do PDF e ajustado à tela. As telas '
-                      'não correspondem às páginas impressas; confira '
-                      'figuras, fórmulas e tabelas no PDF original.',
-                      style:TextStyle(fontSize:12,height:1.45,color:Colors.grey)),
-                  ]))))),
-          Padding(padding:const EdgeInsets.symmetric(
-            horizontal:10,vertical:5),
-            child:Wrap(
-              alignment:WrapAlignment.center,
-              spacing:8,runSpacing:4,
-              children:[
-                OutlinedButton.icon(
-                  onPressed:_openVoice,
-                  icon:const Icon(Icons.record_voice_over),
-                  label:const Text('Ouvir')),
-                FilledButton.icon(
-                  onPressed:_openTutor,
-                  icon:const Icon(Icons.psychology),
-                  label:const Text('Gemini')),
-                OutlinedButton.icon(
-                  onPressed:_openExercises,
-                  icon:const Icon(Icons.edit_note),
-                  label:const Text('Exercícios')),
-              ])),
-          Padding(padding:const EdgeInsets.symmetric(horizontal:8),
-            child:Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,
-              children:[
-                IconButton(
-                  tooltip:'Tela anterior',
+        SafeArea(top:false,child:_loading?
+          const Center(child:CircularProgressIndicator()):
+          book==null?Center(child:Padding(padding:const EdgeInsets.all(24),child:Text(_error,style:TextStyle(color:_ink)))):
+          Column(children:[
+            LinearProgressIndicator(value:(_page+1)/book.screens.length,minHeight:2),
+            Expanded(key:const ValueKey('reader_content_area'),child:ColoredBox(color:bg,
+              child:_htmlReading && _htmlController!=null?
+                WebViewWidget(controller:_htmlController!):
+                Scrollbar(controller:_scroll,child:SingleChildScrollView(
+                  key:ValueKey('reading_$_chapter'+'_$_page'),controller:_scroll,
+                  padding:const EdgeInsets.fromLTRB(16,12,16,20),
+                  child:SelectableText.rich(TextSpan(children:_spans(_pageText)),
+                    onSelectionChanged:_selectionChanged,textAlign:TextAlign.start,
+                    style:TextStyle(fontSize:_font,height:1.55,color:_ink)),
+                )),
+            )),
+            SizedBox(key:const ValueKey('reader_compact_footer'),height:48,
+              child:Material(color:chrome,child:Row(children:[
+                IconButton(tooltip:'Tela anterior',
                   onPressed:_page==0?null:()=>_moveTo(_page-1),
-                  icon:const Icon(Icons.chevron_left,size:29)),
-                TextButton(onPressed:_choosePage,
-                  child:Text(_label)),
-                IconButton(
-                  tooltip:'Próxima tela',
-                  onPressed:_page>=book.screens.length-1?null:
-                    ()=>_moveTo(_page+1),
-                  icon:const Icon(Icons.chevron_right,size:29)),
-              ])),
-        ])),
+                  icon:const Icon(Icons.chevron_left,size:25)),
+                Expanded(child:TextButton(onPressed:_choosePage,child:Text(
+                  '${_page+1} / ${book.screens.length}',
+                  style:const TextStyle(fontSize:13),overflow:TextOverflow.ellipsis))),
+                IconButton(tooltip:'Ouvir',onPressed:_openVoice,
+                  icon:const Icon(Icons.record_voice_over_outlined,size:21)),
+                IconButton(tooltip:'Gemini',onPressed:_openTutor,
+                  icon:const Icon(Icons.psychology_outlined,size:21)),
+                IconButton(tooltip:'Próxima tela',
+                  onPressed:_page>=book.screens.length-1?null:()=>_moveTo(_page+1),
+                  icon:const Icon(Icons.chevron_right,size:25)),
+              ]))),
+          ]),
+        ),
         Positioned.fill(child:_persistentVoicePanel()),
       ]),
     );
