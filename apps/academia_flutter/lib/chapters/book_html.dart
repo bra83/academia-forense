@@ -82,7 +82,7 @@ class SourceHtmlConverter {
     final tag=block.kind=='h1'?'h1':block.kind=='h2'?'h2':
       block.kind=='h3'?'h3':block.kind=='h4'?'h4':
       block.kind=='figcaption'?'figcaption':block.kind=='aside'?'aside':
-      block.kind=='small'?'small':'p';
+      block.kind=='small'?'small':block.kind=='pre'?'pre':'p';
     return '<$tag id="${block.id}" data-pdf="true">$formatted</$tag>';
   }
 
@@ -92,8 +92,10 @@ class SourceHtmlConverter {
     required int screen,
     List<Map<String,dynamic>> highlights=const [],
     bool dark=false,
+    List<Map<String,dynamic>> layout=const [],
   }) {
-    final content=parse(source).map(blockHtml).join('\n');
+    final blocks=layout.isEmpty?parse(source):List.generate(layout.length,(i)=>HtmlBlock('b$i',(layout[i]['kind']??'p').toString(),(layout[i]['text']??'').toString()));
+    final content=blocks.map(blockHtml).join('\n');
     final marks=highlights.where((h)=>h['page']==screen && h['text'] is String)
       .map((h)=><String,dynamic>{
         'block':h['htmlBlock']??'',
@@ -120,6 +122,7 @@ aside{display:block;margin:1.1em 0 1.35em;border-left:4px solid ${dark?'#aaaaaa'
 figcaption{display:block;font-size:.79em;line-height:1.55;font-style:italic;color:inherit;margin:.5em 0 1.2em}
 small{display:block;margin:.8em 0;color:inherit;font-size:.67em}
 strong{font-family:system-ui,Roboto,sans-serif}
+pre{white-space:pre;overflow-x:auto;max-width:100%;padding:.8em;border:1px solid #888;border-radius:6px;font: .88em/1.55 monospace;color:inherit}
 mark.saved{background:#ffe08c;color:#000000;border-radius:2px}
 ::selection{background:#8cd4b0;color:#15362a}
 </style></head><body><article data-chapter="$chapter" data-screen="$screen">
