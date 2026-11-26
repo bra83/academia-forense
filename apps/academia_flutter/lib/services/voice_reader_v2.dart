@@ -46,6 +46,7 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
   Future<GeminiSpeechChunk?>? _prefetch;
   int _prefetchIndex=-1;
   String _requestError='';
+  bool _stopping=false,_canResume=false;
 
   @override
   void initState() {
@@ -69,6 +70,7 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
   void didUpdateWidget(covariant VoiceReaderV2 oldWidget){
     super.didUpdateWidget(oldWidget);
     if(oldWidget.sourceId!=widget.sourceId || oldWidget.readText!=widget.readText){
+      _canResume=false;
       if(_playing||_working){unawaited(_stop());}
     }
   }
@@ -78,7 +80,8 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
       if (!_kokoroReady) _kokoroReady=await _kokoro.initialize(
         enginePackage:_systemVoice?'system':null);
       if (!_kokoroReady) throw StateError('Motor não inicializado.');
-      final installed=await _kokoro.getAvailableVoices();
+      List<TtsVoiceInfo> installed=[];
+      try{installed=await _kokoro.getAvailableVoices();}catch(_){/* Some engines expose only their default voice. */}
       final portuguese=installed.where((v)=>v.locale.toLowerCase().startsWith('pt')).toList();
       final voices=portuguese.isNotEmpty?portuguese:installed;
       if (!mounted) return;
@@ -97,6 +100,7 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
     }
   }
   Future<void> _stop() async {
+    _stopping=true;_canResume=false;
     _generation++;
     _chunks=[];_prefetch=null;_prefetchIndex=-1;
     _client?.close();_client=null;
@@ -105,16 +109,17 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
       await _kokoro.stop();
     } catch (_) {}
     try{await _geminiPlayer?.stop();}catch(_){}
+    if(mounted)setState(()=>_stopping=false);
   }
 
   Future<void> _toggle({bool shortTest=false}) async {
     if (_playing) { await _stop(); return; }
-    if (_working) return;
+    if (_working||_stopping) return;
     final text=shortTest ? 'Olá. Esta é uma verificação de voz da Academia Forense.' :
       widget.readText.trim();
     if (text.isEmpty) {setState(()=>_message='Sem texto disponível para leitura.');return;}
     final round=++_generation;
-    setState(()=>_working=true);
+    setState((){_working=true;_canResume=false;});
     try {
       if (_engine==AudioEngine.kokoroLocal) {
         if (!_kokoroReady || _selectedVoice==null) await _loadKokoroVoices();
@@ -137,7 +142,7 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
         if (_kokoro.state==MotorPlaybackState.error) {
           throw StateError('Falha na síntese local.');
         }
-        if (mounted) setState(() {
+        if (mounted&&round==_generation) setState(() {
           _playing=_kokoro.state==MotorPlaybackState.playing;
           _message=(_systemVoice?'Android':'Kokoro')+': '
             'síntese encaminhada à voz '+(_selectedVoice=='__engine_default__'?'padrão do motor':_selectedVoice!);
@@ -216,10 +221,31 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
     }catch(e){
       if(mounted&&round==_generation){
         _index=index;
+        _canResume=true;
         _client?.close();_client=null;_prefetch=null;_prefetchIndex=-1;
         setState((){_playing=false;_message='Leitura interrompida no trecho '+(index+1).toString()+
           '/'+_chunks.length.toString()+': '+e.toString()+'. Nenhum trecho foi pulado.';});
       }
+    }
+  }
+
+  Future<void> _resumeGemini() async {
+    if(!_canResume||_working||_stopping||_playing||_engine!=AudioEngine.geminiOnline)return;
+    final round=++_generation;
+    setState((){_working=true;_canResume=false;});
+    try{
+      final key=await widget.getApiKey();
+      final model=widget.speechModel;
+      if(key==null||key.isEmpty||model==null||model.isEmpty)throw StateError('Chave ou modelo ausente.');
+      if(!mounted||round!=_generation)return;
+      _client=GeminiTtsClient(apiKey:key,model:model.startsWith('models/')?model.substring(7):model);
+      _requestError='';
+      setState(()=>_playing=true);
+      await _playNextGemini();
+    }catch(e){
+      if(mounted&&round==_generation)setState((){_playing=false;_canResume=true;_message=e.toString();});
+    }finally{
+      if(mounted&&round==_generation)setState(()=>_working=false);
     }
   }
 
@@ -246,7 +272,7 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
         Wrap(spacing:8,runSpacing:8,children:[
           ChoiceChip(label:const Text('Kokoro local'),
             selected:_engine==AudioEngine.kokoroLocal && !_systemVoice,
-            onSelected:_working?null:(_) async {
+            onSelected:_working||_stopping?null:(_) async {
               await _stop();
               setState((){
                 _engine=AudioEngine.kokoroLocal;_systemVoice=false;
@@ -300,14 +326,15 @@ class _VoiceReaderV2State extends State<VoiceReaderV2> {
         ]),
         Wrap(spacing:8,runSpacing:8,children:[
           FilledButton.icon(
-            onPressed:_working&&!_playing?null:()=>_toggle(),
+            onPressed:_stopping||(_working&&!_playing)?null:()=>_toggle(),
             icon:Icon(_playing?Icons.stop:Icons.play_arrow),
             label:Text(_playing?'Parar leitura':'Ler texto desta página')),
           OutlinedButton.icon(
-            onPressed:_working?null:()=>_toggle(shortTest:true),
+            onPressed:_working||_stopping||_playing?null:()=>_toggle(shortTest:true),
             icon:const Icon(Icons.volume_up_outlined),
             label:const Text('Testar voz (frase curta)')),
         ]),
+        if(_canResume)TextButton.icon(onPressed:_resumeGemini,icon:const Icon(Icons.replay),label:const Text('Retomar trecho interrompido')),
         if (_message.isNotEmpty) Padding(padding:const EdgeInsets.only(top:8),
           child:Text(_message)),
       ]),
