@@ -67,9 +67,8 @@ class StudyCatalog {
     'Documentoscopia e Multimídia',
     'Ciências Forenses Complementares',
     'Pesquisa Científica e Exercício Profissional',
-    'Prática Profissional e Casos Integrados',
   ];
-  static const volumeEnds = <int>[10,23,39,53,66,78,90,100,113,116];
+  static const volumeEnds = <int>[10,23,39,53,66,78,90,100,113];
   static int volumeFor(int number) {
     if(number<1 || number>volumeEnds.last)throw RangeError.range(number,1,volumeEnds.last);
     return volumeEnds.indexWhere((end)=>number<=end)+1;
@@ -84,13 +83,13 @@ class StudyCatalog {
     final entries=<int,StudyChapter>{for(final c in bundled)c.number:c};
     for(final source in library.chapters) {
       final n=source.number;
-      if(n<1 || n>volumeEnds.last || entries.containsKey(n) || source.pageCount<=0)continue;
+      if(n<1 || n>volumeEnds.last || source.pageCount<=0)continue;
       final pages=await library.pages(n);
       if(pages.length!=source.pageCount || pages.every((p)=>p.text.trim().isEmpty))continue;
       entries[n]=StudyChapter(
         id:chapterId(n),volume:volumeFor(n),number:n,title:source.title,
         edition:'Importado · fonte original',editorialStatus:'Importado',
-        pdfFileId:'',sections:const [],
+        pdfFileId:entries[n]?.pdfFileId??'',sections:entries[n]?.sections??const [],
       );
     }
     return entries.values.toList()..sort((a,b)=>a.number.compareTo(b.number));
