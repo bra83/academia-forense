@@ -114,7 +114,7 @@ class OfflineLibrary {
     await initialize();
     final picked = await FilePicker.platform.pickFiles(
       type: FileType.custom, allowedExtensions: ['zip','pdf'],
-      allowMultiple: false, withData: false);
+      allowMultiple: true, withData: false);
     if (picked == null) return 0;
     var imported = 0;
     for (final file in picked.files) {
