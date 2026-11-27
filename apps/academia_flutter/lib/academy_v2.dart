@@ -10,10 +10,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'chapters/study_catalog.dart';
 import 'chapters/guided_lesson_screen.dart';
 import 'chapters/native_book_reader.dart';
+import 'chapters/native_book_models.dart';
+import 'chapters/study_notebook.dart';
 import 'chapters/study_reader_v2.dart';
 import 'chapters/quiz_v2.dart';
 import 'services/offline_library.dart';
 import 'services/report_v2.dart';
+import 'services/study_backup.dart';
 
 class AcademiaV2Screen extends StatefulWidget {
   const AcademiaV2Screen({super.key, required this.database,this.privateLibrary, this.fixtureMode = false});
@@ -50,6 +53,10 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   LabDomain _domain=LabDomain.telephony;
   List<({int chapter,int page,String excerpt})> _matches=[];
   bool _showCaseAnswer=false;
+  bool _searching=false;
+  String _searchStatus='';
+  int _libraryMode=0;
+  int _searchGeneration=0;
   final Map<int,int> _caseSelections={};
   static const _sampleCdr='call_id,timestamp,caller_msisdn,callee_msisdn,duration_sec,cell_tower_id,latitude,longitude\n'
       'C1,2026-11-16T10:00:00Z,+5531988880001,+5531977770002,120,ERB_BH_01,-19.92,-43.94\n'
@@ -78,7 +85,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   Future<void> _initialize() async {
     try {
       await _library.initialize();
-      final catalog=await StudyCatalog.loadBundledPreviews();
+      final catalog=await StudyCatalog.loadAvailable(_library);
       await _seedCatalog(catalog);
       String? key, model, speech;
       try {
@@ -88,9 +95,12 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       } catch (_) {
         _keyStatus='Cofre de credenciais não disponível neste ambiente.';
       }
+      final prefs=await SharedPreferences.getInstance();
+      final last=prefs.getInt('source_reader_last_chapter');
       if(!mounted)return;
       setState(() {
-        _catalog=catalog;_textModel=model;_speechModel=speech;
+        if(last!=null&&catalog.any((c)=>c.number==last))_selectedChapter=last;
+        _catalog=catalog;if(catalog.isNotEmpty&&!catalog.any((c)=>c.number==_selectedChapter))_selectedChapter=catalog.first.number;_textModel=model;_speechModel=speech;
         _manualTextModel.text=model??'';
         _manualTtsModel.text=speech??'';
         _keyPresent=key!=null && key.isNotEmpty;
@@ -111,13 +121,12 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       await db.curriculumDao.insertCurriculum(CurriculumsCompanion.insert(
         id:'academia_enciclopedia',name:'Enciclopédia de Ciências Forenses',
         version:'2026',description:'Índice do acervo pessoal de PDF'));
-      for(final vol in [1,2,3]){
+      for(var vol=1;vol<=StudyCatalog.volumeTitles.length+(catalog.any((c)=>c.number>StudyCatalog.volumeEnds.last)?1:0);vol++){
         await db.curriculumDao.insertVolume(VolumesCompanion.insert(
           id:'academia_v'+vol.toString(),
           curriculumId:'academia_enciclopedia',
           volumeNumber:vol,
-          title:vol==1?'Fundamentos':vol==2?'Computação, Python e SQL':
-            'Estatística e Ciência de Dados',
+          title:StudyCatalog.volumeTitle(vol),
           discipline:'Ciências Forenses',
           description:'Capítulos originais mantidos no Google Drive',
           totalChapters:catalog.where((c)=>c.volume==vol).length));
@@ -158,8 +167,8 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     try {
       final prefs=await SharedPreferences.getInstance();
       var done=0;
-      for(var i=1;i<=26;i++){
-        if(prefs.getBool('academia_lesson_correct_${i}')??false)done++;
+      for(final entry in _catalog){
+        if(prefs.getBool('academia_lesson_correct_${entry.number}')??false)done++;
       }
       if(mounted)setState(()=>_guidedLessonsComplete=done);
     } catch (_) {
@@ -167,11 +176,12 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     }
   }
 
-  Future<void> _openNativeBook(int number) async {
-    if(_catalog.isEmpty)return;
+  Future<void> _openNativeBook(int number,{int? page,String? quote}) async {
+    if(!_catalog.any((c)=>c.number==number))return;
+    setState(()=>_selectedChapter=number);
     await Navigator.of(context).push(MaterialPageRoute<void>(
       builder:(_)=>NativeBookReader(
-        initialChapter:number,
+        initialChapter:number,initialPage:page,initialQuote:quote,
         catalog:_catalog,
         library:_library,
         getApiKey:_getKey,
@@ -180,6 +190,9 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
         onOpenPdf:_readChapter,
       ),
     ));
+    final prefs=await SharedPreferences.getInstance();
+    final last=prefs.getInt('source_reader_last_chapter');
+    if(mounted&&last!=null&&_catalog.any((c)=>c.number==last))setState(()=>_selectedChapter=last);
     await _refreshMetrics();
   }
 
@@ -187,6 +200,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     final matches=_catalog.where((entry)=>entry.number==number);
     if(matches.isEmpty)return;
     final chapter=matches.first;
+    if(number>26){await _openNativeBook(number);return;}
     await Navigator.of(context).push(MaterialPageRoute<void>(
       builder:(_)=>GuidedLessonScreen(
         chapterNumber:number,
@@ -204,10 +218,15 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     setState(() {_importing=true;_importStatus='Selecionando arquivo do aparelho ou Google Drive...';});
     try{
       final count=await _library.pickAndImport();
+      final catalog=await StudyCatalog.loadAvailable(_library);
+      await _seedCatalog(catalog);
+      if(!mounted)return;
+      setState((){_catalog=catalog;if(catalog.isNotEmpty&&!catalog.any((c)=>c.number==_selectedChapter))_selectedChapter=catalog.first.number;_matches=[];_searchStatus='';_searchGeneration++;_searching=false;});
+      await _refreshGuidedLessons();
       if(!mounted)return;
       setState(()=>_importStatus=count==0
         ?'Nenhum arquivo importado.'
-        :'Importados '+count.toString()+' PDFs originais com verificação de integridade.');
+        :'Importação concluída: '+count.toString()+' documentos. Consulte o índice para ver o conteúdo disponível.');
     }catch(e){
       if(mounted)setState(()=>_importStatus='Falha na importação: '+e.toString());
     }finally{if(mounted)setState(()=>_importing=false);}
@@ -232,6 +251,10 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   }
 
   Future<void> _openSource(StudyChapter chapter) async {
+    if(chapter.pdfFileId.isEmpty) {
+      if(_library.chapter(chapter.number)!=null)await _readChapter(chapter.number);
+      return;
+    }
     try {
       final uri=Uri.parse(chapter.originalPdfUrl);
       if (!await launchUrl(uri,mode:LaunchMode.externalApplication)) {
@@ -409,24 +432,46 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     await _refreshMetrics();
   }
 
+  Future<void> _openNotebook() async {
+    await Navigator.of(context).push(MaterialPageRoute<void>(builder:(_)=>StudyNotebook(
+      catalog:_catalog,openChapter:(n,p,q)=>_openNativeBook(n,page:p,quote:q))));
+  }
+
+  Future<void> _openDriveFolder() async {
+    try{
+      final ok=await launchUrl(Uri.parse('https://drive.google.com/drive/folders/19tpPVsKlmoXpRY9TwsNK8j-VpMfsLKys'),mode:LaunchMode.externalApplication);
+      if(!ok)throw StateError('Não foi possível abrir o Drive.');
+    }catch(e){if(mounted)ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text(e.toString())));}
+  }
+
   Future<void> _searchFullText() async {
-    final q=_corpusSearch.trim().toLowerCase();
-    if(q.length<3){setState(()=>_matches=[]);return;}
+    final q=studyFold(_corpusSearch);
+    final generation=++_searchGeneration;
+    if(q.length<2){setState((){_matches=[];_searching=false;_searchStatus='Digite pelo menos dois caracteres.';});return;}
+    setState((){_matches=[];_searching=true;_searchStatus='Buscando em todo o acervo disponível...';});
     final found=<({int chapter,int page,String excerpt})>[];
-    for(final chapter in _library.chapters){
-      final pages=await _library.pages(chapter.number);
-      for(final page in pages){
-        final i=page.text.toLowerCase().indexOf(q);
-        if(i<0)continue;
-        final from=i>45?i-45:0;
-        final to=(i+145).clamp(0,page.text.length);
-        found.add((chapter:chapter.number,page:page.number,
-          excerpt:page.text.substring(from,to).replaceAll('\n',' ')));
-        if(found.length>=30)break;
-      }
-      if(found.length>=30)break;
+    var failures=0,total=0;
+    for(final chapter in List<StudyChapter>.of(_catalog)){
+      if(!mounted||generation!=_searchGeneration)return;
+      try{
+        final book=await const SourceBookLibrary().load(chapter.number,_library,includeLayout:false);
+        for(var i=0;i<book.screens.length;i++){
+          final raw=book.screens[i].text.replaceAll('\u00ad','').replaceAll(RegExp(r'\s+'),' ').trim();
+          final index=studyFold(raw).indexOf(q);
+          if(index<0)continue;
+          total++;
+          if(found.length<200){
+            final start=(index-70).clamp(0,raw.length).toInt();
+            final end=(index+q.length+110).clamp(start,raw.length).toInt();
+            found.add((chapter:chapter.number,page:i,excerpt:raw.substring(start,end)));
+          }
+        }
+      }catch(_){failures++;}
     }
-    if(mounted)setState(()=>_matches=found);
+    if(mounted&&generation==_searchGeneration)setState((){
+      _matches=found;_searching=false;
+      _searchStatus=total.toString()+' páginas/telas encontradas'+(total>200?' (primeiras 200 exibidas; refine a busca)':'')+(failures>0?' · '+failures.toString()+' capítulos não pesquisáveis':'');
+    });
   }
 
   void _setLabDomain(LabDomain d) {
@@ -570,21 +615,21 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     _topTitle('Academia Forense','Sua Enciclopédia completa em texto ajustável, com voz, marcações e tutor Gemini.'),
     _infoCard('Ler e estudar a Enciclopédia',Column(
       crossAxisAlignment:CrossAxisAlignment.start,children:[
-        Text('Texto integral dos 26 PDFs em leitura paginada, tamanho de fonte '
+        Text('Texto integral de ${_catalog.length} capítulos disponíveis em leitura paginada, tamanho de fonte '
           'ajustável, trechos marcados, anotações, leitura de voz, '
           'Gemini contextual e exercícios dos capítulos.',
           style:Theme.of(context).textTheme.bodyLarge),
         const SizedBox(height:12),
-        Text('Lições aplicadas e registradas: $_guidedLessonsComplete de 26'),
+        Text('Lições aplicadas e registradas: $_guidedLessonsComplete de ${_catalog.length}'),
         const SizedBox(height:8),
-        LinearProgressIndicator(value:_guidedLessonsComplete/26,
+        LinearProgressIndicator(value:_catalog.isEmpty?0.0:(_guidedLessonsComplete/_catalog.length).clamp(0.0,1.0).toDouble(),
           minHeight:10,borderRadius:BorderRadius.circular(8)),
         const SizedBox(height:10),
         Wrap(spacing:8,runSpacing:8,children:[
           FilledButton.icon(
-            onPressed:_catalog.isEmpty?null:()=>_openNativeBook(1),
+            onPressed:_catalog.isEmpty?null:()=>_openNativeBook(_catalog.any((c)=>c.number==_selectedChapter)?_selectedChapter:_catalog.first.number),
             icon:const Icon(Icons.play_arrow),
-            label:const Text('Abrir Capítulo 01')),
+            label:const Text('Continuar estudo')),
           OutlinedButton.icon(
             onPressed:()=>setState(()=>_tab=1),
             icon:const Icon(Icons.view_module_outlined),
@@ -608,7 +653,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
       crossAxisAlignment:CrossAxisAlignment.start,children:[
         Text(_library.chapters.length.toString()+
           ' documentos originais importados no dispositivo.'),
-        Text((_catalog.length-_library.chapters.where((c)=>c.number<=26).length)
+        Text((_catalog.where((c)=>_library.chapter(c.number)==null).length)
           .toString()+' capítulos do acervo ainda sem arquivo offline.'),
         const SizedBox(height:12),
         FilledButton.icon(onPressed:()=>setState(()=>_tab=2),
@@ -648,7 +693,7 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
           FilledButton.icon(onPressed:()=>_openNativeBook(_selectedChapter),
             icon:const Icon(Icons.auto_stories_outlined),label:const Text('Ler capítulo completo')),
           OutlinedButton.icon(onPressed:()=>_openGuidedLesson(_selectedChapter),
-            icon:const Icon(Icons.science_outlined),label:const Text('Práticas complementares')),
+            icon:const Icon(Icons.science_outlined),label:Text(_selectedChapter<=26?'Práticas complementares':'Exercícios do capítulo')),
           OutlinedButton.icon(onPressed:()=>_readChapter(_selectedChapter),
             icon:const Icon(Icons.picture_as_pdf_outlined),label:const Text('PDF com figuras')),
           OutlinedButton.icon(onPressed:_openQuiz,icon:const Icon(Icons.quiz_outlined),
@@ -688,63 +733,57 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
   }
 
   Widget _libraryTab(){
-    final found=_catalog.where((c)=>c.title.toLowerCase().contains(_filter.toLowerCase()) ||
-      c.number.toString().contains(_filter)).toList();
+    final query=studyFold(_filter);
+    final available={for(final c in _catalog)c.number:c};
+    final numbers=<int>{...List.generate(StudyCatalog.plannedTitles.length,(i)=>i+1),...available.keys}.toList()..sort();
+    final found=numbers.where((n)=>studyFold(available[n]?.title??StudyCatalog.plannedTitles[n-1]).contains(query)||n.toString().contains(query)||n.toString().padLeft(2,'0').contains(query)).toList();
     return ListView(padding:const EdgeInsets.all(16),children:[
-      _topTitle('Biblioteca de referência','26 capítulos existentes em 292 páginas. '
-        'Conteúdo integral mediante importação; capítulos 27–113 não publicados.'),
-      _infoCard('Importar PDFs do Drive ou do dispositivo',Column(
-        crossAxisAlignment:CrossAxisAlignment.start,children:[
-          const Text('Baixe o pacote integral fornecido neste chat. '
-            'Toque no botão e selecione o ZIP no armazenamento ou no aplicativo Google Drive. '
-            'Os PDFs e o texto das páginas serão guardados no aparelho.'),
-          const SizedBox(height:12),
-          FilledButton.icon(onPressed:_importing?null:_import,
-            icon:const Icon(Icons.file_upload_outlined),
-            label:Text(_importing?'Importando...':'Importar pacote ZIP / PDFs')),
-          if(_importStatus.isNotEmpty)Text(_importStatus),
-          const SizedBox(height:8),
-          Text('Documentos originais disponíveis: '+_library.chapters.length.toString()),
-        ]),icon:Icons.folder_open),
-      TextField(onChanged:(v)=>setState(()=>_filter=v),
-        decoration:const InputDecoration(prefixIcon:Icon(Icons.search),
-          labelText:'Pesquisar título ou número do capítulo',
-          border:OutlineInputBorder())),
-      const SizedBox(height:12),
-      for(final c in found) Card(child:ListTile(
-        title:Text('Cap. '+c.number.toString().padLeft(2,'0')+' — '+c.title),
-        subtitle:Text('Toque para ler o texto integral · Vol. '+c.volume.toString()+' • '+c.edition+
-          ' • '+(_library.chapter(c.number)==null?'PDF de apoio não importado':'PDF original disponível offline')),
-        isThreeLine:true,
-        trailing:Row(mainAxisSize:MainAxisSize.min,children:[
-          Icon(_library.chapter(c.number)==null
-            ?Icons.cloud_outlined:Icons.check_circle,
-            color:const Color(0xFF20533F)),
-          IconButton(
-            tooltip:'Abrir documento de referência no Drive',
-            icon:const Icon(Icons.open_in_new,size:18),
-            onPressed:()=>_openSource(c)),
-        ]),
-        onTap:()=>_openNativeBook(c.number),
-      )),
+      _topTitle('Biblioteca','Acervo de estudo · '+_catalog.where((c)=>c.number<=StudyCatalog.volumeEnds.last).length.toString()+' de '+StudyCatalog.volumeEnds.last.toString()+' capítulos curriculares disponíveis'),
+      Wrap(spacing:8,runSpacing:8,children:[
+        FilledButton.icon(onPressed:_importing?null:_import,icon:const Icon(Icons.cloud_download_outlined),label:Text(_importing?'Importando...':'Importar do Drive')),
+        OutlinedButton.icon(onPressed:_openDriveFolder,icon:const Icon(Icons.folder_open),label:const Text('Abrir acervo no Drive')),
+        OutlinedButton.icon(onPressed:_openNotebook,icon:const Icon(Icons.edit_note),label:const Text('Meu caderno')),
+      ]),
+      const SizedBox(height:8),
+      const Text('No Android, selecione Google Drive no seletor de arquivos e escolha o ZIP integral v2. O conteúdo fica disponível offline. A edição nativa REV3 (layout 2) inclui figuras reais, tabelas e blocos de código. Transcrições antigas são provisórias.'),
+      if(_importStatus.isNotEmpty)Padding(padding:const EdgeInsets.symmetric(vertical:8),child:Text(_importStatus)),
       const SizedBox(height:16),
-      _infoCard('Buscar no conteúdo das 292 páginas',Column(children:[
-        TextField(onChanged:(value)=>_corpusSearch=value,
-          decoration:const InputDecoration(
-            labelText:'Termo ou expressão nos PDFs importados',
-            border:OutlineInputBorder())),
+      SegmentedButton<int>(segments:const [
+        ButtonSegment(value:0,label:Text('Índice'),icon:Icon(Icons.list_alt)),
+        ButtonSegment(value:1,label:Text('Busca integral'),icon:Icon(Icons.search)),
+      ],selected:{_libraryMode},onSelectionChanged:(v)=>setState(()=>_libraryMode=v.first)),
+      const SizedBox(height:12),
+      if(_libraryMode==0)...[
+        TextField(onChanged:(v)=>setState(()=>_filter=v),decoration:const InputDecoration(prefixIcon:Icon(Icons.search),labelText:'Título ou número do capítulo',border:OutlineInputBorder())),
         const SizedBox(height:8),
-        FilledButton(onPressed:_searchFullText,
-          child:const Text('Pesquisar texto integral')),
-        for(final m in _matches) ListTile(
-          title:Text('Cap. '+m.chapter.toString()+' · página '+m.page.toString()),
-          subtitle:Text(m.excerpt,maxLines:3,overflow:TextOverflow.ellipsis),
-          onTap:()=>_readChapter(m.chapter)),
-        if(_matches.isEmpty)const Text('Nenhum resultado carregado.'),
-      ]),icon:Icons.manage_search),
-      const Text('Para arquivos novos, use novamente Importar. '
-        'O acesso pelo seletor de arquivos do Android pode ler arquivos do Google Drive; '
-        'sincronização automática sem autenticação OAuth não é afirmada.'),
+        if(found.isEmpty)const Text('Nenhum capítulo corresponde ao filtro.'),
+        for(var vol=1;vol<=StudyCatalog.volumeTitles.length+(available.keys.any((n)=>n>StudyCatalog.volumeEnds.last)?1:0);vol++)
+          if(query.isEmpty||found.any((n)=>StudyCatalog.volumeFor(n)==vol)) Card(child:ExpansionTile(
+            key:ValueKey('index_'+vol.toString()+'_'+query),
+            initiallyExpanded:query.isNotEmpty||vol==StudyCatalog.volumeFor(_selectedChapter),
+            title:Text('Volume '+vol.toString()+' — '+StudyCatalog.volumeTitle(vol)),
+            subtitle:Text(_catalog.where((c)=>c.volume==vol).length.toString()+' disponíveis'+(vol>StudyCatalog.volumeEnds.length?' · complementares':' · capítulos '+(vol==1?1:StudyCatalog.volumeEnds[vol-2]+1).toString()+'–'+StudyCatalog.volumeEnds[vol-1].toString())),
+            children:[
+              for(final n in found.where((n)=>StudyCatalog.volumeFor(n)==vol)) ListTile(
+                leading:CircleAvatar(child:Text(n.toString())),
+                title:Text(available[n]?.title??StudyCatalog.plannedTitles[n-1]),
+                subtitle:Text(available[n]==null?'Ainda não importado':(_library.chapter(n)?.layoutVersion??0)>=2?'Edição nativa offline':_library.chapter(n)==null?'Transcrição provisória · importar edição nativa':'Edição legada · importar versão nativa'),
+                trailing:Icon(available[n]==null?Icons.cloud_download_outlined:Icons.chevron_right),
+                onTap:available[n]==null?(_importing?null:_import):(){setState(()=>_selectedChapter=n);_openNativeBook(n);}),
+              if(!found.any((n)=>StudyCatalog.volumeFor(n)==vol))const Padding(padding:EdgeInsets.all(12),child:Text('Importe o acervo integral para liberar este volume.')),
+            ])),
+      ]else...[
+        TextField(onChanged:(v){_corpusSearch=v;_searchGeneration++;setState((){_matches=[];_searchStatus='';_searching=false;});},onSubmitted:(_)=>_searchFullText(),decoration:const InputDecoration(prefixIcon:Icon(Icons.search),labelText:'Termo ou expressão (com ou sem acento)',border:OutlineInputBorder())),
+        const SizedBox(height:8),
+        FilledButton.icon(onPressed:_searching?null:_searchFullText,icon:const Icon(Icons.manage_search),label:const Text('Buscar em todos os capítulos')),
+        if(_searching)const LinearProgressIndicator(),
+        if(_searchStatus.isNotEmpty)Text(_searchStatus),
+        for(final m in _matches)Card(child:ListTile(
+          title:Text('Cap. '+m.chapter.toString()+' — '+_catalog.firstWhere((c)=>c.number==m.chapter).title),
+          subtitle:Text('Posição '+(m.page+1).toString()+'\n'+m.excerpt,maxLines:5,overflow:TextOverflow.ellipsis),
+          trailing:const Icon(Icons.chevron_right),
+          onTap:()=>_openNativeBook(m.chapter,page:m.page))),
+      ],
     ]);
   }
 
@@ -812,12 +851,53 @@ class _AcademiaV2ScreenState extends State<AcademiaV2Screen> {
     _caseExercise(),
   ]);
 
+  bool _backupBusy=false;
+  String _backupStatus='';
+  Future<void> _studyBackup({required bool restore}) async {
+    if(_backupBusy)return;
+    setState((){_backupBusy=true;_backupStatus='';});
+    try{
+      if(!restore){
+        final saved=await StudyBackup.exportFile();
+        if(mounted)setState(()=>_backupStatus=saved?'Caderno e progresso de leitura exportados.':'Exportação cancelada.');
+      }else{
+        final data=await StudyBackup.pickBackup();
+        if(data==null)return;
+        if(!mounted)return;
+        final yes=await showDialog<bool>(context:context,builder:(ctx)=>AlertDialog(
+          title:const Text('Restaurar backup de estudos?'),
+          content:const Text('As anotações e marcadores serão reunidos com os atuais. Preferências já existentes serão mantidas.'),
+          actions:[
+            TextButton(onPressed:()=>Navigator.pop(ctx,false),child:const Text('Cancelar')),
+            FilledButton(onPressed:()=>Navigator.pop(ctx,true),child:const Text('Restaurar')),
+          ]));
+        if(yes!=true)return;
+        final prefs=await SharedPreferences.getInstance();
+        final count=await StudyBackup.merge(prefs,data);
+        if(!mounted)return;
+        setState(()=>_backupStatus='Backup restaurado: '+count.toString()+' grupos de registros.');
+        await _refreshGuidedLessons();
+      }
+    }catch(e){if(mounted)setState(()=>_backupStatus='Falha no backup: '+e.toString());}
+    finally{if(mounted)setState(()=>_backupBusy=false);}
+  }
+
   Widget _profile()=>ListView(padding:const EdgeInsets.all(16),children:[
     _topTitle('Meu Espaço','Somente resultados persistidos e configurações verificáveis.'),
+    FilledButton.icon(onPressed:_openNotebook,icon:const Icon(Icons.edit_note),label:const Text('Abrir meu caderno de estudos')),
+    _infoCard('Backup do caderno e leitura',Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+      const Text('Salve anotações, destaques, marcadores, posição de leitura, tema, fonte e lições concluídas em um arquivo JSON privado. Não inclui PDFs, chave Gemini nem histórico do banco de dados.'),
+      const SizedBox(height:8),
+      Wrap(spacing:8,runSpacing:8,children:[
+        OutlinedButton.icon(onPressed:_backupBusy?null:()=>_studyBackup(restore:false),icon:const Icon(Icons.save_alt),label:const Text('Exportar backup')),
+        OutlinedButton.icon(onPressed:_backupBusy?null:()=>_studyBackup(restore:true),icon:const Icon(Icons.restore),label:const Text('Restaurar backup')),
+      ]),
+      if(_backupStatus.isNotEmpty)Text(_backupStatus),
+    ]),icon:Icons.backup_outlined),
     _infoCard('Matriz de competências',Column(
       crossAxisAlignment:CrossAxisAlignment.start,children:[
         const Text('Proficiência profissional: ainda não aferida.'),
-        Text('Lições interativas respondidas corretamente: $_guidedLessonsComplete de 26'),
+        Text('Lições interativas respondidas corretamente: $_guidedLessonsComplete de ${_catalog.length}'),
         Text('Avaliações formativas acima do corte: '+_assessments.toString()),
         Text('Exercícios executados: '+_labs.toString()),
         Text('Casos registrados: '+_cases.toString()),

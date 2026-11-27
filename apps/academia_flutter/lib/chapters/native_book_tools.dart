@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:persistence_core/persistence_core.dart';
 
 import 'native_book_models.dart';
+import 'study_catalog.dart';
 
 class BookTutorScreen extends StatefulWidget {
   const BookTutorScreen({
@@ -54,8 +55,8 @@ class _BookTutorScreenState extends State<BookTutorScreen> {
         apiKey:key,modelId:model,mode:_mode,userQuery:task,
         contextChunks:[RagDocumentChunkRef(
           chunkId:'book_${widget.chapter}_${widget.pageLabel}',
-          text:context,editorialStatus:'Publicado',
-          volume:widget.chapter<=10?1:widget.chapter<=23?2:3,
+          text:context,editorialStatus:'Em revisão',
+          volume:StudyCatalog.volumeFor(widget.chapter),
           chapter:widget.chapter,page:1,
         )],chapterTitle:widget.title);
       if(!mounted)return;
@@ -173,7 +174,10 @@ class _BookExercisesScreenState extends State<BookExercisesScreen> {
   @override
   void initState(){
     super.initState();
-    _source=SourceExerciseSections.fromOriginal(widget.book.completeText);
+    final structured=widget.book.screens.expand((s)=>s.layout).toList();
+    final exercises=structured.where((b)=>b['kind']=='exercise'||b['kind']=='lab').map((b)=>b['text'].toString()).join('\n\n');
+    final answers=structured.where((b)=>b['kind']=='answer').map((b)=>b['text'].toString()).join('\n\n');
+    _source=exercises.isEmpty?SourceExerciseSections.fromOriginal(widget.book.completeText):SourceExerciseSections(exercises:exercises,answerKey:answers);
     _loadAnswer();
   }
   Future<void> _loadAnswer() async {

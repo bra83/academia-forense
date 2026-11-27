@@ -66,27 +66,27 @@ class SourceTypography {
   }
 
   static TextStyle _style(ReaderLineKind kind,double font,Color ink) {
-    final muted=Color.lerp(ink,Colors.grey,0.48)!;
+    final muted=ink;
     switch(kind){
       case ReaderLineKind.title:
         return TextStyle(fontSize:font*1.52,height:1.26,
           fontWeight:FontWeight.w800,color:ink);
       case ReaderLineKind.section:
         return TextStyle(fontSize:font*1.20,height:1.52,
-          fontWeight:FontWeight.w800,color:const Color(0xFF17533D));
+          fontWeight:FontWeight.w800,color:ink);
       case ReaderLineKind.heading:
         return TextStyle(fontSize:font*1.10,height:1.52,
           fontWeight:FontWeight.w700,color:ink);
       case ReaderLineKind.kicker:
         return TextStyle(fontSize:font*0.94,height:1.6,
           fontWeight:FontWeight.w800,letterSpacing:0.5,
-          color:const Color(0xFF236147));
+          color:ink);
       case ReaderLineKind.caption:
         return TextStyle(fontSize:font*0.83,height:1.53,
           fontStyle:FontStyle.italic,color:muted);
       case ReaderLineKind.label:
         return TextStyle(fontSize:font*0.88,height:1.5,
-          fontWeight:FontWeight.w700,color:const Color(0xFF245C4B));
+          fontWeight:FontWeight.w700,color:ink);
       case ReaderLineKind.reference:
         return TextStyle(fontSize:font*0.72,height:1.45,
           letterSpacing:0.3,color:muted);
@@ -132,6 +132,7 @@ class SourceTypography {
           text:source.substring(a,b),
           style:base.copyWith(
             fontWeight:boldPrefix?FontWeight.bold:base.fontWeight,
+            color:marked?Colors.black:base.color,
             backgroundColor:marked?const Color(0xFFFFD66B):null),
         ));
       }

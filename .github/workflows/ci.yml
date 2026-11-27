@@ -2,6 +2,8 @@ name: Academia Forense — Android Quality Gate
 
 on:
   push:
+    branches: [main, feat/acervo-integral-113-20261125]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -44,14 +46,41 @@ jobs:
           cd ../persistence_core && flutter test
           cd ../../apps/academia_flutter && flutter test
 
+      - name: Restore permanent Android signing key
+        id: signing
+        env:
+          KEYSTORE_B64: ${{ secrets.ACADEMIA_KEYSTORE_B64 }}
+          STORE_PASSWORD: ${{ secrets.ACADEMIA_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ACADEMIA_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ACADEMIA_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then
+            echo "stable=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Sem assinatura permanente. O APK será de teste e não deve substituir uma instalação existente."
+          else
+            test -n "$STORE_PASSWORD" && test -n "$KEY_ALIAS" && test -n "$KEY_PASSWORD"
+            umask 077
+            printf '%s' "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/academia-release.jks"
+            echo "ACADEMIA_KEYSTORE_PATH=$RUNNER_TEMP/academia-release.jks" >> "$GITHUB_ENV"
+            echo "stable=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Compile Android Galaxy A57 (ARM64)
+        env:
+          ACADEMIA_KEYSTORE_PASSWORD: ${{ secrets.ACADEMIA_KEYSTORE_PASSWORD }}
+          ACADEMIA_KEY_ALIAS: ${{ secrets.ACADEMIA_KEY_ALIAS }}
+          ACADEMIA_KEY_PASSWORD: ${{ secrets.ACADEMIA_KEY_PASSWORD }}
         run: |
           cd apps/academia_flutter
-          flutter build apk --release --target-platform android-arm64
+          flutter build apk --release --target-platform android-arm64 --build-number=$((1000 + GITHUB_RUN_NUMBER))
 
       - name: Publish Android APK only after all gates pass
         uses: actions/upload-artifact@v4
         with:
-          name: Academia-Forense-A57-Android-Verified
+          name: ${{ steps.signing.outputs.stable == 'true' && 'Academia-Forense-A57-Android-Verified' || 'Academia-Forense-A57-TESTE-sem-assinatura-permanente' }}
           path: apps/academia_flutter/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
+
+      - name: Remove temporary signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/academia-release.jks"

@@ -137,6 +137,8 @@ class GeminiTtsClient {
 
   String get model => _model;
 
+  void close()=>_httpClient.close();
+
   /// Synthesizes text to speech, returning raw PCM and a strictly compliant 44-byte WAV.
   Future<GeminiSpeechChunk> synthesize({
     required String chunkId,
@@ -170,7 +172,7 @@ class GeminiTtsClient {
       );
     } catch (e) {
       if (e is GeminiTtsException) rethrow;
-      throw GeminiTtsException('Network error connecting to Gemini TTS: $e');
+      throw const GeminiTtsException('Falha de conexão com Gemini TTS.');
     }
 
     if (response.statusCode == 401 || response.statusCode == 403) {
@@ -183,7 +185,7 @@ class GeminiTtsClient {
       throw GeminiQuotaExceededException('Gemini API quota exceeded (HTTP 429)', 429);
     }
     if (response.statusCode != 200) {
-      throw GeminiTtsException('Gemini TTS error: ${response.statusCode} - ${response.body}', response.statusCode);
+      throw GeminiTtsException('Gemini TTS: HTTP ${response.statusCode}', response.statusCode);
     }
 
     final String base64Data = _extractBase64Audio(response.body);

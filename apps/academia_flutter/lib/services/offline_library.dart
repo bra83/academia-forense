@@ -11,6 +11,7 @@ class OfflineChapter {
   const OfflineChapter({
     required this.number, required this.title, required this.pdfPath,
     required this.sha, this.pagesPath, this.pageCount = 0,
+    this.pagesSha, this.layoutVersion=0,this.revision=0,this.edition='Importado · fonte original',
   });
   final int number;
   final String title;
@@ -18,22 +19,31 @@ class OfflineChapter {
   final String sha;
   final String? pagesPath;
   final int pageCount;
+  final String? pagesSha;
+  final int layoutVersion;
+  final int revision;
+  final String edition;
   Map<String, dynamic> toJson() => {
     'number': number, 'title': title, 'pdfPath': pdfPath,
     'sha': sha, 'pagesPath': pagesPath, 'pageCount': pageCount,
+    'pagesSha':pagesSha,'layoutVersion':layoutVersion,'revision':revision,'edition':edition,
   };
   factory OfflineChapter.fromJson(Map<String, dynamic> j) => OfflineChapter(
     number: (j['number'] as num).toInt(), title: j['title'].toString(),
     pdfPath: j['pdfPath'].toString(), sha: j['sha'].toString(),
     pagesPath: j['pagesPath'] as String?,
     pageCount: (j['pageCount'] as num?)?.toInt() ?? 0,
+    pagesSha:j['pagesSha'] as String?,layoutVersion:(j['layoutVersion'] as num?)?.toInt()??0,
+    revision:(j['revision'] as num?)?.toInt()??0,edition:j['edition'] as String? ?? 'Importado · fonte original',
   );
 }
 
 class OriginalPage {
-  const OriginalPage(this.number, this.text);
+  const OriginalPage(this.number, this.text,{this.layout=const [],this.visualJpeg});
   final int number;
   final String text;
+  final List<Map<String,dynamic>> layout;
+  final String? visualJpeg;
 }
 
 class OfflineLibrary {
@@ -52,6 +62,8 @@ class OfflineLibrary {
     _dir = Directory(p.join(root.path, 'academia_forense_private'));
     await _dir.create(recursive: true);
     final idx = File(p.join(_dir.path, 'index.json'));
+    final backup=File(p.join(_dir.path,'index.bak'));
+    if(!await idx.exists() && await backup.exists())await backup.copy(idx.path);
     if (await idx.exists()) {
       try {
         final j = jsonDecode(await idx.readAsString()) as Map<String,dynamic>;
@@ -73,8 +85,26 @@ class OfflineLibrary {
     await tmp.writeAsString(jsonEncode({'chapters':
       chapters.map((c) => c.toJson()).toList()}), flush:true);
     final index = File(p.join(_dir.path,'index.json'));
-    if (await index.exists()) await index.delete();
-    await tmp.rename(index.path);
+    final backup=File(p.join(_dir.path,'index.bak'));
+    if(await index.exists())await index.copy(backup.path);
+    try{await tmp.rename(index.path);}catch(_){
+      if(await backup.exists())await backup.copy(index.path);
+      rethrow;
+    }
+  }
+
+  static bool _validBlock(Map b){
+    final kind=b['kind'];
+    if(kind=='table'){
+      final rows=b['rows'];
+      return rows is List && rows.isNotEmpty && rows.length<=300 && rows.first is List && (rows.first as List).isNotEmpty && (rows.first as List).length<=30 && rows.every((r)=>r is List && r.length==(rows.first as List).length && r.every((c)=>c is String));
+    }
+    if(kind=='figure'){
+      final jpeg=b['jpeg'];
+      if(jpeg is! String || jpeg.length>2000000)return false;
+      try{final bytes=base64Decode(jpeg);return bytes.length>4&&bytes[0]==255&&bytes[1]==216&&bytes[bytes.length-2]==255&&bytes.last==217;}catch(_){return false;}
+    }
+    return true;
   }
 
   static bool _pdf(List<int> b) => b.length > 100 &&
@@ -84,10 +114,11 @@ class OfflineLibrary {
     await initialize();
     final picked = await FilePicker.platform.pickFiles(
       type: FileType.custom, allowedExtensions: ['zip','pdf'],
-      allowMultiple: true, withData: true);
+      allowMultiple: true, withData: false);
     if (picked == null) return 0;
     var imported = 0;
     for (final file in picked.files) {
+      if(file.size>100*1024*1024)throw const FormatException('Arquivo maior que 100 MB. Divida por volumes.');
       final b = file.bytes ?? (file.path == null ? null :
         await File(file.path!).readAsBytes());
       if (b == null) throw const FormatException('Provedor de arquivos indisponível.');
@@ -118,6 +149,7 @@ class OfflineLibrary {
       if (total > 250 * 1024 * 1024) {
         throw const FormatException('Conteúdo ZIP excede 250MB.');
       }
+      if(entries.containsKey(entry.name))throw const FormatException('Entrada ZIP duplicada.');
       entries[entry.name] = entry;
     }
     final head = entries['manifest.json'];
@@ -128,6 +160,7 @@ class OfflineLibrary {
       throw const FormatException('Importe o pacote integral v2 com PDFs e páginas.');
     }
     final rows = manifest['chapters'] as List<dynamic>;
+    if(rows.isEmpty || rows.length>124 || (manifest['chapterCount']!=null && manifest['chapterCount']!=rows.length))throw const FormatException('Quantidade de capítulos inválida.');
     final staged = <OfflineChapter>[];
     final files = <String,List<int>>{};
     final seen = <int>{};
@@ -135,6 +168,15 @@ class OfflineLibrary {
     for (final raw in rows) {
       final m = raw as Map<String,dynamic>;
       final n = (m['chapter'] as num).toInt();
+      if(m['chapter']!=n || m['title'] is! String || (m['title'] as String).trim().isEmpty)throw const FormatException('Metadados de capítulo inválidos.');
+      final rawRevision=m['revision'];
+      final int revision;
+      if(rawRevision==null){revision=0;}else if(rawRevision is int && rawRevision>=0){revision=rawRevision;}else if(rawRevision is String){
+        final match=RegExp(r'REV(\d+)',caseSensitive:false).firstMatch(rawRevision);
+        revision=match==null?0:int.parse(match.group(1)!);
+      }else{throw const FormatException('Revisão inválida.');}
+      final edition=m['edition']??(rawRevision is String?rawRevision:'Importado · fonte original');
+      if(edition is! String || edition.trim().isEmpty)throw const FormatException('Edição inválida.');
       if (n < 1 || n > 999 || !seen.add(n)) {
         throw const FormatException('Numeração inválida ou duplicada.');
       }
@@ -156,24 +198,53 @@ class OfflineLibrary {
           pageRows.length != (m['pageCount'] as num).toInt()) {
         throw FormatException('Páginas incorretas no capítulo $n.');
       }
-      final pdfPath = p.join(_dir.path, 'cap_$suffix.pdf');
-      final pagePath = p.join(_dir.path, 'cap_$suffix.json');
+      if(pageRows.isEmpty || pageRows.asMap().entries.any((e){
+        final v=e.value;
+        return v is! Map || v['number']!=e.key+1 || v['text'] is! String;
+      }) || pageRows.every((v)=>(v['text'] as String).trim().isEmpty)){
+        throw FormatException('Texto ausente ou numeração irregular no capítulo $n.');
+      }
+      final pdfHash=sha256.convert(pdf).toString();
+      final textHash=sha256.convert(pageBytes).toString();
+      if(m['pagesSha256']!=null && m['pagesSha256']!=textHash)throw FormatException('Texto do capítulo $n não passou no SHA-256.');
+      final layoutVersion=(textDoc['layoutVersion'] as num?)?.toInt()??0;
+      if(layoutVersion<0 || layoutVersion>2)throw const FormatException('Versão de layout não suportada.');
+      if(layoutVersion>=1){
+        if(m['layoutVersion']!=layoutVersion || m['pagesSha256']!=textHash)throw const FormatException('Manifesto de layout incompleto.');
+        for(final row in pageRows){
+          final blocks=row['layout'];final visual=row['visualJpeg'];
+          if(blocks is! List || blocks.isEmpty || blocks.length>1500 || blocks.any((b)=>b is! Map || b['text'] is! String || !(const <String>['p','h2','h3','h4','small','pre','figcaption','table','formula','figure','exercise','answer','lab','reference']).contains(b['kind']) || (layoutVersion==2 && !_validBlock(b))) || visual is! String || visual.length>2000000)throw FormatException('Layout inválido no capítulo $n.');
+          final bytes=base64Decode(visual);
+          if(bytes.length<4 || bytes[0]!=255 || bytes[1]!=216 || bytes[bytes.length-2]!=255 || bytes.last!=217)throw FormatException('Imagem inválida no capítulo $n.');
+        }
+      }
+      final current=_items[n];
+      if(current!=null && current.pagesPath!=null && await File(current.pagesPath!).exists()){
+        if(current.revision>revision)continue;
+        if(current.revision==revision && revision>0 && current.sha!=pdfHash)throw FormatException('Capítulo $n: edição conflitante; aumente a revisão.');
+        if(current.sha==pdfHash && current.layoutVersion>layoutVersion)continue;
+        if(current.sha==pdfHash && current.pagesSha==textHash && current.revision==revision)continue;
+      }
+      final pdfPath = p.join(_dir.path, 'cap_${suffix}_$pdfHash.pdf');
+      final pagePath = p.join(_dir.path, 'cap_${suffix}_$textHash.json');
       files[pdfPath] = pdf;
       files[pagePath] = pageBytes;
       staged.add(OfflineChapter(
         number:n, title:m['title'].toString(), pdfPath:pdfPath,
         pagesPath:pagePath, sha:m['sha256'].toString(),
-        pageCount:pageRows.length));
+        pageCount:pageRows.length,pagesSha:textHash,layoutVersion:layoutVersion,revision:revision,edition:edition));
     }
     for (final entry in files.entries) {
+      final old=File(entry.key);
+      if(await old.exists() && sha256.convert(await old.readAsBytes()).toString()==sha256.convert(entry.value).toString())continue;
       final tmp = File(entry.key + '.tmp');
       await tmp.writeAsBytes(entry.value, flush:true);
-      final old = File(entry.key);
       if (await old.exists()) await old.delete();
       await tmp.rename(entry.key);
     }
+    final previous=Map<int,OfflineChapter>.from(_items);
     for (final c in staged) { _items[c.number] = c; }
-    await _saveIndex();
+    try{await _saveIndex();}catch(_){_items..clear()..addAll(previous);rethrow;}
     return staged.length;
   }
 
@@ -185,6 +256,11 @@ class OfflineLibrary {
       throw const FormatException('PDF inválido ou número de capítulo ausente no nome.');
     }
     final n = int.parse(match.group(1)!);
+    final current=_items[n];
+    if(current!=null && current.pagesPath!=null){
+      if(current.sha==sha256.convert(bytes).toString())return;
+      throw const FormatException('Para atualizar um capítulo com texto nativo, importe o ZIP integral v2; o conteúdo anterior foi preservado.');
+    }
     final dst = File(p.join(_dir.path, 'cap_' + n.toString().padLeft(2,'0') + '.pdf'));
     await dst.writeAsBytes(bytes, flush:true);
     _items[n] = OfflineChapter(
@@ -193,15 +269,18 @@ class OfflineLibrary {
     await _saveIndex();
   }
 
-  Future<List<OriginalPage>> pages(int number) async {
+  Future<List<OriginalPage>> pages(int number,{bool includeLayout=false}) async {
     final chapter = _items[number];
-    if (chapter?.pagesPath == null) return [];
+    if (chapter == null || chapter.pagesPath == null) return [];
     try {
-      final j = jsonDecode(await File(chapter!.pagesPath!).readAsString())
-        as Map<String,dynamic>;
+      final bytes=await File(chapter.pagesPath!).readAsBytes();
+      if(chapter.pagesSha!=null && sha256.convert(bytes).toString()!=chapter.pagesSha)return [];
+      final j = jsonDecode(utf8.decode(bytes)) as Map<String,dynamic>;
       return (j['pages'] as List<dynamic>).map((e) {
         final row = e as Map<String,dynamic>;
-        return OriginalPage((row['number'] as num).toInt(),row['text'].toString());
+        return OriginalPage((row['number'] as num).toInt(),row['text'].toString(),
+          layout:includeLayout?(row['layout'] as List<dynamic>? ?? []).whereType<Map<String,dynamic>>().toList(growable:false):const [],
+          visualJpeg:includeLayout ? row['visualJpeg'] as String? : null);
       }).toList();
     } catch (_) { return []; }
   }

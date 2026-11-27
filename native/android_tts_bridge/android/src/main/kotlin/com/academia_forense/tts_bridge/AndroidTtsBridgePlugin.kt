@@ -42,6 +42,7 @@ class AndroidTtsBridgePlugin : FlutterPlugin, MethodCallHandler, EventChannel.St
     private var activeEngine: String? = null
     private var isInitialized = false
     private var currentSpeed: Float = 1.0f
+    private var initGeneration = 0
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
@@ -176,9 +177,24 @@ class AndroidTtsBridgePlugin : FlutterPlugin, MethodCallHandler, EventChannel.St
         }
 
         shutdownEngine()
+        val generation = ++initGeneration
+        var responded = false
+        mainHandler.postDelayed({
+            if (!responded) {
+                responded = true
+                if (generation == initGeneration) shutdownEngine()
+                result.error("INIT_TIMEOUT", "O motor TTS não respondeu em 15 segundos.", null)
+            }
+        }, 15000L)
 
         val listener = TextToSpeech.OnInitListener { status ->
             mainHandler.post {
+                if (responded) return@post
+                responded = true
+                if (generation != initGeneration) {
+                    result.error("INIT_CANCELLED", "Inicialização cancelada.", null)
+                    return@post
+                }
                 if (status == TextToSpeech.SUCCESS) {
                     isInitialized = true
                     activeEngine = targetEngine
@@ -253,7 +269,7 @@ class AndroidTtsBridgePlugin : FlutterPlugin, MethodCallHandler, EventChannel.St
             return
         }
 
-        val voices = tts.voices
+        val voices = try { tts.voices } catch (e: Exception) { null }
         if (voices == null || voices.isEmpty()) {
             result.success(emptyList<Map<String, Any>>())
             return
@@ -345,7 +361,10 @@ class AndroidTtsBridgePlugin : FlutterPlugin, MethodCallHandler, EventChannel.St
             putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, chunkId)
         }
 
-        val code = tts.speak(text, queueMode, params, chunkId)
+        val code = try { tts.speak(text, queueMode, params, chunkId) } catch (e: Exception) {
+            result.error("SPEAK_FAILED", "O motor recusou o texto: ${e.javaClass.simpleName}", null)
+            return
+        }
         if (code == TextToSpeech.SUCCESS) {
             result.success(true)
         } else {
@@ -359,6 +378,7 @@ class AndroidTtsBridgePlugin : FlutterPlugin, MethodCallHandler, EventChannel.St
     }
 
     private fun shutdownEngine() {
+        initGeneration++
         textToSpeech?.let {
             it.stop()
             it.shutdown()

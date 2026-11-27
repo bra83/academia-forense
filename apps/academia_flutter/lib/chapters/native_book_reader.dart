@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -21,9 +22,11 @@ class NativeBookReader extends StatefulWidget {
   const NativeBookReader({
     super.key,required this.initialChapter,required this.catalog,
     required this.library,required this.getApiKey,required this.textModel,
-    required this.speechModel,this.onOpenPdf,
+    required this.speechModel,this.onOpenPdf,this.initialPage,this.initialQuote,
   });
   final int initialChapter;
+  final int? initialPage;
+  final String? initialQuote;
   final List<StudyChapter> catalog;
   final OfflineLibrary library;
   final Future<String?> Function() getApiKey;
@@ -34,11 +37,15 @@ class NativeBookReader extends StatefulWidget {
   State<NativeBookReader> createState()=>_NativeBookReaderState();
 }
 class _NativeBookReaderState extends State<NativeBookReader> {
-  static const forest=Color(0xFF174B3B);
   final _scroll=ScrollController();
   bool _voiceControlsOpen=false;
-  String _voiceReading='';
-  String _voiceReadingLabel='';
+  String get _voiceReading {
+    final book=_book;
+    if(book==null)return '';
+    return SourceHtmlConverter.narrationText(_pageText,layout:book.screens[_page].layout);
+  }
+  String get _voiceReadingLabel=>_label;
+  String get _voiceSourceId=>'$_chapter:$_page';
 
   WebViewController? _htmlController;
   bool _htmlReading=Platform.isAndroid;
@@ -47,7 +54,10 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   BookChapter? _book;
   bool _loading=true;
   int _chapter=1,_page=0;
-  double _font=17.0;
+  double _font=19.0;
+  bool _dark=false;
+  bool _firstLoad=true;
+  Color get _ink=>_dark?Colors.white:Colors.black;
   String _error='';
   List<Map<String,dynamic>> _highlights=[];
   Set<int> _bookmarks={};
@@ -97,9 +107,19 @@ class _NativeBookReaderState extends State<NativeBookReader> {
           if(!mounted)return;
           try {
             final data=jsonDecode(event.message) as Map<String,dynamic>;
+            if(data['type']=='copyCode'){
+              final block=widget.library.chapter(_chapter);
+              final id=(data['block']??'').toString();
+              final i=id.startsWith('b')?int.tryParse(id.substring(1)):null;
+              final book=_book;
+              if(block==null||book==null||i==null||i<0)return;
+              final layout=book.screens[_page].layout;
+              if(i>=layout.length||layout[i]['kind']!='pre')return;
+              unawaited(Clipboard.setData(ClipboardData(text:layout[i]['text'].toString())).then((_){if(mounted)_notify('Código copiado.');}));
+              return;
+            }
             if(data['type']!='selection')return;
             final quote=(data['quote']??'').toString().trim();
-            if(quote.isEmpty)return;
             setState((){
               _htmlQuote=quote;
               _htmlBlock=(data['block']??'').toString();
@@ -126,7 +146,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     try {
       await controller.loadHtmlString(SourceHtmlConverter.pageHtml(
         _pageText,fontSize:_font,chapter:_chapter,screen:_page,
-        highlights:_highlights));
+        highlights:_highlights,dark:_dark,layout:_book!.screens[_page].layout));
     } catch (e) {
       if(mounted){
         setState(()=>_htmlReading=false);
@@ -146,7 +166,18 @@ class _NativeBookReaderState extends State<NativeBookReader> {
       final book=await const SourceBookLibrary().load(chapter,widget.library);
       final prefs=await SharedPreferences.getInstance();
       final savedPage=prefs.getInt('source_reader_page_$chapter')??0;
-      final font=prefs.getDouble('source_reader_font')??17;
+      final font=prefs.getDouble('source_reader_font')??19.0;
+      final dark=prefs.getBool('source_reader_dark')??false;
+      var target=_firstLoad?(widget.initialPage??savedPage):savedPage;
+      final quote=_firstLoad?widget.initialQuote:null;
+      var quoteMissing=false;
+      if(quote!=null && quote.isNotEmpty){
+        String fold(String v)=>v.replaceAll(RegExp(r'\s+'),' ').trim();
+        bool match(BookScreen p)=>fold(p.text).contains(fold(quote))||p.layout.any((b)=>fold(b['text'].toString()).contains(fold(quote)));
+        final exact=target>=0&&target<book.screens.length&&match(book.screens[target])?target:book.screens.indexWhere(match);
+        if(exact>=0)target=exact;else quoteMissing=true;
+      }
+      _firstLoad=false;
       final marks=prefs.getStringList('source_reader_marks_$chapter')??[];
       final annotations=prefs.getString('source_reader_highlights_$chapter');
       final loaded=<Map<String,dynamic>>[];
@@ -161,19 +192,22 @@ class _NativeBookReaderState extends State<NativeBookReader> {
             }
           }
         } catch (_) {
-          // Report invalid stored records without replacing content.
+          throw const FormatException('Anotações antigas ilegíveis; nenhuma foi sobrescrita.');
         }
       }
       if(!mounted)return;
       setState((){
         _book=book;_loading=false;
-        _page=savedPage.clamp(0,book.screens.length-1);
-        _font=font.clamp(14.0,26.0);
+        _page=target.clamp(0,book.screens.length-1).toInt();
+        _dark=dark;
+        _font=font.clamp(12.0,36.0).toDouble();
         _bookmarks=marks.map(int.tryParse)
           .whereType<int>().toSet();
         _highlights=loaded;
       });
+      await prefs.setInt('source_reader_last_chapter',chapter);
       await _renderHtml();
+      if(quoteMissing)_notify('O trecho não foi encontrado nesta edição. A anotação original foi preservada; exibindo a posição anterior.');
     } catch(e) {
       if(mounted)setState((){
         _loading=false;_error='Não foi possível carregar o livro: $e';
@@ -183,7 +217,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
 
   Future<void> _moveTo(int index) async {
     final book=_book;
-    if(book==null || index<0 || index>=book.screens.length)return;
+    if(book==null || index<0 || index>=book.screens.length||index==_page)return;
     setState((){
       _page=index;_selectionStart=null;_selectionEnd=null;
       _htmlQuote='';_htmlBlock='';_htmlStart=-1;_htmlEnd=-1;
@@ -192,6 +226,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     await _renderHtml();
     try {
       final prefs=await SharedPreferences.getInstance();
+      await prefs.setInt('source_reader_last_chapter',_chapter);
       final ok=await prefs.setInt('source_reader_page_$_chapter',index);
       if(!ok)throw StateError('Posição de leitura não gravada.');
     } catch (_) {
@@ -205,7 +240,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   }
 
   Future<void> _changeFont(double value) async {
-    setState(()=>_font=value.clamp(14.0,26.0));
+    setState(()=>_font=value.clamp(12.0,36.0).toDouble());
     await _renderHtml();
     try {
       final prefs=await SharedPreferences.getInstance();
@@ -213,6 +248,46 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     } catch (_) {
       _notify('A preferência de tamanho não foi gravada.');
     }
+  }
+
+  Future<void> _showOriginalPage() async {
+    final visual=_book?.screens[_page].visualJpeg;
+    if(visual==null)return;
+    try {
+      final bytes=base64Decode(visual);
+      final label=_label;
+      await Navigator.of(context).push(MaterialPageRoute<void>(
+        builder:(ctx)=>Scaffold(
+          appBar:AppBar(title:Text('Página original · $label')),
+          backgroundColor:Colors.black,
+          body:SafeArea(
+            child:Center(
+              child:InteractiveViewer(
+                minScale:0.8,
+                maxScale:6,
+                child:Image.memory(
+                  bytes,
+                  fit:BoxFit.contain,
+                  errorBuilder:(_,__,___)=>const Text(
+                    'Imagem indisponível',
+                    style:TextStyle(color:Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ));
+    }catch(e){_notify('Não foi possível mostrar a página: $e');}
+  }
+
+  Future<void> _toggleDark() async {
+    setState(()=>_dark=!_dark);
+    await _renderHtml();
+    try {
+      final prefs=await SharedPreferences.getInstance();
+      if(!await prefs.setBool('source_reader_dark',_dark))throw StateError('Falha ao gravar');
+    } catch (_) {_notify('Não foi possível guardar o tema.');}
   }
 
   Future<void> _bookmark() async {
@@ -247,20 +322,20 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     await _renderHtml();
   }
 
-  Future<void> _markSelection() async {
-    if(!_hasSelection)return;
-    final html=_htmlReading && _htmlQuote.trim().isNotEmpty;
+  Future<void> _markSelection({bool pageNote=false}) async {
+    if(!_hasSelection&&!pageNote)return;
+    final html=!pageNote && _htmlReading && _htmlQuote.trim().isNotEmpty;
     final body=_pageText;
-    final quote=html ? _htmlQuote.trim() :
+    final quote=pageNote?'':html ? _htmlQuote.trim() :
       body.substring(_selectionStart!,_selectionEnd!).trim();
-    if(quote.isEmpty)return;
-    final start=html?body.indexOf(quote):_selectionStart!;
+    if(quote.isEmpty&&!pageNote)return;
+    final start=pageNote?-1:html?body.indexOf(quote):_selectionStart!;
     final end=start<0?-1:(html?start+quote.length:_selectionEnd!);
-    if(!html && (start<0 || end>body.length || end<=start))return;
+    if(!html && !pageNote && (start<0 || end>body.length || end<=start))return;
     final noteInput=TextEditingController();
     final message=await showDialog<String>(
       context:context,builder:(ctx)=>AlertDialog(
-        title:const Text('Salvar trecho marcado'),
+        title:Text(pageNote?'Anotação da página':'Salvar trecho marcado'),
         content:SingleChildScrollView(child:Column(
           mainAxisSize:MainAxisSize.min,
           crossAxisAlignment:CrossAxisAlignment.start,children:[
@@ -271,17 +346,17 @@ class _NativeBookReaderState extends State<NativeBookReader> {
           TextField(controller:noteInput,
             maxLines:3,
             decoration:const InputDecoration(
-              labelText:'Sua anotação (opcional)',
+              labelText:'Sua anotação',
               border:OutlineInputBorder())),
         ])),
         actions:[
           TextButton(onPressed:()=>Navigator.pop(ctx),
             child:const Text('Cancelar')),
           FilledButton(onPressed:()=>Navigator.pop(ctx,noteInput.text),
-            child:const Text('Salvar trecho')),
+            child:const Text('Salvar')),
         ]));
     noteInput.dispose();
-    if(message==null)return;
+    if(message==null||(pageNote&&message.trim().isEmpty))return;
     final next=List<Map<String,dynamic>>.from(_highlights)
       ..add(<String,dynamic>{
         'page':_page,'start':start,'end':end,'text':quote,
@@ -291,6 +366,8 @@ class _NativeBookReaderState extends State<NativeBookReader> {
         },
         'note':message.trim(),
         'savedAt':DateTime.now().toIso8601String(),
+        'sourceSha':widget.library.chapter(_chapter)?.sha,
+        'exactPdfPages':_book?.exactPdfPages??false,
       });
     try {
       await _saveHighlights(next);
@@ -305,17 +382,20 @@ class _NativeBookReaderState extends State<NativeBookReader> {
   }
 
   List<TextSpan> _spans(String text) {
-    final marks=_highlights.where((m)=>m['page']==_page)
+    final marks=_highlights.where((m)=>m['page']==_page && m['start'] is int && m['end'] is int && (m['start'] as int)>=0 && (m['end'] as int)<=text.length && (m['end'] as int)>(m['start'] as int) && text.substring(m['start'] as int,m['end'] as int).trim()==m['text'].toString().trim())
       .map((m)=>ReaderMark(m['start'] as int,m['end'] as int))
       .toList(growable:false);
     return SourceTypography.spans(
       text,fontSize:_font,
-      color:Theme.of(context).colorScheme.onSurface,
+      color:_ink,
       highlights:marks);
   }
 
   void _selectionChanged(TextSelection selection,SelectionChangedCause? cause) {
-    if(!selection.isValid || selection.isCollapsed)return;
+    if(!selection.isValid || selection.isCollapsed){
+      if(_selectionStart!=null||_selectionEnd!=null)setState((){_selectionStart=null;_selectionEnd=null;});
+      return;
+    }
     final start=selection.start;
     final end=selection.end;
     if(start<0 || end>_pageText.length || end<=start)return;
@@ -348,7 +428,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
               ListTile(
                 isThreeLine:true,
                 leading:const Icon(Icons.highlight),
-                title:Text(annotation['text'].toString(),maxLines:2,
+                title:Text(annotation['text'].toString().isEmpty?'Anotação da página':annotation['text'].toString(),maxLines:2,
                   overflow:TextOverflow.ellipsis),
                 subtitle:Text('Tela ${(annotation['page'] as int)+1}'
                   '${annotation['note'].toString().isEmpty?'':': '+annotation['note'].toString()}',
@@ -427,16 +507,8 @@ class _NativeBookReaderState extends State<NativeBookReader> {
         openTutor:_openTutor)));
   }
   void _openVoice(){
-    final body=_pageText;
-    if(body.isEmpty)return;
-    final selected=_htmlReading && _htmlQuote.isNotEmpty?_htmlQuote:
-      (_selectionStart!=null && _selectionEnd!=null?
-        body.substring(_selectionStart!,_selectionEnd!):'');
-    setState((){
-      _voiceReading=selected.isNotEmpty?selected:body;
-      _voiceReadingLabel=selected.isNotEmpty?'Trecho selecionado':_label;
-      _voiceControlsOpen=true;
-    });
+    if(_voiceReading.isEmpty){_notify('Não há texto narrável nesta página.');return;}
+    setState(()=>_voiceControlsOpen=true);
   }
 
   void _minimizeVoice() {
@@ -464,7 +536,7 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                 Row(children:[
                   const Icon(Icons.graphic_eq,size:22),
                   const SizedBox(width:8),
-                  Expanded(child:Text('Voz · $_voiceReadingLabel',
+                  Expanded(child:Text('Cap. $_chapter · $_voiceReadingLabel',
                     maxLines:2,
                     style:Theme.of(context).textTheme.titleMedium)),
                   IconButton(
@@ -473,12 +545,12 @@ class _NativeBookReaderState extends State<NativeBookReader> {
                     icon:const Icon(Icons.keyboard_arrow_down)),
                 ]),
                 Text('Fechar os controles não interrompe a leitura. '
-                  'Toque em Ouvir para reabrir.',
+                  'Ao mudar de página, a voz anterior é interrompida. Toque em Ouvir para reabrir.',
                   style:Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height:8),
                 VoiceReaderV2(
                   key:const ValueKey('persistent_voice_reader'),
-                  readText:_voiceReading,
+                  readText:_voiceReading,sourceId:_voiceSourceId,sourceLabel:_voiceReadingLabel,
                   getApiKey:widget.getApiKey,
                   speechModel:widget.speechModel),
               ]))),
@@ -487,143 +559,159 @@ class _NativeBookReaderState extends State<NativeBookReader> {
     );
   }
 
+  Future<void> _readingSettings() async {
+    await showModalBottomSheet<void>(
+      context:context,isScrollControlled:true,
+      builder:(ctx)=>SafeArea(child:StatefulBuilder(builder:(ctx,update){
+        return SingleChildScrollView(
+          padding:const EdgeInsets.fromLTRB(20,12,20,20),
+          child:Column(mainAxisSize:MainAxisSize.min,children:[
+            Row(children:[
+              Expanded(child:Text('Ajustes de leitura',style:Theme.of(ctx).textTheme.titleMedium)),
+              IconButton(onPressed:()=>Navigator.pop(ctx),icon:const Icon(Icons.close)),
+            ]),
+            Row(children:[
+              IconButton(tooltip:'Diminuir fonte',onPressed:_font<=12?null:() async{
+                await _changeFont(_font-1);if(ctx.mounted)update((){});
+              },icon:const Icon(Icons.text_decrease)),
+              Expanded(child:Slider(min:12,max:36,divisions:24,value:_font,
+                label:_font.toStringAsFixed(0),onChanged:(v){setState(()=>_font=v);update((){});},
+                onChangeEnd:(v)=>_changeFont(v))),
+              IconButton(tooltip:'Aumentar fonte',onPressed:_font>=36?null:() async{
+                await _changeFont(_font+1);if(ctx.mounted)update((){});
+              },icon:const Icon(Icons.text_increase)),
+              Text(_font.toStringAsFixed(0)),
+            ]),
+            SwitchListTile(contentPadding:EdgeInsets.zero,
+              title:const Text('Fundo preto'),subtitle:const Text('Letras brancas'),
+              value:_dark,onChanged:(_) async{await _toggleDark();if(ctx.mounted)update((){});}),
+            SwitchListTile(contentPadding:EdgeInsets.zero,
+              title:const Text('Texto formatado'),
+              subtitle:const Text('Desative apenas para consultar a transcrição bruta'),
+              value:_htmlReading,onChanged:_htmlController==null?null:(v){
+                setState(()=>_htmlReading=v);update((){});if(v)_renderHtml();
+              }),
+            FilledButton(onPressed:()=>Navigator.pop(ctx),child:const Text('Voltar à leitura')),
+          ]),
+        );
+      })),
+    );
+  }
+
+  Future<void> _chapterIndex() async {
+    final selected=await showModalBottomSheet<int>(context:context,isScrollControlled:true,
+      builder:(ctx){
+        var query='';
+        return SafeArea(child:SizedBox(height:MediaQuery.sizeOf(ctx).height*.8,
+          child:StatefulBuilder(builder:(ctx,update){
+            final entries=widget.catalog.where((c)=>c.title.toLowerCase().contains(query)||c.number.toString().contains(query)).toList();
+            return Column(children:[
+              Padding(padding:const EdgeInsets.all(12),child:TextField(
+                onChanged:(v)=>update(()=>query=v.trim().toLowerCase()),
+                decoration:const InputDecoration(prefixIcon:Icon(Icons.search),hintText:'Buscar capítulo'))),
+              Expanded(child:ListView.builder(itemCount:entries.length,itemBuilder:(ctx,i){
+                final c=entries[i];
+                return ListTile(selected:c.number==_chapter,
+                  title:Text(c.title),leading:Text(c.number.toString().padLeft(2,'0')),
+                  onTap:()=>Navigator.pop(ctx,c.number));
+              })),
+            ]);
+          }),
+        ));
+      });
+    if(selected!=null&&selected!=_chapter&&mounted)await _load(selected);
+  }
+
+  void _menuAction(String action){
+    switch(action){
+      case 'settings':_readingSettings();break;
+      case 'index':_chapterIndex();break;
+      case 'bookmark':_bookmark();break;
+      case 'note':_markSelection(pageNote:true);break;
+      case 'marks':_openMarks();break;
+      case 'exercise':_openExercises();break;
+      case 'gemini':_openTutor();break;
+      case 'visual':_showOriginalPage();break;
+      case 'pdf':widget.onOpenPdf?.call(_chapter);break;
+    }
+  }
+
   @override
   Widget build(BuildContext context){
     final book=_book;
+    final bg=_dark?Colors.black:Colors.white;
+    final chrome=bg;
     return Scaffold(
+      backgroundColor:bg,
       appBar:AppBar(
-        title:Text('Cap. ${_chapter.toString().padLeft(2,'0')} · $_title',
-          maxLines:1,overflow:TextOverflow.ellipsis),
+        key:const ValueKey('reader_compact_header'),
+        toolbarHeight:48, titleSpacing:0,backgroundColor:bg,foregroundColor:_ink,
+        iconTheme:IconThemeData(color:_ink),actionsIconTheme:IconThemeData(color:_ink),
+        titleTextStyle:TextStyle(color:_ink,fontSize:13,fontWeight:FontWeight.w600),
+        title:Text('$_chapter · $_title',maxLines:2,
+          overflow:TextOverflow.ellipsis,style:TextStyle(color:_ink,fontSize:13,fontWeight:FontWeight.w600)),
         actions:[
-          IconButton(tooltip:'Exercícios do PDF',
-            onPressed:book==null?null:_openExercises,
-            icon:const Icon(Icons.assignment_outlined)),
-          IconButton(tooltip:'Trechos salvos',
-            onPressed:book==null?null:_openMarks,
-            icon:const Icon(Icons.collections_bookmark_outlined)),
-          IconButton(tooltip:'PDF original (figuras e tabelas)',
-            onPressed:widget.onOpenPdf==null?null:
-              ()=>widget.onOpenPdf!(_chapter),
-            icon:const Icon(Icons.picture_as_pdf_outlined)),
-        ]),
+          if(_hasSelection)IconButton(tooltip:'Salvar trecho selecionado',
+            onPressed:_markSelection,icon:const Icon(Icons.highlight_outlined,size:21)),
+          if(book!=null&&(widget.library.chapter(_chapter)?.layoutVersion??0)<2)
+            IconButton(tooltip:'Transcrição legada: importe a edição nativa na Biblioteca',
+              onPressed:()=>_notify('Esta é uma transcrição provisória. Para diagramas, tabelas e códigos nativos, importe a edição nativa mais recente na Biblioteca.'),
+              icon:const Icon(Icons.info_outline,size:19)),
+          if(book?.screens[_page].visualJpeg!=null)
+            IconButton(tooltip:'Ver gráficos, tabelas e página original',
+              onPressed:_showOriginalPage,icon:Icon(Icons.image_outlined,size:21,color:_ink)),
+          IconButton(tooltip:'Ajustes de leitura',onPressed:book==null?null:_readingSettings,
+            icon:Icon(Icons.text_fields,size:22,color:_ink)),
+          PopupMenuButton<String>(
+            tooltip:'Ferramentas do capítulo',icon:Icon(Icons.more_vert,color:_ink),enabled:book!=null,onSelected:_menuAction,
+            itemBuilder:(_)=>[
+              const PopupMenuItem(value:'index',child:Text('Índice de capítulos')),
+              const PopupMenuItem(value:'note',child:Text('Anotar página')),
+              PopupMenuItem(value:'bookmark',child:Text(_bookmarks.contains(_page)?'Remover marcador':'Marcar página')),
+              const PopupMenuItem(value:'marks',child:Text('Trechos salvos')),
+              const PopupMenuItem(value:'gemini',child:Text('Gemini')),
+              const PopupMenuItem(value:'exercise',child:Text('Exercícios')),
+              if(book?.screens[_page].visualJpeg!=null)const PopupMenuItem(value:'visual',child:Text('Página original ampliável')),
+              if(widget.onOpenPdf!=null)const PopupMenuItem(value:'pdf',child:Text('PDF original')),
+            ],
+          ),
+        ],
+      ),
       body:Stack(children:[
-        SafeArea(child:_loading?
-        const Center(child:CircularProgressIndicator()):
-        book==null?
-          Center(child:Padding(
-            padding:const EdgeInsets.all(24),child:Text(_error))):
-        Column(children:[
-          Padding(padding:const EdgeInsets.fromLTRB(14,8,14,8),
-            child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
-              Row(children:[
-                const Icon(Icons.menu_book_outlined,color:forest),
-                const SizedBox(width:8),
-                Expanded(child:Text('Enciclopédia — leitura integral',
-                  style:Theme.of(context).textTheme.titleMedium)),
-                PopupMenuButton<int>(
-                  tooltip:'Escolher outro capítulo',
-                  initialValue:_chapter,
-                  onSelected:_load,
-                  itemBuilder:(_)=>widget.catalog.map((entry)=>
-                    PopupMenuItem<int>(value:entry.number,
-                      child:Text('${entry.number.toString().padLeft(2,'0')} — ${entry.title}',
-                        maxLines:2))).toList(),
-                  child:const Padding(
-                    padding:EdgeInsets.all(9),child:Icon(Icons.list_alt)),
-                ),
-              ]),
-              Text(_label,style:const TextStyle(
-                fontSize:12,color:forest,fontWeight:FontWeight.w600)),
-              const SizedBox(height:7),
-              LinearProgressIndicator(
-                value:(_page+1)/book.screens.length,minHeight:5),
-              const SizedBox(height:6),
-              Row(children:[
-                IconButton(tooltip:'Alternar HTML e texto',
-                  onPressed:()=>setState((){
-                    _htmlReading=!_htmlReading;
-                    if(_htmlReading)_renderHtml();
-                  }),
-                  icon:Icon(_htmlReading?Icons.article_outlined:
-                    Icons.html)),
-                IconButton(tooltip:'Diminuir fonte',
-                  onPressed:_font<=14?null:()=>_changeFont(_font-1),
-                  icon:const Icon(Icons.text_decrease)),
-                Text('${_font.toStringAsFixed(0)} pt'),
-                IconButton(tooltip:'Aumentar fonte',
-                  onPressed:_font>=26?null:()=>_changeFont(_font+1),
-                  icon:const Icon(Icons.text_increase)),
-                const Spacer(),
-                IconButton(
-                  tooltip:'Marcar/desmarcar tela',
-                  onPressed:_bookmark,
-                  icon:Icon(_bookmarks.contains(_page)?
-                    Icons.bookmark:Icons.bookmark_outline)),
-              ]),
-              if(_hasSelection)
-                Align(alignment:Alignment.centerRight,
-                  child:TextButton.icon(onPressed:_markSelection,
-                    icon:const Icon(Icons.border_color_outlined,size:17),
-                    label:const Text('Salvar trecho selecionado'))),
-            ])),
-          Expanded(child:_htmlReading && _htmlController!=null?
-            WebViewWidget(controller:_htmlController!):
-            Scrollbar(
-              controller:_scroll,
-              child:SingleChildScrollView(
-                key:ValueKey('reading_$_chapter'+'_$_page'),
-                controller:_scroll,
-                padding:const EdgeInsets.fromLTRB(18,16,18,34),
-                child:Column(
-                  crossAxisAlignment:CrossAxisAlignment.start,children:[
-                    SelectableText.rich(TextSpan(children:_spans(_pageText)),
-                      onSelectionChanged:_selectionChanged,
-                      textAlign:TextAlign.justify,
-                      style:TextStyle(
-                        fontSize:_font,height:1.68,
-                        color:Theme.of(context).colorScheme.onSurface)),
-                    const SizedBox(height:14),
-                    if(!book.exactPdfPages)const Text(
-                      'Texto extraído do PDF e ajustado à tela. As telas '
-                      'não correspondem às páginas impressas; confira '
-                      'figuras, fórmulas e tabelas no PDF original.',
-                      style:TextStyle(fontSize:12,height:1.45)),
-                  ])))),
-          Padding(padding:const EdgeInsets.symmetric(
-            horizontal:10,vertical:5),
-            child:Wrap(
-              alignment:WrapAlignment.center,
-              spacing:8,runSpacing:4,
-              children:[
-                OutlinedButton.icon(
-                  onPressed:_openVoice,
-                  icon:const Icon(Icons.record_voice_over),
-                  label:const Text('Ouvir')),
-                FilledButton.icon(
-                  onPressed:_openTutor,
-                  icon:const Icon(Icons.psychology),
-                  label:const Text('Gemini')),
-                OutlinedButton.icon(
-                  onPressed:_openExercises,
-                  icon:const Icon(Icons.edit_note),
-                  label:const Text('Exercícios')),
-              ])),
-          Padding(padding:const EdgeInsets.symmetric(horizontal:8),
-            child:Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,
-              children:[
-                IconButton(
-                  tooltip:'Tela anterior',
+        SafeArea(top:false,child:_loading?
+          const Center(child:CircularProgressIndicator()):
+          book==null?Center(child:Padding(padding:const EdgeInsets.all(24),child:Text(_error,style:TextStyle(color:_ink)))):
+          Column(children:[
+            LinearProgressIndicator(value:(_page+1)/book.screens.length,minHeight:2,color:_dark?Colors.white:const Color(0xFF174B3B),backgroundColor:_dark?Colors.white24:Colors.black12),
+            Expanded(key:const ValueKey('reader_content_area'),child:ColoredBox(color:bg,
+              child:_htmlReading && _htmlController!=null?
+                WebViewWidget(controller:_htmlController!):
+                Scrollbar(controller:_scroll,child:SingleChildScrollView(
+                  key:ValueKey('reading_$_chapter'+'_$_page'),controller:_scroll,
+                  padding:const EdgeInsets.fromLTRB(16,12,16,20),
+                  child:SelectableText.rich(TextSpan(children:_spans(_pageText)),
+                    onSelectionChanged:_selectionChanged,textAlign:TextAlign.start,
+                    style:TextStyle(fontSize:_font,height:1.55,color:_ink)),
+                )),
+            )),
+            SizedBox(key:const ValueKey('reader_compact_footer'),height:48,
+              child:Material(color:chrome,child:IconTheme(data:IconThemeData(color:_ink),child:Row(children:[
+                IconButton(tooltip:'Tela anterior',
                   onPressed:_page==0?null:()=>_moveTo(_page-1),
-                  icon:const Icon(Icons.chevron_left,size:29)),
-                TextButton(onPressed:_choosePage,
-                  child:Text(_label)),
-                IconButton(
-                  tooltip:'Próxima tela',
-                  onPressed:_page>=book.screens.length-1?null:
-                    ()=>_moveTo(_page+1),
-                  icon:const Icon(Icons.chevron_right,size:29)),
-              ])),
-        ])),
+                  icon:const Icon(Icons.chevron_left,size:25)),
+                Expanded(child:TextButton(onPressed:_choosePage,child:Text(
+                  '${book.exactPdfPages?'Pág.':'Tela'} ${_page+1} / ${book.screens.length}',
+                  style:TextStyle(fontSize:13,color:_ink),overflow:TextOverflow.ellipsis))),
+                IconButton(tooltip:'Ouvir',onPressed:_openVoice,
+                  icon:const Icon(Icons.record_voice_over_outlined,size:21)),
+                IconButton(tooltip:'Gemini',onPressed:_openTutor,
+                  icon:const Icon(Icons.psychology_outlined,size:21)),
+                IconButton(tooltip:'Próxima tela',
+                  onPressed:_page>=book.screens.length-1?null:()=>_moveTo(_page+1),
+                  icon:const Icon(Icons.chevron_right,size:25)),
+              ])))),
+          ]),
+        ),
         Positioned.fill(child:_persistentVoicePanel()),
       ]),
     );

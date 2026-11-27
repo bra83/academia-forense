@@ -44,6 +44,9 @@ class MotorAKokoroController {
   String? _selectedVoice;
   List<AudioChunk> _queue = [];
   int _currentIndex = 0;
+  int _session=0;
+  int _utteranceCounter=0;
+  String? _activeUtterance;
 
   DateTime? _playbackStartTime;
   Duration? _timeToFirstAudio;
@@ -71,7 +74,14 @@ class MotorAKokoroController {
   Future<bool> initialize({String? enginePackage, String? defaultVoice}) async {
     _state = MotorPlaybackState.loading;
     try {
-      final success = await _bridge.initEngine(enginePackage: enginePackage);
+      bool success=false;
+      if(enginePackage==null){
+        final engines=await _bridge.detectInstalledEngines();
+        for(final engine in engines){
+          try{success=await _bridge.initEngine(enginePackage:engine).timeout(const Duration(seconds:18));}catch(_){success=false;}
+          if(success)break;
+        }
+      }else{success=await _bridge.initEngine(enginePackage:enginePackage).timeout(const Duration(seconds:18));}
       if (!success) {
         _state = MotorPlaybackState.error;
         _errorController.add('Failed to initialize Sherpa-ONNX Kokoro engine');
@@ -96,6 +106,7 @@ class MotorAKokoroController {
     _bridgeSubscription?.cancel();
     _bridgeSubscription = _bridge.events.listen(
       (event) {
+        if(_state!=MotorPlaybackState.playing||event.utteranceId!=_activeUtterance)return;
         if (event is TtsStartEvent) {
           if (!_firstAudioReceived && _playbackStartTime != null) {
             _firstAudioReceived = true;
@@ -146,6 +157,7 @@ class MotorAKokoroController {
       return;
     }
 
+    _session++;
     _queue = List.unmodifiable(chunks);
     _currentIndex = startIndex.clamp(0, _queue.length - 1);
     _playbackStartTime = DateTime.now();
@@ -166,12 +178,16 @@ class MotorAKokoroController {
 
     final chunk = _queue[_currentIndex];
     try {
-      await _bridge.speakChunk(
-        chunkId: chunk.id,
+      final session=_session;
+      final utterance='voice_${session}_${++_utteranceCounter}_${chunk.id}';
+      _activeUtterance=utterance;
+      final accepted=await _bridge.speakChunk(
+        chunkId: utterance,
         text: chunk.text,
         speed: _speed,
         queue: false,
       );
+      if(!accepted&&session==_session)throw StateError('Motor recusou a síntese');
     } catch (e) {
       _state = MotorPlaybackState.error;
       _errorController.add('Error speaking chunk ${chunk.id}: $e');
@@ -181,7 +197,8 @@ class MotorAKokoroController {
 
   /// Handles completion of a chunk utterance, chaining to the next chunk (§12.3).
   Future<void> _onChunkCompleted(String utteranceId) async {
-    if (_state != MotorPlaybackState.playing) return;
+    if (_state != MotorPlaybackState.playing||utteranceId!=_activeUtterance) return;
+    _activeUtterance=null;
 
     if (_currentIndex < _queue.length - 1) {
       _currentIndex++;
@@ -195,8 +212,9 @@ class MotorAKokoroController {
   /// Pauses playback.
   Future<void> pause() async {
     if (_state == MotorPlaybackState.playing) {
-      await _bridge.stop();
+      _activeUtterance=null;
       _state = MotorPlaybackState.paused;
+      await _bridge.stop();
       _emitProgress();
     }
   }
@@ -211,8 +229,9 @@ class MotorAKokoroController {
 
   /// Stops playback immediately.
   Future<void> stop() async {
-    await _bridge.stop();
+    _session++;_activeUtterance=null;
     _state = MotorPlaybackState.stopped;
+    await _bridge.stop();
     _emitProgress();
   }
 
@@ -221,6 +240,7 @@ class MotorAKokoroController {
     if (_queue.isEmpty) return;
     _currentIndex = targetIndex.clamp(0, _queue.length - 1);
     if (_state == MotorPlaybackState.playing) {
+      _activeUtterance=null;
       await _bridge.stop();
       await _speakCurrentChunk();
     } else {
